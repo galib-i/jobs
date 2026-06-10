@@ -1,0 +1,13 @@
+[Desktop Entry]
+Version=1.0
+Name=My Product
+Comment=A jobs application
+# The Exec line includes %u to pass the URL to the application
+Exec=/usr/local/bin/jobs %u
+Terminal=false
+Type=Application
+Icon=jobs
+Categories=Utility;
+StartupWMClass=jobs
+
+ 
