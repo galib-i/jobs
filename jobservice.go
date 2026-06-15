@@ -52,7 +52,7 @@ func (g *JobService) SaveJob(company string, role string) (int64, error) {
 				VALUES (?, ?);
 				
 				INSERT INTO stages (job_id, stage)
-				VALUES (last_insert_rowid(), 'Applied')`
+				VALUES (last_insert_rowid(), 'Application')`
 
 	result, err := g.Database.Exec(query, company, role)
 	if err != nil {
