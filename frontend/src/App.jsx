@@ -3,6 +3,7 @@ import { useJobs } from "./hooks/useJobs";
 import Navbar from "./components/Navbar";
 import JobsPage from "./pages/JobsPage";
 import SankeyDiagram from "./SankeyDiagram";
+import TimeDiagram from "./TimeDiagram";
 
 function App() {
   const [page, setPage] = useState("jobs");
@@ -12,7 +13,12 @@ function App() {
     <div>
       <Navbar activePage={page} setPage={setPage} />
 
-      {page === "diagrams" && <SankeyDiagram jobs={jobs} />}
+      {page === "diagrams" && (
+        <div className="flex flex-col gap-8">
+          <TimeDiagram jobs={jobs} />
+          <SankeyDiagram jobs={jobs} />
+        </div>
+      )}
 
       {page === "jobs" && (
         <JobsPage

@@ -40,6 +40,13 @@ export class Job {
              */
             this["stages"] = [];
         }
+        if (!("createdAt" in $$source)) {
+            /**
+             * @member
+             * @type {string}
+             */
+            this["createdAt"] = "";
+        }
 
         Object.assign(this, $$source);
     }

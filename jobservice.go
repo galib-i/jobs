@@ -15,8 +15,9 @@ type JobService struct {
 type Job struct {
 	ID      int64    `json:"id"`
 	Company string   `json:"company"`
-	Role    string   `json:"role"`
-	Stages  []string `json:"stages"`
+	Role      string   `json:"role"`
+	Stages    []string `json:"stages"`
+	CreatedAt string   `json:"createdAt"`
 }
 
 func NewJobService() *JobService {
@@ -70,7 +71,8 @@ func (g *JobService) SaveJob(company string, role string) (int64, error) {
 
 func (g *JobService) GetJobs() ([]Job, error) {
 	query := `SELECT jobs.id, jobs.company, jobs.role, coalesce((SELECT group_concat(stage, ',')
-				FROM (SELECT stage FROM stages WHERE job_id = jobs.id ORDER BY id ASC)), '')
+				FROM (SELECT stage FROM stages WHERE job_id = jobs.id ORDER BY id ASC)), ''),
+				coalesce((SELECT date(last_updated) FROM stages WHERE job_id = jobs.id ORDER BY id ASC LIMIT 1), date('now'))
 				FROM jobs`
 
 	rows, err := g.Database.Query(query)
@@ -86,7 +88,7 @@ func (g *JobService) GetJobs() ([]Job, error) {
 		var currentJob Job
 		var stagesString string
 
-		if err := rows.Scan(&currentJob.ID, &currentJob.Company, &currentJob.Role, &stagesString); err != nil {
+		if err := rows.Scan(&currentJob.ID, &currentJob.Company, &currentJob.Role, &stagesString, &currentJob.CreatedAt); err != nil {
 			log.Printf("failed to scan job: %v", err)
 			return nil, err
 		}
