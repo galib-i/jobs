@@ -5,6 +5,7 @@ import {
   SaveJob,
   DeleteJob,
   UpdateJob,
+  AddJobStage,
 } from "../bindings/jobs/jobservice";
 
 function App() {
@@ -14,6 +15,8 @@ function App() {
   const [editingJobId, setEditingJobId] = useState(null);
   const [editCompany, setEditCompany] = useState("");
   const [editRole, setEditRole] = useState("");
+  const [activeStageInputId, setActiveStageInputId] = useState(null);
+  const [newStageName, setNewStageName] = useState("");
 
   function loadJobs() {
     GetJobs()
@@ -63,6 +66,20 @@ function App() {
       });
   }
 
+  function handleAddStageSubmit(jobId) {
+    if (!newStageName.trim()) return;
+
+    AddJobStage(jobId, newStageName)
+      .then(() => {
+        setNewStageName("");
+        setActiveStageInputId(null);
+        loadJobs();
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }
+
   useEffect(() => {
     loadJobs();
   }, []);
@@ -86,53 +103,94 @@ function App() {
         ></input>
         <input type="submit" value="Submit" className="outline"></input>
       </form>
-      {jobs.map((job) => (
-        <div key={job.id} onDoubleClick={() => handleEditStart(job)}>
-          {editingJobId === job.id ? (
-            <div
-              className="flex"
-              onBlur={(e) => {
-                if (!e.currentTarget.contains(e.relatedTarget)) {
-                  handleEditSave(job.id);
-                }
-              }}
-            >
-              <input
-                type="text"
-                className="outline mr-2"
-                value={editCompany}
-                onChange={(e) => setEditCompany(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
+      {jobs.map((job) => {
+        const lastStage = job.stages ? job.stages[job.stages.length - 1] : "";
+        const tooltipText = job.stages ? job.stages.join(" ➔ ") : "";
+
+        return (
+          <div key={job.id} onDoubleClick={() => handleEditStart(job)}>
+            {editingJobId === job.id ? (
+              <div
+                className="flex"
+                onBlur={(e) => {
+                  if (!e.currentTarget.contains(e.relatedTarget)) {
                     handleEditSave(job.id);
-                  } else if (e.key === "Escape") {
-                    setEditingJobId(null);
                   }
                 }}
-              />
-              <input
-                type="text"
-                className="outline mr-2"
-                value={editRole}
-                onChange={(e) => setEditRole(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    handleEditSave(job.id);
-                  } else if (e.key === "Escape") {
-                    setEditingJobId(null);
-                  }
-                }}
-              />
-              <button onClick={() => setEditingJobId(null)}>Cancel</button>
-            </div>
-          ) : (
-            <div>
-              {job.company} {job.role}{" "}
-              <button onClick={() => handleDelete(job.id)}>Delete</button>
-            </div>
-          )}
-        </div>
-      ))}
+              >
+                <input
+                  type="text"
+                  className="outline mr-2"
+                  value={editCompany}
+                  onChange={(e) => setEditCompany(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      handleEditSave(job.id);
+                    } else if (e.key === "Escape") {
+                      setEditingJobId(null);
+                    }
+                  }}
+                />
+                <input
+                  type="text"
+                  className="outline mr-2"
+                  value={editRole}
+                  onChange={(e) => setEditRole(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      handleEditSave(job.id);
+                    } else if (e.key === "Escape") {
+                      setEditingJobId(null);
+                    }
+                  }}
+                />
+                <button onClick={() => setEditingJobId(null)}>Cancel</button>
+              </div>
+            ) : (
+              <div className="flex items-center justify-between py-1">
+                <div>
+                  {job.company} - {job.role}{" "}
+                  <span
+                    title={tooltipText}
+                    className="ml-2 text-gray-500 cursor-help border-b border-dashed border-gray-400"
+                  >
+                    ({lastStage})
+                  </span>
+                </div>
+
+                <div className="flex items-center">
+                  {activeStageInputId === job.id ? (
+                    <input
+                      type="text"
+                      className="outline w-24 mr-2"
+                      placeholder="New stage..."
+                      value={newStageName}
+                      onChange={(e) => setNewStageName(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          handleAddStageSubmit(job.id);
+                        } else if (e.key === "Escape") {
+                          setActiveStageInputId(null);
+                        }
+                      }}
+                      onBlur={() => setActiveStageInputId(null)}
+                      autoFocus
+                    />
+                  ) : (
+                    <button
+                      className="mr-2 text-blue-500 font-bold"
+                      onClick={() => setActiveStageInputId(job.id)}
+                    >
+                      +
+                    </button>
+                  )}
+                  <button onClick={() => handleDelete(job.id)}>Delete</button>
+                </div>
+              </div>
+            )}
+          </div>
+        );
+      })}
     </div>
   );
 }

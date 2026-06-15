@@ -11,6 +11,15 @@ import { Call as $Call, CancellablePromise as $CancellablePromise, Create as $Cr
 import * as $models from "./models.js";
 
 /**
+ * @param {number} jobId
+ * @param {string} stage
+ * @returns {$CancellablePromise<void>}
+ */
+export function AddJobStage(jobId, stage) {
+    return $Call.ByID(1679456146, jobId, stage);
+}
+
+/**
  * @param {number} id
  * @returns {$CancellablePromise<void>}
  */

@@ -33,6 +33,13 @@ export class Job {
              */
             this["role"] = "";
         }
+        if (!("stages" in $$source)) {
+            /**
+             * @member
+             * @type {string[]}
+             */
+            this["stages"] = [];
+        }
 
         Object.assign(this, $$source);
     }
@@ -43,7 +50,14 @@ export class Job {
      * @returns {Job}
      */
     static createFrom($$source = {}) {
+        const $$createField3_0 = $$createType0;
         let $$parsedSource = typeof $$source === 'string' ? JSON.parse($$source) : $$source;
+        if ("stages" in $$parsedSource) {
+            $$parsedSource["stages"] = $$createField3_0($$parsedSource["stages"]);
+        }
         return new Job(/** @type {Partial<Job>} */($$parsedSource));
     }
 }
+
+// Private type creation functions
+const $$createType0 = $Create.Array($Create.Any);
