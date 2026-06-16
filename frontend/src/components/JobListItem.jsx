@@ -4,7 +4,6 @@ export default function JobListItem({ job, onUpdate, onDelete, onAddStage }) {
   const [isEditing, setIsEditing] = useState(false);
   const [editCompany, setEditCompany] = useState(job.company);
   const [editRole, setEditRole] = useState(job.role);
-
   const [isAddingStage, setIsAddingStage] = useState(false);
   const [newStageName, setNewStageName] = useState("");
 
@@ -24,8 +23,12 @@ export default function JobListItem({ job, onUpdate, onDelete, onAddStage }) {
 
   if (isEditing) {
     return (
-      <div
+      <form
         className="flex py-1"
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleEditSave();
+        }}
         onBlur={(e) => {
           if (!e.currentTarget.contains(e.relatedTarget)) {
             handleEditSave();
@@ -34,27 +37,23 @@ export default function JobListItem({ job, onUpdate, onDelete, onAddStage }) {
       >
         <input
           type="text"
-          className="outline mr-2"
+          className="outline mr-2 px-1"
           value={editCompany}
           onChange={(e) => setEditCompany(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") handleEditSave();
-            else if (e.key === "Escape") setIsEditing(false);
-          }}
+          onKeyDown={(e) => e.key === "Escape" && setIsEditing(false)}
           autoFocus
         />
         <input
           type="text"
-          className="outline mr-2"
+          className="outline mr-2 px-1"
           value={editRole}
           onChange={(e) => setEditRole(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") handleEditSave();
-            else if (e.key === "Escape") setIsEditing(false);
-          }}
+          onKeyDown={(e) => e.key === "Escape" && setIsEditing(false)}
         />
-        <button onClick={() => setIsEditing(false)}>Cancel</button>
-      </div>
+        <button type="button" onClick={() => setIsEditing(false)}>
+          Cancel
+        </button>
+      </form>
     );
   }
 
@@ -75,19 +74,23 @@ export default function JobListItem({ job, onUpdate, onDelete, onAddStage }) {
 
       <div className="flex items-center">
         {isAddingStage ? (
-          <input
-            type="text"
-            className="outline w-24 mr-2"
-            placeholder="New stage..."
-            value={newStageName}
-            onChange={(e) => setNewStageName(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") handleStageSubmit();
-              else if (e.key === "Escape") setIsAddingStage(false);
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleStageSubmit();
             }}
-            onBlur={() => setIsAddingStage(false)}
-            autoFocus
-          />
+          >
+            <input
+              type="text"
+              className="outline w-24 mr-2 px-1"
+              placeholder="New stage..."
+              value={newStageName}
+              onChange={(e) => setNewStageName(e.target.value)}
+              onKeyDown={(e) => e.key === "Escape" && setIsAddingStage(false)}
+              onBlur={() => setIsAddingStage(false)}
+              autoFocus
+            />
+          </form>
         ) : (
           <button
             className="mr-2 text-blue-500 font-bold"

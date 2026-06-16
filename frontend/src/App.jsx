@@ -2,8 +2,8 @@ import { useState } from "react";
 import { useJobs } from "./hooks/useJobs";
 import Navbar from "./components/Navbar";
 import JobsPage from "./pages/JobsPage";
-import SankeyDiagram from "./SankeyDiagram";
-import TimeDiagram from "./TimeDiagram";
+import SankeyDiagram from "./components/SankeyDiagram";
+import TimeDiagram from "./components/TimeDiagram";
 
 function App() {
   const [page, setPage] = useState("jobs");

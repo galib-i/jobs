@@ -1,6 +1,6 @@
 import ReactECharts from "echarts-for-react";
 import { useMemo } from "react";
-import { getStageColour } from "./colours";
+import { getStageColour } from "../colours";
 
 function buildSankeyOption(jobs) {
   if (!jobs?.length) return null;
@@ -30,25 +30,21 @@ function buildSankeyOption(jobs) {
     const bgColour = getStageColour(cleanName);
     const textColour = bgColour === "#FFC107" ? "#333333" : "#ffffff";
 
+    const blockStyle = {
+      backgroundColor: bgColour,
+      color: textColour,
+      padding: [4, 8],
+      borderRadius: 4,
+      fontWeight: "bold",
+    };
+
     return {
       name,
       itemStyle: { color: bgColour },
       label: {
         rich: {
-          nameBlock: {
-            backgroundColor: bgColour,
-            color: textColour,
-            padding: [4, 8],
-            borderRadius: 4,
-            fontWeight: "bold",
-          },
-          valBlock: {
-            backgroundColor: bgColour,
-            color: textColour,
-            padding: [4, 8],
-            borderRadius: 4,
-            fontWeight: "bold",
-          },
+          nameBlock: blockStyle,
+          valBlock: blockStyle,
         },
       },
     };
