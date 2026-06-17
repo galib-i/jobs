@@ -1,41 +1,40 @@
-.task
-bin
-frontend/dist
-frontend/node_modules
+# Wails & Build Output
+/bin/
+/build/bin/
 build/linux/appimage/build
 build/windows/nsis/MicrosoftEdgeWebview2Setup.exe
-tailwind.config.js
-*.db*
+.task
+.bindings-tmp
 
-# If you prefer the allow list template instead of the deny list, see community template:
-# https://github.com/github/gitignore/blob/main/community/Golang/Go.AllowList.gitignore
-#
-# Binaries for programs and plugins
+# Frontend (Vite / React)
+frontend/node_modules/
+frontend/dist/
+tailwind.config.js
+
+# Databases
+*.db
+*.db-shm
+*.db-wal
+
+# Go
 *.exe
 *.exe~
 *.dll
 *.so
 *.dylib
-
-# Test binary, built with `go test -c`
 *.test
-
-# Code coverage profiles and other test artifacts
 *.out
-coverage.*
 *.coverprofile
+coverage.*
 profile.cov
-
-# Dependency directories (remove the comment below to include it)
-# vendor/
-
-# Go workspace file
+vendor/
 go.work
 go.work.sum
 
-# env file
+# Environment
 .env
+.env.local
+.env.*.local
 
-# Editor/IDE
-# .idea/
-# .vscode/
+# IDE
+.vscode/

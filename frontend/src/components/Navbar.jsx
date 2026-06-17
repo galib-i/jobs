@@ -10,7 +10,7 @@ function Navbar({ activePage, setPage }) {
   };
 
   return (
-    <nav className="flex items-center justify-between p-4 m-4 text-sm gap-4">
+    <nav className="flex items-center justify-between p-4 text-sm gap-4">
       <div className="flex-1"></div>
 
       {/* Navigation */}
@@ -24,7 +24,7 @@ function Navbar({ activePage, setPage }) {
       </div>
 
       {/* Theme */}
-      <div className="flex-1 flex justify-end">
+      <div className="flex-1 flex justify-start">
         <Button theme="yellow" onClick={handleThemeClick} isIcon>
           {isDarkMode ? <SunIcon /> : <MoonIcon />}
         </Button>

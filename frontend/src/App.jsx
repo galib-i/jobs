@@ -10,7 +10,7 @@ function App() {
   const { jobs, addJob, updateJob, deleteJob, addStage } = useJobs();
 
   return (
-    <div>
+    <div className="m-4">
       <Navbar activePage={page} setPage={setPage} />
 
       {page === "diagrams" && (

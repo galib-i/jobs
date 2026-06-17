@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { Button } from "./Button";
+import { BinIcon } from "./Icon";
 
 export default function JobListItem({ job, onUpdate, onDelete, onAddStage }) {
   const [isEditing, setIsEditing] = useState(false);
@@ -99,7 +101,9 @@ export default function JobListItem({ job, onUpdate, onDelete, onAddStage }) {
             +
           </button>
         )}
-        <button onClick={() => onDelete(job.id)}>Delete</button>
+        <Button theme="red" onClick={() => onDelete(job.id)} isIcon>
+          <BinIcon />
+        </Button>
       </div>
     </div>
   );
