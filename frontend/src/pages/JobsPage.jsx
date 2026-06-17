@@ -12,13 +12,20 @@ export default function JobsPage({
 }) {
   const [company, setCompany] = useState("");
   const [role, setRole] = useState("");
+  const [location, setLocation] = useState("");
+  const [link, setLink] = useState("");
+  const [description, setDescription] = useState("");
+  const [notes, setNotes] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!company.trim() || !role.trim()) return;
-    onAddJob(company, role);
+    onAddJob({ company, role, location, link, description, notes });
     setCompany("");
     setRole("");
+    setLocation("");
+    setLink("");
+    (setDescription(""), setNotes(""));
   };
 
   const JOB_FIELDS = [
@@ -40,24 +47,34 @@ export default function JobsPage({
     },
     {
       key: "location",
+      value: location,
+      setter: setLocation,
       placeholder: "Location",
-      rounded: "rounded-tr-xl rounded-br-none rounded-l-none lg:rounded-tr-none",
+      rounded:
+        "rounded-tr-xl rounded-br-none rounded-l-none lg:rounded-tr-none",
       border: "border-2 border-l lg:border-x",
     },
     {
       key: "link",
+      value: link,
+      setter: setLink,
       placeholder: "Link",
-      rounded: "rounded-bl-xl rounded-tl-none rounded-r-none lg:rounded-bl-none",
+      rounded:
+        "rounded-bl-xl rounded-tl-none rounded-r-none lg:rounded-bl-none",
       border: "border-2 border-t-0 border-r lg:border-t-2 lg:border-x",
     },
     {
       key: "description",
+      value: description,
+      setter: setDescription,
       placeholder: "Description",
       rounded: "rounded-none",
       border: "border-2 border-t-0 border-x lg:border-t-2",
     },
     {
       key: "notes",
+      value: notes,
+      setter: setNotes,
       placeholder: "Notes",
       rounded: "rounded-br-xl rounded-tr-none rounded-l-none lg:rounded-tr-xl",
       border: "border-2 border-t-0 border-l lg:border-t-2",

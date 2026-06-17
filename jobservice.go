@@ -13,11 +13,15 @@ type JobService struct {
 }
 
 type Job struct {
-	ID      int64    `json:"id"`
-	Company string   `json:"company"`
-	Role      string   `json:"role"`
-	Stages    []string `json:"stages"`
-	CreatedAt string   `json:"createdAt"`
+	ID          int64    `json:"id"`
+	Company     string   `json:"company"`
+	Role        string   `json:"role"`
+	Location    string   `json:"location"`
+	Link        string   `json:"link"`
+	Description string   `json:"description"`
+	Notes       string   `json:"notes"`
+	Stages      []string `json:"stages"`
+	CreatedAt   string   `json:"createdAt"`
 }
 
 func NewJobService() *JobService {
@@ -30,7 +34,11 @@ func NewJobService() *JobService {
 	query := `CREATE TABLE IF NOT EXISTS jobs (
 				id INTEGER PRIMARY KEY AUTOINCREMENT,
 				company TEXT NOT NULL,
-				role TEXT NOT NULL
+				role TEXT NOT NULL,
+				location TEXT NOT NULL,
+				link TEXT,
+				description TEXT,
+				notes TEXT
 				);
 				
 				CREATE TABLE IF NOT EXISTS stages (
@@ -48,16 +56,16 @@ func NewJobService() *JobService {
 	return &JobService{Database: db}
 }
 
-func (g *JobService) SaveJob(company string, role string) (int64, error) {
-	query := `INSERT INTO jobs (company, role)
-				VALUES (?, ?);
+func (js *JobService) SaveJob(j Job) (int64, error) {
+	query := `INSERT INTO jobs (company, role, location, link, description, notes)
+				VALUES (?, ?, ?, ?, ?, ?);
 				
 				INSERT INTO stages (job_id, stage)
 				VALUES (last_insert_rowid(), 'Application')`
 
-	result, err := g.Database.Exec(query, company, role)
+	result, err := js.Database.Exec(query, j.Company, j.Role, j.Location, j.Link, j.Description, j.Notes)
 	if err != nil {
-		log.Printf("failed to save job (%s, %s): %v", company, role, err)
+		log.Printf("failed to save job (%s, %s...): %v", j.Company, j.Role, err)
 		return 0, err
 	}
 
@@ -69,13 +77,13 @@ func (g *JobService) SaveJob(company string, role string) (int64, error) {
 	return id, nil
 }
 
-func (g *JobService) GetJobs() ([]Job, error) {
-	query := `SELECT jobs.id, jobs.company, jobs.role, coalesce((SELECT group_concat(stage, ',')
+func (js *JobService) GetJobs() ([]Job, error) {
+	query := `SELECT jobs.id, jobs.company, jobs.role, jobs.location, jobs.link, jobs.description, jobs.notes, coalesce((SELECT group_concat(stage, ',')
 				FROM (SELECT stage FROM stages WHERE job_id = jobs.id ORDER BY id ASC)), ''),
 				coalesce((SELECT date(last_updated) FROM stages WHERE job_id = jobs.id ORDER BY id ASC LIMIT 1), date('now'))
 				FROM jobs`
 
-	rows, err := g.Database.Query(query)
+	rows, err := js.Database.Query(query)
 	if err != nil {
 		log.Printf("failed to get all jobs: %v", err)
 		return nil, err
@@ -88,7 +96,7 @@ func (g *JobService) GetJobs() ([]Job, error) {
 		var currentJob Job
 		var stagesString string
 
-		if err := rows.Scan(&currentJob.ID, &currentJob.Company, &currentJob.Role, &stagesString, &currentJob.CreatedAt); err != nil {
+		if err := rows.Scan(&currentJob.ID, &currentJob.Company, &currentJob.Role, &currentJob.Location, &currentJob.Link, &currentJob.Description, &currentJob.Notes, &stagesString, &currentJob.CreatedAt); err != nil {
 			log.Printf("failed to scan job: %v", err)
 			return nil, err
 		}
@@ -105,11 +113,11 @@ func (g *JobService) GetJobs() ([]Job, error) {
 	return jobs, nil
 }
 
-func (g *JobService) DeleteJob(id int64) error {
+func (js *JobService) DeleteJob(id int64) error {
 	query := `DELETE FROM jobs
 				WHERE id = ?`
 
-	if _, err := g.Database.Exec(query, id); err != nil {
+	if _, err := js.Database.Exec(query, id); err != nil {
 		log.Printf("failed to delete job (id: %v): %v", id, err)
 		return err
 	}
@@ -117,24 +125,24 @@ func (g *JobService) DeleteJob(id int64) error {
 	return nil
 }
 
-func (g *JobService) UpdateJob(id int64, company string, role string) error {
+func (js *JobService) UpdateJob(j Job) error {
 	query := `UPDATE jobs
-				SET company = ?, role = ?
+				SET company = ?, role = ?, location = ?, link = ?, description = ?, notes = ?
 				WHERE id = ?`
 
-	if _, err := g.Database.Exec(query, company, role, id); err != nil {
-		log.Printf("failed to edit job (id: %v): %v", id, err)
+	if _, err := js.Database.Exec(query, j.Company, j.Role, j.Location, j.Link, j.Description, j.Notes, j.ID); err != nil {
+		log.Printf("failed to edit job (id: %v): %v", j.ID, err)
 		return err
 	}
 
 	return nil
 }
 
-func (g *JobService) AddJobStage(jobId int64, stage string) error {
+func (js *JobService) AddJobStage(jobId int64, stage string) error {
 	query := `INSERT INTO stages (job_id, stage)
 				VALUES (?, ?)`
 
-	if _, err := g.Database.Exec(query, jobId, stage); err != nil {
+	if _, err := js.Database.Exec(query, jobId, stage); err != nil {
 		log.Printf("failed to add stage to job (id: %v): %v", jobId, err)
 		return err
 	}

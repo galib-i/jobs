@@ -20,13 +20,13 @@ export function useJobs() {
     loadJobs();
   }, [loadJobs]);
 
-  const addJob = async (company, role) => {
-    await SaveJob(company, role);
+  const addJob = async (job) => {
+    await SaveJob(job);
     loadJobs();
   };
 
-  const updateJob = async (id, company, role) => {
-    await UpdateJob(id, company, role);
+  const updateJob = async (job) => {
+    await UpdateJob(job);
     loadJobs();
   };
 

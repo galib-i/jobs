@@ -33,6 +33,34 @@ export class Job {
              */
             this["role"] = "";
         }
+        if (!("location" in $$source)) {
+            /**
+             * @member
+             * @type {string}
+             */
+            this["location"] = "";
+        }
+        if (!("link" in $$source)) {
+            /**
+             * @member
+             * @type {string}
+             */
+            this["link"] = "";
+        }
+        if (!("description" in $$source)) {
+            /**
+             * @member
+             * @type {string}
+             */
+            this["description"] = "";
+        }
+        if (!("notes" in $$source)) {
+            /**
+             * @member
+             * @type {string}
+             */
+            this["notes"] = "";
+        }
         if (!("stages" in $$source)) {
             /**
              * @member
@@ -57,10 +85,10 @@ export class Job {
      * @returns {Job}
      */
     static createFrom($$source = {}) {
-        const $$createField3_0 = $$createType0;
+        const $$createField7_0 = $$createType0;
         let $$parsedSource = typeof $$source === 'string' ? JSON.parse($$source) : $$source;
         if ("stages" in $$parsedSource) {
-            $$parsedSource["stages"] = $$createField3_0($$parsedSource["stages"]);
+            $$parsedSource["stages"] = $$createField7_0($$parsedSource["stages"]);
         }
         return new Job(/** @type {Partial<Job>} */($$parsedSource));
     }

@@ -37,22 +37,19 @@ export function GetJobs() {
 }
 
 /**
- * @param {string} company
- * @param {string} role
+ * @param {$models.Job} j
  * @returns {$CancellablePromise<number>}
  */
-export function SaveJob(company, role) {
-    return $Call.ByID(3923482130, company, role);
+export function SaveJob(j) {
+    return $Call.ByID(3923482130, j);
 }
 
 /**
- * @param {number} id
- * @param {string} company
- * @param {string} role
+ * @param {$models.Job} j
  * @returns {$CancellablePromise<void>}
  */
-export function UpdateJob(id, company, role) {
-    return $Call.ByID(1878109278, id, company, role);
+export function UpdateJob(j) {
+    return $Call.ByID(1878109278, j);
 }
 
 // Private type creation functions

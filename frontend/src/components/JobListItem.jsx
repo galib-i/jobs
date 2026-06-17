@@ -2,15 +2,32 @@ import { useState } from "react";
 import { Button } from "./Button";
 import { BinIcon } from "./Icon";
 
+const JOB_FIELDS = [
+  "company",
+  "role",
+  "location",
+  "link",
+  "description",
+  "notes",
+];
+
 export default function JobListItem({ job, onUpdate, onDelete, onAddStage }) {
+  const [editState, setEditState] = useState({
+    company: job.company,
+    role: job.role,
+    location: job.location,
+    link: job.link,
+    description: job.description,
+    notes: job.notes,
+  });
+
   const [isEditing, setIsEditing] = useState(false);
-  const [editCompany, setEditCompany] = useState(job.company);
-  const [editRole, setEditRole] = useState(job.role);
   const [isAddingStage, setIsAddingStage] = useState(false);
   const [newStageName, setNewStageName] = useState("");
 
   const handleEditSave = () => {
-    onUpdate(job.id, editCompany, editRole);
+    onUpdate({ ...job, ...editState });
+
     setIsEditing(false);
   };
 
@@ -37,21 +54,21 @@ export default function JobListItem({ job, onUpdate, onDelete, onAddStage }) {
           }
         }}
       >
-        <input
-          type="text"
-          className="outline mr-2 px-1"
-          value={editCompany}
-          onChange={(e) => setEditCompany(e.target.value)}
-          onKeyDown={(e) => e.key === "Escape" && setIsEditing(false)}
-          autoFocus
-        />
-        <input
-          type="text"
-          className="outline mr-2 px-1"
-          value={editRole}
-          onChange={(e) => setEditRole(e.target.value)}
-          onKeyDown={(e) => e.key === "Escape" && setIsEditing(false)}
-        />
+        {JOB_FIELDS.map(
+          (field) => (
+            <input
+              key={field}
+              type="text"
+              className="outline mr-2 px-1"
+              value={editState[field]}
+              onChange={(e) =>
+                setEditState((prev) => ({ ...prev, [field]: e.target.value }))
+              }
+              onKeyDown={(e) => e.key === "Escape" && setIsEditing(false)}
+            />
+          ),
+        )}
+
         <button type="button" onClick={() => setIsEditing(false)}>
           Cancel
         </button>
@@ -65,7 +82,8 @@ export default function JobListItem({ job, onUpdate, onDelete, onAddStage }) {
       onDoubleClick={() => setIsEditing(true)}
     >
       <div>
-        {job.company} - {job.role}{" "}
+        {job.company} - {job.role} - {job.location} - {job.link} -{" "}
+        {job.description} - {job.notes}
         <span
           title={tooltipText}
           className="ml-2 text-gray-500 cursor-help border-b border-dashed border-gray-400"
