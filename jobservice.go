@@ -96,7 +96,7 @@ func (js *JobService) GetJobs() ([]Job, error) {
 						SELECT date(last_updated) 
 						FROM stages 
 						WHERE job_id = jobs.id 
-						ORDER BY id ASC LIMIT 1
+						ORDER BY id DESC LIMIT 1
 					), 
 					date('now'))
 				FROM jobs`

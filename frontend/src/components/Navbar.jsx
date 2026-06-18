@@ -6,7 +6,7 @@ function Navbar({ activePage, setPage }) {
   const [isDarkMode, setIsDarkMode] = useState(false);
 
   const handleThemeClick = () => {
-    setIsDarkMode(!isDarkMode);
+    setIsDarkMode((prev) => !prev);
   };
 
   return (

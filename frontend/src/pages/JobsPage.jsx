@@ -25,7 +25,8 @@ export default function JobsPage({
     setRole("");
     setLocation("");
     setLink("");
-    (setDescription(""), setNotes(""));
+    setDescription("");
+    setNotes("");
   };
 
   const JOB_FIELDS = [
@@ -82,7 +83,7 @@ export default function JobsPage({
   ];
 
   return (
-    <div className="">
+    <div>
       <form
         className="flex flex-wrap lg:flex-nowrap items-center w-full max-w-3xl mx-auto lg:max-w-none mb-6"
         onSubmit={handleSubmit}
@@ -109,16 +110,29 @@ export default function JobsPage({
         </Button>
       </form>
 
-      <div className="flex flex-col gap-2">
-        {jobs.map((job) => (
-          <JobListItem
-            key={job.id}
-            job={job}
-            onUpdate={onUpdateJob}
-            onDelete={onDeleteJob}
-            onAddStage={onAddStage}
-          />
-        ))}
+      <div className="relative mt-8 mb-4">
+        <div className="relative flex flex-col bg-white rounded-2xl border-2 border-blue-800 overflow-hidden">
+          <div className="grid grid-cols-[1fr_2fr_1fr_1.5fr_0.8fr_3fr_auto] gap-4 items-center py-4 px-6 bg-blue-500 border-b-2 border-blue-800 text-sm font-bold text-white uppercase tracking-wider">
+            <div>Company</div>
+            <div>Role</div>
+            <div>Location</div>
+            <div>Stage</div>
+            <div>Date</div>
+            <div>Notes</div>
+            <div className="w-8"></div>
+          </div>
+          <div className="flex flex-col">
+            {jobs.map((job) => (
+              <JobListItem
+                key={job.id}
+                job={job}
+                onUpdate={onUpdateJob}
+                onDelete={onDeleteJob}
+                onAddStage={onAddStage}
+              />
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );

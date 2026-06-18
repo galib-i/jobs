@@ -1,3 +1,5 @@
+import { positionStyles, defaultPositionStyle } from "./styles";
+
 const colourThemes = {
   blue: {
     bottom: "bg-blue-800",
@@ -19,6 +21,11 @@ const colourThemes = {
     top: "bg-green-500 border-green-800 group-hover:bg-green-400",
     active: "bg-green-600",
   },
+  gray: {
+    bottom: "bg-gray-600",
+    top: "bg-gray-400 border-gray-600 group-hover:bg-gray-300",
+    active: "bg-gray-500",
+  },
 };
 
 export function Button({
@@ -30,38 +37,49 @@ export function Button({
   isIcon = false,
   isActive = false,
   position = "single",
+  size = "md",
 }) {
   const activeColours = colourThemes[theme] || colourThemes.blue;
 
-  const positionStyles = {
-    left: { rounded: "rounded-l-xl rounded-r-none", border: "border-2 border-r" },
-    middle: { rounded: "rounded-none", border: "border-2 border-x" },
-    right: { rounded: "rounded-r-xl rounded-l-none", border: "border-2 border-l" },
-    single: { rounded: "rounded-xl", border: "border-2" },
-  }[position] || { rounded: "rounded-xl", border: "border-2" };
+  const posStyle = positionStyles[position] || defaultPositionStyle;
+
+  const sizeStyles = {
+    sm: {
+      height: "h-6",
+      padding: isIcon ? "py-0.5 px-1" : "px-4 py-0.5",
+      shadow: "translate-y-1",
+      margin: "mb-1",
+      text: "text-xs",
+    },
+    md: {
+      height: "h-9",
+      padding: isIcon ? "py-1 px-2" : "px-8 py-1",
+      shadow: "translate-y-1.5",
+      margin: "mb-1.5",
+      text: "",
+    },
+  }[size] || { height: "h-9", padding: isIcon ? "py-1 px-2" : "px-8 py-1", shadow: "translate-y-1.5", margin: "mb-1.5", text: "" };
 
   const transformStyles = isActive
-    ? `translate-y-1.5 border-b cursor-default ${activeColours.active}`
+    ? `${sizeStyles.shadow} border-b cursor-default ${activeColours.active}`
     : `group-hover:-translate-y-0.5 group-active:translate-y-1`;
 
   return (
     <button
       type={type}
       onClick={onClick}
-      className={`relative inline-block group focus:outline-none cursor-pointer mb-1.5 ${className}`}
+      className={`relative inline-block group focus:outline-none cursor-pointer ${sizeStyles.margin} ${className}`}
     >
       {/* Bottom shadow */}
       <span
-        className={`absolute inset-0 translate-y-1.5 ${positionStyles.rounded} ${activeColours.bottom}`}
+        className={`absolute inset-0 ${sizeStyles.shadow} ${posStyle.rounded} ${activeColours.bottom}`}
       ></span>
 
       {/* Top face */}
       <span
-        className={`relative flex items-center justify-center h-9 ${
-          isIcon ? "py-1 px-2" : "px-8 py-1"
-        } text-white font-bold tracking-wide transition-all duration-150 ease-out ${
-          positionStyles.rounded
-        } ${positionStyles.border} ${activeColours.top} ${transformStyles}`}
+        className={`relative flex items-center justify-center ${sizeStyles.height} ${sizeStyles.padding} ${sizeStyles.text} text-white font-bold tracking-wide transition-all duration-150 ease-out ${
+          posStyle.rounded
+        } ${posStyle.border} ${activeColours.top} ${transformStyles}`}
       >
         {children}
       </span>

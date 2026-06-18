@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "./Button";
-import { BinIcon } from "./Icon";
+import { BinIcon, InfoIcon } from "./Icon";
 import ExternalLink from "./ExternalLink";
 
 const JOB_FIELDS = [
@@ -13,18 +13,29 @@ const JOB_FIELDS = [
 ];
 
 export default function JobListItem({ job, onUpdate, onDelete, onAddStage }) {
-  const [editState, setEditState] = useState({
+  const initialEditState = {
     company: job.company,
     role: job.role,
     location: job.location,
     link: job.link,
     description: job.description,
     notes: job.notes,
-  });
+  };
+
+  const [editState, setEditState] = useState(initialEditState);
+
+  // Sync edit state when job props change externally
+  const jobKey = `${job.id}-${job.company}-${job.role}-${job.location}-${job.description}-${job.notes}`;
+  useEffect(() => {
+    setEditState(initialEditState);
+  }, [jobKey]);
 
   const [isEditing, setIsEditing] = useState(false);
   const [isAddingStage, setIsAddingStage] = useState(false);
   const [newStageName, setNewStageName] = useState("");
+  const [showDescription, setShowDescription] = useState(false);
+  const [isAddingDescription, setIsAddingDescription] = useState(false);
+  const [newDescription, setNewDescription] = useState("");
 
   const handleEditSave = () => {
     onUpdate({ ...job, ...editState });
@@ -76,55 +87,132 @@ export default function JobListItem({ job, onUpdate, onDelete, onAddStage }) {
   }
 
   return (
-    <div
-      className="flex items-center justify-between py-1"
-      onDoubleClick={() => setIsEditing(true)}
-    >
-      <div>
-        {job.company} -{" "}
-        <ExternalLink href={job.link} className="text-blue-500 hover:underline">
-          {job.role}
-        </ExternalLink>{" "}
-        - {job.location} - {job.description} - {job.notes} - {job.createdAt}
-        <span
-          title={tooltipText}
-          className="ml-2 text-gray-500 cursor-help border-b border-dashed border-gray-400"
+    <div>
+      <div
+        className="grid grid-cols-[1fr_2fr_1fr_1.5fr_0.8fr_3fr_auto] gap-4 items-center py-3 px-6 bg-white hover:bg-blue-50 border-b-2 border-blue-100 last:border-b-0 transition-colors font-bold tracking-wide text-sm"
+        onDoubleClick={() => setIsEditing(true)}
+      >
+        <div className="text-blue-900 truncate" title={job.company}>
+          {job.company}
+        </div>
+        <div className="flex items-center gap-2 truncate">
+          <div className="mt-1 shrink-0">
+            <Button
+              theme={job.description ? "yellow" : "gray"}
+              onClick={() => {
+                if (job.description) {
+                  setShowDescription(!showDescription);
+                } else {
+                  setIsAddingDescription(true);
+                }
+              }}
+              isIcon
+              size="sm"
+            >
+              <InfoIcon size="sm" />
+            </Button>
+          </div>
+          <ExternalLink
+            href={job.link}
+            className="text-blue-600 hover:text-blue-400 transition-colors truncate"
+            title={job.role}
+          >
+            {job.role}
+          </ExternalLink>
+        </div>
+        <div className="text-blue-800 truncate" title={job.location}>
+          {job.location}
+        </div>
+        <div className="flex items-center truncate">
+          <span
+            title={tooltipText}
+            className="text-blue-800 cursor-help border-b-2 border-dotted border-blue-300 truncate"
+          >
+            {lastStage || "None"}
+          </span>
+          {isAddingStage ? (
+            <form
+              className="inline-block ml-2"
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleStageSubmit();
+              }}
+            >
+              <input
+                type="text"
+                className="outline-none w-24 px-2 py-1 text-sm border-2 border-blue-800 rounded-xl font-bold text-blue-900"
+                placeholder="Stage..."
+                value={newStageName}
+                onChange={(e) => setNewStageName(e.target.value)}
+                onKeyDown={(e) => e.key === "Escape" && setIsAddingStage(false)}
+                onBlur={() => setIsAddingStage(false)}
+                autoFocus
+              />
+            </form>
+          ) : (
+            <div className="ml-2 mt-1.5 inline-block">
+              <Button
+                theme="blue"
+                onClick={() => setIsAddingStage(true)}
+                isIcon
+              >
+                +
+              </Button>
+            </div>
+          )}
+        </div>
+        <div className="text-blue-600 whitespace-nowrap">{job.createdAt}</div>
+        <div className="text-blue-800 truncate font-normal" title={job.notes}>
+          {job.notes}
+        </div>
+        <div className="flex items-center justify-end mt-1.5">
+          <Button theme="red" onClick={() => onDelete(job.id)} isIcon>
+            <BinIcon />
+          </Button>
+        </div>
+      </div>
+      {showDescription && job.description && (
+        <div className="px-6 py-3 bg-yellow-50 border-b-2 border-yellow-200 text-sm text-yellow-900 font-normal">
+          <span className="font-bold text-yellow-700">Description:</span>{" "}
+          {job.description}
+        </div>
+      )}
+      {isAddingDescription && (
+        <form
+          className="px-6 py-3 bg-gray-50 border-b-2 border-gray-200 flex items-center gap-2"
+          onSubmit={(e) => {
+            e.preventDefault();
+            if (newDescription.trim()) {
+              onUpdate({ ...job, description: newDescription.trim() });
+              setIsAddingDescription(false);
+              setNewDescription("");
+            }
+          }}
         >
-          ({lastStage})
-        </span>
-      </div>
-
-      <div className="flex items-center">
-        {isAddingStage ? (
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              handleStageSubmit();
+          <span className="font-bold text-gray-600 text-sm shrink-0">
+            Description:
+          </span>
+          <input
+            type="text"
+            className="flex-1 outline-none px-3 py-1 text-sm border-2 border-gray-600 rounded-xl font-bold text-gray-800"
+            placeholder="Add a description..."
+            value={newDescription}
+            onChange={(e) => setNewDescription(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Escape") {
+                setIsAddingDescription(false);
+                setNewDescription("");
+              }
             }}
-          >
-            <input
-              type="text"
-              className="outline w-24 mr-2 px-1"
-              placeholder="New stage..."
-              value={newStageName}
-              onChange={(e) => setNewStageName(e.target.value)}
-              onKeyDown={(e) => e.key === "Escape" && setIsAddingStage(false)}
-              onBlur={() => setIsAddingStage(false)}
-              autoFocus
-            />
-          </form>
-        ) : (
-          <button
-            className="mr-2 text-blue-500 font-bold"
-            onClick={() => setIsAddingStage(true)}
-          >
-            +
-          </button>
-        )}
-        <Button theme="red" onClick={() => onDelete(job.id)} isIcon>
-          <BinIcon />
-        </Button>
-      </div>
+            autoFocus
+          />
+          <div className="mt-1.5">
+            <Button theme="green" type="submit" isIcon>
+              ✓
+            </Button>
+          </div>
+        </form>
+      )}
     </div>
   );
 }

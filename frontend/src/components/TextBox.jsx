@@ -1,3 +1,5 @@
+import { positionStyles, defaultPositionStyle } from "./styles";
+
 const colourThemes = {
   blue: {
     bottom: "bg-blue-800",
@@ -35,15 +37,10 @@ export function TextBox({
 }) {
   const activeColours = colourThemes[theme] || colourThemes.blue;
 
-  const positionStyles = {
-    left: { rounded: "rounded-l-xl rounded-r-none", border: "border-2 border-r" },
-    middle: { rounded: "rounded-none", border: "border-2 border-x" },
-    right: { rounded: "rounded-r-xl rounded-l-none", border: "border-2 border-l" },
-    single: { rounded: "rounded-xl", border: "border-2" },
-  }[position] || { rounded: "rounded-xl", border: "border-2" };
+  const posStyle = positionStyles[position] || defaultPositionStyle;
 
-  const roundedClasses = roundedOverride ?? positionStyles.rounded;
-  const borderClasses = borderOverride ?? positionStyles.border;
+  const roundedClasses = roundedOverride ?? posStyle.rounded;
+  const borderClasses = borderOverride ?? posStyle.border;
 
   return (
     <div className={`relative inline-block ${className}`}>
