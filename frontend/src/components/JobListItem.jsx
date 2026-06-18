@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Button } from "./Button";
 import { BinIcon } from "./Icon";
+import ExternalLink from "./ExternalLink";
 
 const JOB_FIELDS = [
   "company",
@@ -54,20 +55,18 @@ export default function JobListItem({ job, onUpdate, onDelete, onAddStage }) {
           }
         }}
       >
-        {JOB_FIELDS.map(
-          (field) => (
-            <input
-              key={field}
-              type="text"
-              className="outline mr-2 px-1"
-              value={editState[field]}
-              onChange={(e) =>
-                setEditState((prev) => ({ ...prev, [field]: e.target.value }))
-              }
-              onKeyDown={(e) => e.key === "Escape" && setIsEditing(false)}
-            />
-          ),
-        )}
+        {JOB_FIELDS.map((field) => (
+          <input
+            key={field}
+            type="text"
+            className="outline mr-2 px-1"
+            value={editState[field]}
+            onChange={(e) =>
+              setEditState((prev) => ({ ...prev, [field]: e.target.value }))
+            }
+            onKeyDown={(e) => e.key === "Escape" && setIsEditing(false)}
+          />
+        ))}
 
         <button type="button" onClick={() => setIsEditing(false)}>
           Cancel
@@ -82,8 +81,11 @@ export default function JobListItem({ job, onUpdate, onDelete, onAddStage }) {
       onDoubleClick={() => setIsEditing(true)}
     >
       <div>
-        {job.company} - {job.role} - {job.location} - {job.link} -{" "}
-        {job.description} - {job.notes}
+        {job.company} -{" "}
+        <ExternalLink href={job.link} className="text-blue-500 hover:underline">
+          {job.role}
+        </ExternalLink>{" "}
+        - {job.location} - {job.description} - {job.notes} - {job.createdAt}
         <span
           title={tooltipText}
           className="ml-2 text-gray-500 cursor-help border-b border-dashed border-gray-400"

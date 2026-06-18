@@ -8,7 +8,6 @@ import TimeDiagram from "./components/TimeDiagram";
 function App() {
   const [page, setPage] = useState("jobs");
   const { jobs, addJob, updateJob, deleteJob, addStage } = useJobs();
-
   return (
     <div className="m-4">
       <Navbar activePage={page} setPage={setPage} />

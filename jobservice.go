@@ -78,9 +78,27 @@ func (js *JobService) SaveJob(j Job) (int64, error) {
 }
 
 func (js *JobService) GetJobs() ([]Job, error) {
-	query := `SELECT jobs.id, jobs.company, jobs.role, jobs.location, jobs.link, jobs.description, jobs.notes, coalesce((SELECT group_concat(stage, ',')
-				FROM (SELECT stage FROM stages WHERE job_id = jobs.id ORDER BY id ASC)), ''),
-				coalesce((SELECT date(last_updated) FROM stages WHERE job_id = jobs.id ORDER BY id ASC LIMIT 1), date('now'))
+	query := `SELECT jobs.id, jobs.company, jobs.role, jobs.location, jobs.link, jobs.description, jobs.notes, 
+				coalesce(
+					(
+						SELECT group_concat(stage, ',')
+						FROM (
+							SELECT stage 
+							FROM stages 
+							WHERE job_id = jobs.id 
+							ORDER BY id ASC
+						)
+					), 
+					''
+				),
+				coalesce(
+					(
+						SELECT date(last_updated) 
+						FROM stages 
+						WHERE job_id = jobs.id 
+						ORDER BY id ASC LIMIT 1
+					), 
+					date('now'))
 				FROM jobs`
 
 	rows, err := js.Database.Query(query)
