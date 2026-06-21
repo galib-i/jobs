@@ -1,6 +1,11 @@
 import { Browser } from "@wailsio/runtime";
 
-export default function ExternalLink({ href, children, ...props }) {
+export default function ExternalLink({
+  href,
+  children,
+  className = "",
+  ...props
+}) {
   const handleClick = (e) => {
     e.preventDefault();
     Browser.OpenURL(href).catch((err) => {
@@ -9,8 +14,8 @@ export default function ExternalLink({ href, children, ...props }) {
   };
 
   return (
-    <a href={href} onClick={handleClick} {...props}>
-      {children}
+    <a href={href} onClick={handleClick} {...props} className={className}>
+      {children}[↗]
     </a>
   );
 }

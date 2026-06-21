@@ -64,3 +64,11 @@ export function InfoIcon({ size = "md" }) {
     </SvgIcon>
   );
 }
+
+export function CheckIcon() {
+  return (
+    <SvgIcon>
+      <path d="M20 6 9 17l-5-5" />
+    </SvgIcon>
+  );
+}

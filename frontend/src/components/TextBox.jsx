@@ -2,24 +2,19 @@ import { positionStyles, defaultPositionStyle } from "./styles";
 
 const colourThemes = {
   blue: {
-    bottom: "bg-blue-800",
-    top: "bg-white border-blue-800 text-blue-800 placeholder-blue-400 focus:bg-blue-50",
+    top: "bg-slate-800 border-blue-500 text-blue-200 placeholder-blue-400/50 focus:bg-slate-700",
   },
   red: {
-    bottom: "bg-red-800",
-    top: "bg-white border-red-800 text-red-800 placeholder-red-400 focus:bg-red-50",
+    top: "bg-slate-800 border-red-500 text-red-200 placeholder-red-400/50 focus:bg-slate-700",
   },
   yellow: {
-    bottom: "bg-yellow-800",
-    top: "bg-white border-yellow-800 text-yellow-900 placeholder-yellow-600 focus:bg-yellow-50",
+    top: "bg-slate-800 border-yellow-500 text-yellow-200 placeholder-yellow-500/50 focus:bg-slate-700",
   },
   green: {
-    bottom: "bg-green-800",
-    top: "bg-white border-green-800 text-green-800 placeholder-green-400 focus:bg-green-50",
+    top: "bg-slate-800 border-green-500 text-green-200 placeholder-green-400/50 focus:bg-slate-700",
   },
   gray: {
-    bottom: "bg-gray-800",
-    top: "bg-white border-gray-800 text-gray-800 placeholder-gray-400 focus:bg-gray-100",
+    top: "bg-slate-800 border-slate-500 text-slate-200 placeholder-slate-400/50 focus:bg-slate-700",
   },
 };
 
@@ -35,12 +30,10 @@ export function TextBox({
   borderOverride,
   ...props
 }) {
-  const activeColours = colourThemes[theme] || colourThemes.blue;
-
-  const posStyle = positionStyles[position] || defaultPositionStyle;
-
-  const roundedClasses = roundedOverride ?? posStyle.rounded;
-  const borderClasses = borderOverride ?? posStyle.border;
+  const colours = colourThemes[theme] ?? colourThemes.blue;
+  const posStyle = positionStyles[position] ?? defaultPositionStyle;
+  const rounded = roundedOverride ?? posStyle.rounded;
+  const border = borderOverride ?? posStyle.border;
 
   return (
     <div className={`relative inline-block ${className}`}>
@@ -49,7 +42,7 @@ export function TextBox({
         value={value}
         onChange={onChange}
         placeholder={placeholder}
-        className={`relative w-full h-9 px-4 py-1 font-bold tracking-wide transition-all duration-150 ease-out focus:outline-none ${roundedClasses} ${borderClasses} ${activeColours.top}`}
+        className={`relative w-full h-9 px-4 py-1 font-bold tracking-wide transition-all duration-150 ease-out focus:outline-none ${rounded} ${border} ${colours.top}`}
         {...props}
       />
     </div>

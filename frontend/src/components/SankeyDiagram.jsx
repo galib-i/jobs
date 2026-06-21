@@ -8,8 +8,8 @@ function buildSankeyOption(jobs) {
   const nodeSet = new Set();
   const linkMap = new Map();
 
-  jobs.forEach(({ stages }) => {
-    if (!stages?.length) return;
+  for (const { stages } of jobs) {
+    if (!stages?.length) continue;
 
     stages.forEach((stage, i) => {
       const current = `${stage}__${i}`;
@@ -21,7 +21,7 @@ function buildSankeyOption(jobs) {
         linkMap.set(linkKey, (linkMap.get(linkKey) || 0) + 1);
       }
     });
-  });
+  }
 
   if (nodeSet.size === 0) return null;
 

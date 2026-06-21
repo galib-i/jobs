@@ -28,6 +28,23 @@ const colourThemes = {
   },
 };
 
+const sizeStyles = {
+  sm: {
+    height: "h-6",
+    padding: { icon: "py-0.5 px-1", default: "px-4 py-0.5" },
+    shadow: "translate-y-1",
+    margin: "mb-1",
+    text: "text-xs",
+  },
+  md: {
+    height: "h-9",
+    padding: { icon: "py-1 px-2", default: "px-8 py-1" },
+    shadow: "translate-y-1.5",
+    margin: "mb-1.5",
+    text: "",
+  },
+};
+
 export function Button({
   children,
   onClick,
@@ -39,47 +56,30 @@ export function Button({
   position = "single",
   size = "md",
 }) {
-  const activeColours = colourThemes[theme] || colourThemes.blue;
-
-  const posStyle = positionStyles[position] || defaultPositionStyle;
-
-  const sizeStyles = {
-    sm: {
-      height: "h-6",
-      padding: isIcon ? "py-0.5 px-1" : "px-4 py-0.5",
-      shadow: "translate-y-1",
-      margin: "mb-1",
-      text: "text-xs",
-    },
-    md: {
-      height: "h-9",
-      padding: isIcon ? "py-1 px-2" : "px-8 py-1",
-      shadow: "translate-y-1.5",
-      margin: "mb-1.5",
-      text: "",
-    },
-  }[size] || { height: "h-9", padding: isIcon ? "py-1 px-2" : "px-8 py-1", shadow: "translate-y-1.5", margin: "mb-1.5", text: "" };
+  const colours = colourThemes[theme] ?? colourThemes.blue;
+  const posStyle = positionStyles[position] ?? defaultPositionStyle;
+  const s = sizeStyles[size] ?? sizeStyles.md;
+  const padding = isIcon ? s.padding.icon : s.padding.default;
 
   const transformStyles = isActive
-    ? `${sizeStyles.shadow} border-b cursor-default ${activeColours.active}`
-    : `group-hover:-translate-y-0.5 group-active:translate-y-1`;
+    ? `${s.shadow} border-b cursor-default ${colours.active}`
+    : "group-hover:-translate-y-0.5 group-active:translate-y-1";
 
   return (
     <button
       type={type}
       onClick={onClick}
-      className={`relative inline-block group focus:outline-none cursor-pointer ${sizeStyles.margin} ${className}`}
+      className={`relative inline-block group focus:outline-none cursor-pointer ${s.margin} ${className}`}
     >
       {/* Bottom shadow */}
       <span
-        className={`absolute inset-0 ${sizeStyles.shadow} ${posStyle.rounded} ${activeColours.bottom}`}
+        className={`absolute inset-0 ${s.shadow} ${posStyle.rounded} ${colours.bottom}`}
       ></span>
 
       {/* Top face */}
       <span
-        className={`relative flex items-center justify-center ${sizeStyles.height} ${sizeStyles.padding} ${sizeStyles.text} text-white font-bold tracking-wide transition-all duration-150 ease-out ${
-          posStyle.rounded
-        } ${posStyle.border} ${activeColours.top} ${transformStyles}`}
+        className={`relative flex items-center justify-center ${s.height} ${padding} ${s.text} text-white font-bold tracking-wide transition-all duration-150 ease-out ${posStyle.rounded} ${posStyle.border} ${colours.top} ${transformStyles}`}
+        style={{ fontFamily: "'Press Start 2P', cursive", fontSize: "0.7em" }}
       >
         {children}
       </span>

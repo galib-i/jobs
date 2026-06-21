@@ -52,14 +52,14 @@ function buildTimelineOption(jobs, groupBy) {
       boundaryGap: true,
       data: sortedDates,
       axisLabel: {
-        color: "#6b7280",
+        color: "#94a3b8",
       },
     },
     yAxis: {
       type: "value",
       minInterval: 1,
       axisLabel: {
-        color: "#6b7280",
+        color: "#94a3b8",
       },
     },
     series: [
@@ -101,7 +101,7 @@ export default function TimelineDiagram({ jobs }) {
               className={`px-3 py-1 rounded border transition-colors ${
                 groupBy === group
                   ? "bg-green-500 text-white border-green-500 font-bold"
-                  : "bg-white text-gray-600 border-gray-300 hover:bg-gray-50"
+                  : "bg-slate-800 text-slate-300 border-slate-600 hover:bg-slate-700"
               }`}
             >
               Per {group.charAt(0).toUpperCase() + group.slice(1)}
