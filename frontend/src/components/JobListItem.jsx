@@ -22,7 +22,7 @@ export default function JobListItem({ job, onUpdate, onDelete, onAddStage }) {
 
   return (
     <div>
-      <div className="grid grid-cols-[1fr_2fr_1fr_1.5fr_0.8fr_3fr_auto] gap-4 items-center py-3 px-6 bg-slate-800 hover:bg-slate-700 border-b-2 border-slate-700 last:border-b-0 transition-colors tracking-wide text-sm text-slate-200">
+      <div className="items-center gap-4 grid grid-cols-[1fr_2fr_1fr_1.5fr_0.8fr_3fr_auto] bg-slate-800 hover:bg-slate-700 px-6 py-3 border-slate-700 border-b-2 last:border-b-0 text-slate-200 text-sm tracking-wide transition-colors">
         <EditableInput
           initialValue={job.company}
           onSave={(newValue) => onUpdate({ ...job, company: newValue })}
@@ -53,7 +53,7 @@ export default function JobListItem({ job, onUpdate, onDelete, onAddStage }) {
           />
           <ExternalLink
             href={job.link}
-            className="text-blue-400 hover:text-blue-300 transition-colors truncate text-xs"
+            className="text-blue-400 hover:text-blue-300 text-xs truncate transition-colors"
           />
         </div>
         <EditableInput
@@ -64,7 +64,7 @@ export default function JobListItem({ job, onUpdate, onDelete, onAddStage }) {
         <div className="flex items-center truncate">
           <span
             title={tooltipText}
-            className="text-blue-300 cursor-help border-b-2 border-dotted border-blue-500/40 truncate"
+            className="border-blue-500/40 border-b-2 border-dotted text-blue-300 truncate cursor-help"
           >
             {lastStage || "None"}
           </span>
@@ -78,7 +78,7 @@ export default function JobListItem({ job, onUpdate, onDelete, onAddStage }) {
             >
               <input
                 type="text"
-                className="outline-none w-24 px-2 py-1 text-sm border-2 border-blue-500 rounded-xl bg-slate-700 text-blue-200 placeholder-blue-400/50"
+                className="bg-slate-700 px-2 py-1 border-2 border-blue-500 rounded-xl outline-none w-24 text-blue-200 text-sm placeholder-blue-400/50"
                 placeholder="Stage..."
                 value={newStageName}
                 onChange={(e) => setNewStageName(e.target.value)}
@@ -88,7 +88,7 @@ export default function JobListItem({ job, onUpdate, onDelete, onAddStage }) {
               />
             </form>
           ) : (
-            <div className="ml-2 mt-1.5 inline-block">
+            <div className="inline-block mt-1.5 ml-2">
               <Button
                 theme="blue"
                 onClick={() => setIsAddingStage(true)}
@@ -112,15 +112,15 @@ export default function JobListItem({ job, onUpdate, onDelete, onAddStage }) {
         <div className="" title={job.notes}>
           {job.notes}
         </div>
-        <div className="flex items-center justify-end mt-1.5">
+        <div className="flex justify-end items-center mt-1.5">
           <Button theme="red" onClick={() => onDelete(job.id)} isIcon>
             <BinIcon />
           </Button>
         </div>
       </div>
       {showDescription && job.description && (
-        <div className="px-6 py-3 bg-yellow-900/30 border-b-2 border-yellow-700/40 text-sm text-yellow-200 font-normal">
-          <span className=" text-yellow-400">Description:</span>{" "}
+        <div className="bg-yellow-900/30 px-6 py-3 border-yellow-700/40 border-b-2 font-normal text-yellow-200 text-sm">
+          <span className="text-yellow-400">Description:</span>{" "}
           <EditableInput
             initialValue={job.description}
             onSave={(newValue) => onUpdate({ ...job, description: newValue })}
@@ -129,7 +129,7 @@ export default function JobListItem({ job, onUpdate, onDelete, onAddStage }) {
       )}
       {isAddingDescription && (
         <form
-          className="px-6 py-3 bg-slate-800/80 border-b-2 border-slate-700 flex items-center gap-2"
+          className="flex items-center gap-2 bg-slate-800/80 px-6 py-3 border-slate-700 border-b-2"
           onSubmit={(e) => {
             e.preventDefault();
             if (newDescription.trim()) {
@@ -139,10 +139,10 @@ export default function JobListItem({ job, onUpdate, onDelete, onAddStage }) {
             }
           }}
         >
-          <span className=" text-slate-400 text-sm shrink-0">description:</span>
+          <span className="text-slate-400 text-sm shrink-0">description:</span>
           <input
             type="text"
-            className="flex-1 outline-none px-3 py-1 text-sm border-2 border-slate-500 rounded-xl bg-slate-700 text-slate-200 placeholder-slate-400"
+            className="flex-1 bg-slate-700 px-3 py-1 border-2 border-slate-500 rounded-xl outline-none text-slate-200 text-sm placeholder-slate-400"
             placeholder="Add a description..."
             value={newDescription}
             onChange={(e) => setNewDescription(e.target.value)}

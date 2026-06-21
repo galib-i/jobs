@@ -16,6 +16,9 @@ const colourThemes = {
   gray: {
     top: "bg-slate-800 border-slate-500 text-slate-200 placeholder-slate-400/50 focus:bg-slate-700",
   },
+  dark: {
+    top: "bg-slate-800 border-slate-700 text-slate-200 placeholder-slate-400/50 focus:bg-slate-700 focus:border-blue-500 selection:bg-blue-500 selection:text-white",
+  },
 };
 
 export function TextBox({
@@ -42,7 +45,7 @@ export function TextBox({
         value={value}
         onChange={onChange}
         placeholder={placeholder}
-        className={`relative w-full h-9 px-4 py-1 font-bold tracking-wide transition-all duration-150 ease-out focus:outline-none ${rounded} ${border} ${colours.top}`}
+        className={`relative w-full h-9 px-4 py-1 text-sm font-sans placeholder:font-pixel font-normal tracking-wide transition-all duration-150 ease-out focus:outline-none ${rounded} ${border} ${colours.top}`}
         {...props}
       />
     </div>

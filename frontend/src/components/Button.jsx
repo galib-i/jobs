@@ -78,8 +78,7 @@ export function Button({
 
       {/* Top face */}
       <span
-        className={`relative flex items-center justify-center ${s.height} ${padding} ${s.text} text-white font-bold tracking-wide transition-all duration-150 ease-out ${posStyle.rounded} ${posStyle.border} ${colours.top} ${transformStyles}`}
-        style={{ fontFamily: "'Press Start 2P', cursive", fontSize: "0.7em" }}
+        className={`relative flex items-center justify-center font-pixel ${s.height} ${padding} ${s.text} text-white font-bold tracking-wide transition-all duration-150 ease-out ${posStyle.rounded} ${posStyle.border} ${colours.top} ${transformStyles}`}
       >
         {children}
       </span>

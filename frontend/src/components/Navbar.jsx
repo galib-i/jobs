@@ -6,7 +6,7 @@ export default function Navbar({ activePage, setPage }) {
   const [isDarkMode, setIsDarkMode] = useState(false);
 
   return (
-    <nav className="flex items-center justify-between p-4 text-sm gap-4">
+    <nav className="flex justify-between items-center gap-4 p-4 text-sm">
       <div className="flex-1"></div>
 
       {/* Navigation */}
@@ -20,7 +20,7 @@ export default function Navbar({ activePage, setPage }) {
       </div>
 
       {/* Theme */}
-      <div className="flex-1 flex justify-start">
+      <div className="flex flex-1 justify-start">
         <Button
           theme="yellow"
           onClick={() => setIsDarkMode((prev) => !prev)}
