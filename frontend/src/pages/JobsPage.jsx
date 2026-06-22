@@ -103,17 +103,19 @@ export default function JobsPage({
       <div className="relative mt-8 mb-4">
         <div className="relative flex flex-col bg-slate-900 selection:bg-blue-500 border-2 border-blue-500 rounded-2xl overflow-hidden selection:text-white">
           <div
-            className="grid grid-cols-[1fr_2fr_1fr_1.5fr_0.5fr_3fr_5rem] bg-blue-600 border-blue-500 border-b-2 divide-x divide-blue-500 font-pixel font-bold text-white tracking-wider select-none"
+            className="grid grid-cols-[minmax(0,1fr)_minmax(0,2fr)_minmax(0,1fr)_minmax(0,1.5fr)_minmax(0,0.5fr)_minmax(0,3fr)_5rem] bg-blue-600 border-blue-500 border-b-2 divide-x divide-blue-500 font-pixel font-bold text-white tracking-wider select-none"
             draggable={false}
             style={{ WebkitUserDrag: "none" }}
           >
-            <div className="flex items-center px-4 py-4 pl-6">Company</div>
-            <div className="flex items-center px-4 py-4">Role</div>
-            <div className="flex items-center px-4 py-4">Location</div>
-            <div className="flex items-center px-4 py-4">Stage</div>
-            <div className="flex items-center px-4 py-4">Date</div>
-            <div className="flex items-center px-4 py-4">Notes</div>
-            <div className="flex items-center px-4 py-4 pr-6"></div>
+            <div className="flex items-center px-4 py-4 pl-6 truncate">
+              Company
+            </div>
+            <div className="flex items-center px-4 py-4 truncate">Role</div>
+            <div className="flex items-center px-4 py-4 truncate">Location</div>
+            <div className="flex items-center px-4 py-4 truncate">Stage</div>
+            <div className="flex items-center px-4 py-4 truncate">Date</div>
+            <div className="flex items-center px-4 py-4 truncate">Notes</div>
+            <div className="flex items-center px-4 py-4 pr-6 border-l-0"></div>
           </div>
           <div className="flex flex-col">
             {jobs.map((job) => (

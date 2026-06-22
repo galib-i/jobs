@@ -33,7 +33,7 @@ export default function JobListItem({ job, onUpdate, onDelete, onAddStage }) {
   return (
     <div>
       <div
-        className={`grid grid-cols-[1fr_2fr_1fr_1.5fr_0.5fr_3fr_5rem] border-b-2 last:border-b-0 text-slate-200 text-sm tracking-wide transition-colors divide-x ${
+        className={`grid grid-cols-[minmax(0,1fr)_minmax(0,2fr)_minmax(0,1fr)_minmax(0,1.5fr)_minmax(0,0.5fr)_minmax(0,3fr)_5rem] border-b-2 last:border-b-0 text-slate-200 text-sm tracking-wide transition-colors divide-x ${
           isDeleteModalOpen
             ? "bg-red-900/60 border-red-800 divide-red-800/50"
             : "bg-slate-800 hover:bg-slate-700 border-slate-700 divide-slate-600/50"
