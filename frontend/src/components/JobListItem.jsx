@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Button } from "./Button";
-import { BinIcon, InfoIcon, CheckIcon } from "./Icon";
+import { BinIcon, InfoIcon, CheckIcon, XIcon } from "./Icon";
 import ExternalLink from "./ExternalLink";
 import EditableInput from "./EditableInput";
+import Confirm from "./Confirmation";
 
 export default function JobListItem({ job, onUpdate, onDelete, onAddStage }) {
   const [isAddingStage, setIsAddingStage] = useState(false);
@@ -10,6 +11,15 @@ export default function JobListItem({ job, onUpdate, onDelete, onAddStage }) {
   const [showDescription, setShowDescription] = useState(false);
   const [isAddingDescription, setIsAddingDescription] = useState(false);
   const [newDescription, setNewDescription] = useState("");
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const descRef = useRef(null);
+
+  useEffect(() => {
+    if (isAddingDescription && descRef.current) {
+      descRef.current.style.height = "auto";
+      descRef.current.style.height = `${descRef.current.scrollHeight}px`;
+    }
+  }, [isAddingDescription, newDescription]);
 
   const handleStageSubmit = () => {
     onAddStage(job.id, newStageName);
@@ -22,15 +32,23 @@ export default function JobListItem({ job, onUpdate, onDelete, onAddStage }) {
 
   return (
     <div>
-      <div className="items-center gap-4 grid grid-cols-[1fr_2fr_1fr_1.5fr_0.8fr_3fr_auto] bg-slate-800 hover:bg-slate-700 px-6 py-3 border-slate-700 border-b-2 last:border-b-0 text-slate-200 text-sm tracking-wide transition-colors">
-        <EditableInput
-          initialValue={job.company}
-          onSave={(newValue) => onUpdate({ ...job, company: newValue })}
-          className="block w-full truncate"
-        />
+      <div
+        className={`grid grid-cols-[1fr_2fr_1fr_1.5fr_0.5fr_3fr_5rem] border-b-2 last:border-b-0 text-slate-200 text-sm tracking-wide transition-colors divide-x ${
+          isDeleteModalOpen
+            ? "bg-red-900/60 border-red-800 divide-red-800/50"
+            : "bg-slate-800 hover:bg-slate-700 border-slate-700 divide-slate-600/50"
+        }`}
+      >
+        <div className="flex items-center px-4 py-3 pl-6 overflow-hidden">
+          <EditableInput
+            initialValue={job.company}
+            onSave={(newValue) => onUpdate({ ...job, company: newValue })}
+            className="block w-full truncate"
+          />
+        </div>
 
-        <div className="flex items-center gap-2 truncate">
-          <div className="mt-1 shrink-0">
+        <div className="flex items-center px-4 py-3 truncate">
+          <div className="mt-1 mr-2 shrink-0">
             <Button
               theme={job.description ? "yellow" : "gray"}
               onClick={() => {
@@ -56,12 +74,14 @@ export default function JobListItem({ job, onUpdate, onDelete, onAddStage }) {
             className="text-blue-400 hover:text-blue-300 text-xs truncate transition-colors"
           />
         </div>
-        <EditableInput
-          initialValue={job.location}
-          onSave={(newValue) => onUpdate({ ...job, location: newValue })}
-          className="block w-full"
-        />
-        <div className="flex items-center truncate">
+        <div className="flex items-center px-4 py-3 overflow-hidden">
+          <EditableInput
+            initialValue={job.location}
+            onSave={(newValue) => onUpdate({ ...job, location: newValue })}
+            className="block w-full truncate"
+          />
+        </div>
+        <div className="flex items-center px-4 py-3 truncate">
           <span
             title={tooltipText}
             className="border-blue-500/40 border-b-2 border-dotted text-blue-300 truncate cursor-help"
@@ -99,7 +119,7 @@ export default function JobListItem({ job, onUpdate, onDelete, onAddStage }) {
             </div>
           )}
         </div>
-        <div className="">
+        <div className="flex justify-center items-center px-4 py-3 truncate">
           {job.createdAt
             ? (() => {
                 const d = new Date(job.createdAt);
@@ -109,18 +129,30 @@ export default function JobListItem({ job, onUpdate, onDelete, onAddStage }) {
               })()
             : ""}
         </div>
-        <div className="" title={job.notes}>
+        <div className="flex items-center px-4 py-3 truncate" title={job.notes}>
           {job.notes}
         </div>
-        <div className="flex justify-end items-center mt-1.5">
-          <Button theme="red" onClick={() => onDelete(job.id)} isIcon>
-            <BinIcon />
-          </Button>
+        <div className="flex justify-end items-center px-4 py-3 pr-6">
+          <div className="mt-1.5">
+            <Button
+              theme="red"
+              onClick={() => setIsDeleteModalOpen(true)}
+              isIcon
+            >
+              <BinIcon />
+            </Button>
+          </div>
         </div>
       </div>
       {showDescription && job.description && (
-        <div className="bg-yellow-900/30 px-6 py-3 border-yellow-700/40 border-b-2 font-normal text-yellow-200 text-sm">
-          <span className="text-yellow-400">Description:</span>{" "}
+        <div className="bg-slate-800/80 px-6 py-3 border-slate-700 border-b-2 font-normal text-slate-200 text-sm">
+          <span
+            className="font-pixel font-bold text-yellow-400 uppercase tracking-wider select-none"
+            draggable={false}
+            style={{ WebkitUserDrag: "none" }}
+          >
+            Description:
+          </span>{" "}
           <EditableInput
             initialValue={job.description}
             onSave={(newValue) => onUpdate({ ...job, description: newValue })}
@@ -129,7 +161,7 @@ export default function JobListItem({ job, onUpdate, onDelete, onAddStage }) {
       )}
       {isAddingDescription && (
         <form
-          className="flex items-center gap-2 bg-slate-800/80 px-6 py-3 border-slate-700 border-b-2"
+          className="flex items-center gap-2 bg-slate-800/80 px-6 py-3 border-slate-700 border-b-2 text-sm"
           onSubmit={(e) => {
             e.preventDefault();
             if (newDescription.trim()) {
@@ -139,14 +171,28 @@ export default function JobListItem({ job, onUpdate, onDelete, onAddStage }) {
             }
           }}
         >
-          <span className="text-slate-400 text-sm shrink-0">description:</span>
-          <input
-            type="text"
-            className="flex-1 bg-slate-700 px-3 py-1 border-2 border-slate-500 rounded-xl outline-none text-slate-200 text-sm placeholder-slate-400"
-            placeholder="Add a description..."
+          <span
+            className="font-pixel font-bold text-slate-400 uppercase tracking-wider select-none"
+            draggable={false}
+            style={{ WebkitUserDrag: "none" }}
+          >
+            Description:
+          </span>{" "}
+          <textarea
+            ref={descRef}
+            rows={1}
+            className="flex-1 bg-slate-700 px-3 py-2 border-2 border-slate-500 rounded-xl outline-none overflow-hidden text-slate-200 text-sm resize-none"
             value={newDescription}
             onChange={(e) => setNewDescription(e.target.value)}
             onKeyDown={(e) => {
+              if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                if (newDescription.trim()) {
+                  onUpdate({ ...job, description: newDescription.trim() });
+                  setIsAddingDescription(false);
+                  setNewDescription("");
+                }
+              }
               if (e.key === "Escape") {
                 setIsAddingDescription(false);
                 setNewDescription("");
@@ -155,12 +201,33 @@ export default function JobListItem({ job, onUpdate, onDelete, onAddStage }) {
             autoFocus
           />
           <div className="mt-1.5">
+            <Button
+              theme="red"
+              onClick={() => {
+                setIsAddingDescription(false);
+                setNewDescription("");
+              }}
+              isIcon
+            >
+              <XIcon />
+            </Button>
+          </div>
+          <div className="mt-1.5">
             <Button theme="green" type="submit" isIcon>
               <CheckIcon />
             </Button>
           </div>
         </form>
       )}
+
+      <Confirm
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onConfirm={() => {
+          setIsDeleteModalOpen(false);
+          onDelete(job.id);
+        }}
+      />
     </div>
   );
 }

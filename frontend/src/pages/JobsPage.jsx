@@ -101,15 +101,19 @@ export default function JobsPage({
       </form>
 
       <div className="relative mt-8 mb-4">
-        <div className="relative flex flex-col bg-slate-900 border-2 border-blue-500 rounded-2xl overflow-hidden">
-          <div className="items-center gap-4 grid grid-cols-[1fr_2fr_1fr_1.5fr_0.8fr_3fr_auto] bg-blue-600 px-6 py-4 border-blue-500 border-b-2 font-bold text-white text-sm uppercase tracking-wider">
-            <div>Company</div>
-            <div>Role</div>
-            <div>Location</div>
-            <div>Stage</div>
-            <div>Date</div>
-            <div>Notes</div>
-            <div className="w-8"></div>
+        <div className="relative flex flex-col bg-slate-900 selection:bg-blue-500 border-2 border-blue-500 rounded-2xl overflow-hidden selection:text-white">
+          <div
+            className="grid grid-cols-[1fr_2fr_1fr_1.5fr_0.5fr_3fr_5rem] bg-blue-600 border-blue-500 border-b-2 divide-x divide-blue-500 font-pixel font-bold text-white tracking-wider select-none"
+            draggable={false}
+            style={{ WebkitUserDrag: "none" }}
+          >
+            <div className="flex items-center px-4 py-4 pl-6">Company</div>
+            <div className="flex items-center px-4 py-4">Role</div>
+            <div className="flex items-center px-4 py-4">Location</div>
+            <div className="flex items-center px-4 py-4">Stage</div>
+            <div className="flex items-center px-4 py-4">Date</div>
+            <div className="flex items-center px-4 py-4">Notes</div>
+            <div className="flex items-center px-4 py-4 pr-6"></div>
           </div>
           <div className="flex flex-col">
             {jobs.map((job) => (

@@ -45,6 +45,7 @@ export function TextBox({
         value={value}
         onChange={onChange}
         placeholder={placeholder}
+        style={{ textShadow: "none" }}
         className={`relative w-full h-9 px-4 py-1 text-sm font-sans placeholder:font-pixel font-normal tracking-wide transition-all duration-150 ease-out focus:outline-none ${rounded} ${border} ${colours.top}`}
         {...props}
       />

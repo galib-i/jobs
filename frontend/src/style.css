@@ -3,6 +3,11 @@
 @utility font-pixel {
   font-family: "Press Start 2P", cursive;
   font-size: 0.7em;
+  text-shadow: 0 2px 1px rgba(0, 0, 0, 0.2);
+}
+
+svg {
+  filter: drop-shadow(0 2px 1px rgba(0, 0, 0, 0.2));
 }
 
 body {

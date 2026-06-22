@@ -15,7 +15,8 @@ export default function ExternalLink({
 
   return (
     <a href={href} onClick={handleClick} {...props} className={className}>
-      {children}[↗]
+      {children}
+      <sup className="font-semibold">[↗]</sup>
     </a>
   );
 }
