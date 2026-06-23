@@ -31,9 +31,9 @@ export default function JobListItem({ job, onUpdate, onDelete, onAddStage }) {
   const tooltipText = job.stages?.join(" ➔ ") ?? "";
 
   return (
-    <div>
+    <div className="contents">
       <div
-        className={`grid grid-cols-[minmax(0,1fr)_minmax(0,2fr)_minmax(0,1fr)_minmax(0,1.5fr)_minmax(0,0.5fr)_minmax(0,3fr)_5rem] border-b-2 last:border-b-0 text-slate-200 text-sm tracking-wide transition-colors divide-x ${
+        className={`grid grid-cols-subgrid col-span-full border-b-2 last:border-b-0 text-slate-200 text-sm tracking-wide transition-colors divide-x ${
           isDeleteModalOpen
             ? "bg-red-900/60 border-red-800 divide-red-800/50"
             : "bg-slate-800 hover:bg-slate-700 border-slate-700 divide-slate-600/50"
@@ -132,7 +132,7 @@ export default function JobListItem({ job, onUpdate, onDelete, onAddStage }) {
         <div className="flex items-center px-4 py-3 truncate" title={job.notes}>
           {job.notes}
         </div>
-        <div className="flex justify-end items-center px-4 py-3 pr-6">
+        <div className="hidden lg:flex justify-end items-center px-4 py-3 pr-6">
           <div className="mt-1.5">
             <Button
               theme="red"
@@ -145,7 +145,7 @@ export default function JobListItem({ job, onUpdate, onDelete, onAddStage }) {
         </div>
       </div>
       {showDescription && job.description && (
-        <div className="bg-slate-800/80 px-6 py-3 border-slate-700 border-b-2 font-normal text-slate-200 text-sm">
+        <div className="col-span-full bg-slate-800/80 px-6 py-3 border-slate-700 border-b-2 font-normal text-slate-200 text-sm">
           <span
             className="font-pixel font-bold text-yellow-400 uppercase tracking-wider select-none"
             draggable={false}
@@ -161,7 +161,7 @@ export default function JobListItem({ job, onUpdate, onDelete, onAddStage }) {
       )}
       {isAddingDescription && (
         <form
-          className="flex items-center gap-2 bg-slate-800/80 px-6 py-3 border-slate-700 border-b-2 text-sm"
+          className="flex items-center gap-2 col-span-full bg-slate-800/80 px-6 py-3 border-slate-700 border-b-2 text-sm"
           onSubmit={(e) => {
             e.preventDefault();
             if (newDescription.trim()) {
