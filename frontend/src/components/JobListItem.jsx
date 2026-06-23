@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { Button } from "./Button";
-import { BinIcon, InfoIcon, CheckIcon, XIcon } from "./Icon";
+import { BinIcon, InfoIcon } from "./Icon";
 import ExternalLink from "./ExternalLink";
 import EditableInput from "./EditableInput";
 import Confirm from "./Confirmation";
@@ -12,6 +12,7 @@ export default function JobListItem({ job, onUpdate, onDelete, onAddStage }) {
   const [isAddingDescription, setIsAddingDescription] = useState(false);
   const [newDescription, setNewDescription] = useState("");
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isEditingNotes, setIsEditingNotes] = useState(false);
   const [isEditingRoleLink, setIsEditingRoleLink] = useState(false);
   const [editRole, setEditRole] = useState("");
   const [editLink, setEditLink] = useState("");
@@ -121,7 +122,6 @@ export default function JobListItem({ job, onUpdate, onDelete, onAddStage }) {
               <span
                 onDoubleClick={handleStartEditRoleLink}
                 style={{
-                  cursor: "pointer",
                   padding: "4px",
                   border: "1px solid transparent",
                 }}
@@ -193,8 +193,17 @@ export default function JobListItem({ job, onUpdate, onDelete, onAddStage }) {
               })()
             : ""}
         </div>
-        <div className="flex items-center px-4 py-3 truncate" title={job.notes}>
-          {job.notes}
+        <div
+          className="group/notes flex items-center px-4 py-3 min-w-0 cursor-text"
+          onDoubleClick={() => setIsEditingNotes(true)}
+        >
+          <EditableInput
+            initialValue={job.notes}
+            onSave={(newValue) => onUpdate({ ...job, notes: newValue })}
+            className="w-full max-h-7 group-hover/notes:max-h-96 overflow-hidden break-words whitespace-pre-wrap transition-[max-height] duration-1000 ease-[cubic-bezier(0.85,0,0.15,1)]"
+            isEditingProp={isEditingNotes}
+            setIsEditingProp={setIsEditingNotes}
+          />
         </div>
         <div className="hidden lg:flex justify-end items-center px-4 py-3 pr-6">
           <div className="mt-1.5">
@@ -209,79 +218,46 @@ export default function JobListItem({ job, onUpdate, onDelete, onAddStage }) {
         </div>
       </div>
       {showDescription && job.description && (
-        <div className="col-span-full bg-slate-800/80 px-6 py-3 border-slate-700 border-b-2 font-normal text-slate-200 text-sm">
+        <div className="flex items-center gap-2 col-span-full bg-slate-800/80 px-6 py-3 border-slate-700 border-b-2 font-normal text-slate-200 text-sm">
           <span
-            className="font-pixel font-bold text-yellow-400 uppercase tracking-wider select-none"
+            className="font-pixel font-bold text-yellow-400 uppercase tracking-wider select-none shrink-0"
             draggable={false}
             style={{ WebkitUserDrag: "none" }}
           >
             Description:
-          </span>{" "}
+          </span>
           <EditableInput
             initialValue={job.description}
             onSave={(newValue) => onUpdate({ ...job, description: newValue })}
-          ></EditableInput>
+            className="flex-1 w-full break-words whitespace-pre-wrap"
+          />
         </div>
       )}
       {isAddingDescription && (
-        <form
-          className="flex items-center gap-2 col-span-full bg-slate-800/80 px-6 py-3 border-slate-700 border-b-2 text-sm"
-          onSubmit={(e) => {
-            e.preventDefault();
-            if (newDescription.trim()) {
-              onUpdate({ ...job, description: newDescription.trim() });
-              setIsAddingDescription(false);
-              setNewDescription("");
-            }
-          }}
-        >
+        <div className="flex items-center gap-2 col-span-full bg-slate-800/80 px-6 py-3 border-slate-700 border-b-2 text-sm">
           <span
-            className="font-pixel font-bold text-slate-400 uppercase tracking-wider select-none"
+            className="font-pixel font-bold text-slate-400 uppercase tracking-wider select-none shrink-0"
             draggable={false}
             style={{ WebkitUserDrag: "none" }}
           >
             Description:
-          </span>{" "}
-          <textarea
-            ref={descRef}
-            rows={1}
-            className="flex-1 bg-slate-700 px-3 py-2 border-2 border-slate-500 rounded-xl outline-none overflow-hidden text-slate-200 text-sm resize-none"
-            value={newDescription}
-            onChange={(e) => setNewDescription(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" && !e.shiftKey) {
-                e.preventDefault();
-                if (newDescription.trim()) {
-                  onUpdate({ ...job, description: newDescription.trim() });
-                  setIsAddingDescription(false);
-                  setNewDescription("");
-                }
-              }
-              if (e.key === "Escape") {
-                setIsAddingDescription(false);
-                setNewDescription("");
-              }
+          </span>
+          <EditableInput
+            initialValue=""
+            isEditingProp={true}
+            setIsEditingProp={(isEditing) => {
+              if (!isEditing) setIsAddingDescription(false);
             }}
-            autoFocus
+            onSave={(newValue) => {
+              if (newValue.trim()) {
+                onUpdate({ ...job, description: newValue.trim() });
+                setShowDescription(true);
+              }
+              setIsAddingDescription(false);
+            }}
+            className="flex-1 w-full break-words whitespace-pre-wrap"
           />
-          <div className="mt-1.5">
-            <Button
-              theme="red"
-              onClick={() => {
-                setIsAddingDescription(false);
-                setNewDescription("");
-              }}
-              isIcon
-            >
-              <XIcon />
-            </Button>
-          </div>
-          <div className="mt-1.5">
-            <Button theme="green" type="submit" isIcon>
-              <CheckIcon />
-            </Button>
-          </div>
-        </form>
+        </div>
       )}
 
       <Confirm

@@ -1,7 +1,20 @@
 import { useState, useRef, useEffect } from "react";
 
-const EditableInput = ({ initialValue, onSave, className = "" }) => {
-  const [isEditing, setIsEditing] = useState(false);
+const EditableInput = ({
+  initialValue,
+  onSave,
+  className = "",
+  isEditingProp,
+  setIsEditingProp,
+}) => {
+  const [internalIsEditing, setInternalIsEditing] = useState(false);
+
+  // Use controlled props if provided, otherwise fallback to internal state
+  const isEditing =
+    isEditingProp !== undefined ? isEditingProp : internalIsEditing;
+  const setIsEditing =
+    setIsEditingProp !== undefined ? setIsEditingProp : setInternalIsEditing;
+
   const [value, setValue] = useState(initialValue);
   const textareaRef = useRef(null);
 
@@ -63,7 +76,6 @@ const EditableInput = ({ initialValue, onSave, className = "" }) => {
     <span
       onDoubleClick={() => setIsEditing(true)}
       style={{
-        cursor: "pointer",
         padding: "4px",
         border: "1px solid transparent",
       }}
