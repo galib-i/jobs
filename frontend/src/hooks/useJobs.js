@@ -26,17 +26,27 @@ export function useJobs() {
   };
 
   const updateJob = async (job) => {
+    setJobs((prev) => prev.map((j) => (j.id === job.id ? job : j)));
     await UpdateJob(job);
     loadJobs();
   };
 
   const deleteJob = async (id) => {
+    setJobs((prev) => prev.filter((j) => j.id !== id));
     await DeleteJob(id);
     loadJobs();
   };
 
   const addStage = async (jobId, stageName) => {
     if (!stageName.trim()) return;
+    setJobs((prev) =>
+      prev.map((j) => {
+        if (j.id === jobId) {
+          return { ...j, stages: [...(j.stages || []), stageName] };
+        }
+        return j;
+      }),
+    );
     await AddJobStage(jobId, stageName);
     loadJobs();
   };

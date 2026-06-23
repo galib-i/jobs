@@ -8,7 +8,11 @@ export default function ExternalLink({
 }) {
   const handleClick = (e) => {
     e.preventDefault();
-    Browser.OpenURL(href).catch((err) => {
+    let url = href;
+    if (url && !url.startsWith("http://") && !url.startsWith("https://")) {
+      url = "https://" + url;
+    }
+    Browser.OpenURL(url).catch((err) => {
       console.error("Failed to open link:", err);
     });
   };

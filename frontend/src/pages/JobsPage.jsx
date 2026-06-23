@@ -34,6 +34,7 @@ const FIELD_CONFIG = [
   {
     key: "link",
     placeholder: "Link",
+    type: "url",
     rounded: "rounded-bl-xl rounded-tl-none rounded-r-none lg:rounded-bl-none",
     border: "border border-b-2 border-t-0 border-r lg:border-t lg:border-x",
   },
@@ -81,7 +82,7 @@ export default function JobsPage({
           <TextBox
             key={field.key}
             theme="dark"
-            type="text"
+            type={field.type || "text"}
             className="lg:flex-1 w-1/3"
             position="middle"
             roundedOverride={field.rounded}
