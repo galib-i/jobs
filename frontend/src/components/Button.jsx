@@ -34,14 +34,12 @@ const sizeStyles = {
     padding: { icon: "py-0.5 px-1", default: "px-4 py-0.5" },
     shadow: "translate-y-1",
     margin: "mb-1",
-    text: "text-xs",
   },
   md: {
     height: "h-9",
     padding: { icon: "py-1 px-2", default: "px-8 py-1" },
     shadow: "translate-y-1.5",
     margin: "mb-1.5",
-    text: "",
   },
 };
 
@@ -78,7 +76,7 @@ export function Button({
 
       {/* Top face */}
       <span
-        className={`relative flex items-center justify-center font-pixel ${s.height} ${padding} ${s.text} text-white font-bold tracking-wide transition-all duration-150 ease-out ${posStyle.rounded} ${posStyle.border} ${colours.top} ${transformStyles}`}
+        className={`relative flex items-center justify-center font-pixel ${s.height} ${padding} text-white font-bold tracking-wide transition-all duration-150 ease-out ${posStyle.rounded} ${posStyle.border} ${colours.top} ${transformStyles}`}
       >
         {children}
       </span>
@@ -92,12 +90,14 @@ export function SplitButton({
   activeValue,
   onChange,
   theme = "blue",
+  size = "md",
 }) {
   return (
     <div className="flex items-center select-none">
       <Button
         position="left"
-        theme={theme}
+        theme={left.theme || theme}
+        size={size}
         isActive={activeValue === left.value}
         onClick={() => onChange(left.value)}
       >
@@ -105,7 +105,8 @@ export function SplitButton({
       </Button>
       <Button
         position="right"
-        theme={theme}
+        theme={right.theme || theme}
+        size={size}
         isActive={activeValue === right.value}
         onClick={() => onChange(right.value)}
       >

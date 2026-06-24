@@ -1,6 +1,6 @@
 import { useState } from "react";
 import JobListItem from "../components/JobListItem";
-import { Button } from "../components/Button";
+import { Button, SplitButton } from "../components/Button";
 import { TextBox } from "../components/TextBox";
 
 const INITIAL_FORM = {
@@ -52,6 +52,12 @@ const FIELD_CONFIG = [
   },
 ];
 
+const INACTIVE_STAGES = ["rejected", "withdrawn"];
+const isJobInactive = (job) => {
+  const lastStage = job.stages?.[job.stages.length - 1];
+  return lastStage && INACTIVE_STAGES.includes(lastStage.toLowerCase());
+};
+
 export default function JobsPage({
   jobs,
   onAddJob,
@@ -60,6 +66,12 @@ export default function JobsPage({
   onAddStage,
 }) {
   const [form, setForm] = useState(INITIAL_FORM);
+  const [viewMode, setViewMode] = useState("active");
+
+  const inactive = viewMode === "inactive";
+  const filteredJobs = inactive
+    ? jobs.filter(isJobInactive)
+    : jobs.filter((job) => !isJobInactive(job));
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -100,11 +112,29 @@ export default function JobsPage({
           ADD
         </Button>
       </form>
-
-      <div className="relative mt-8 mb-4">
-        <div className="relative grid grid-cols-jobs lg:grid-cols-jobs-lg bg-slate-900 selection:bg-blue-500 border-2 border-blue-500 rounded-2xl overflow-hidden selection:text-white contain-content">
+      <div className="text-xs">
+        <SplitButton
+          left={{ label: "ACTIVE", value: "active", theme: "yellow" }}
+          right={{ label: "INACTIVE", value: "inactive", theme: "yellow" }}
+          activeValue={viewMode}
+          onChange={setViewMode}
+          size="sm"
+        />
+      </div>
+      <div className="relative mt-4 mb-4">
+        <div
+          className={`relative grid grid-cols-jobs lg:grid-cols-jobs-lg bg-slate-900 selection:text-white border-2 rounded-2xl overflow-hidden contain-content ${
+            inactive
+              ? "border-gray-500 selection:bg-gray-500"
+              : "border-blue-500 selection:bg-blue-500"
+          }`}
+        >
           <div
-            className="grid grid-cols-subgrid col-span-full bg-blue-600 border-blue-500 border-b-2 divide-x divide-blue-500 font-pixel font-bold text-white tracking-wider select-none"
+            className={`grid grid-cols-subgrid col-span-full border-b-2 font-pixel font-bold text-white tracking-wider select-none ${
+              inactive
+                ? "bg-gray-600 border-gray-500 divide-x divide-gray-500"
+                : "bg-blue-600 border-blue-500 divide-x divide-blue-500"
+            }`}
             draggable={false}
             style={{ WebkitUserDrag: "none" }}
           >
@@ -128,7 +158,7 @@ export default function JobsPage({
             </div>
             <div className="hidden lg:flex items-center px-4 py-4 pr-6 border-l-0"></div>
           </div>
-          {jobs.map((job) => (
+          {filteredJobs.map((job) => (
             <JobListItem
               key={job.id}
               job={job}

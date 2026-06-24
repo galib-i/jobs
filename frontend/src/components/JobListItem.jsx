@@ -200,7 +200,7 @@ export default function JobListItem({ job, onUpdate, onDelete, onAddStage }) {
           <EditableInput
             initialValue={job.notes}
             onSave={(newValue) => onUpdate({ ...job, notes: newValue })}
-            className="w-full max-h-7 group-hover/notes:max-h-96 overflow-hidden break-words whitespace-pre-wrap transition-[max-height] duration-1000 ease-[cubic-bezier(0.85,0,0.15,1)]"
+            className="w-full max-h-7 group-hover/notes:max-h-96 overflow-hidden wrap-break-word whitespace-pre-wrap transition-[max-height] duration-1000 ease-[cubic-bezier(0.85,0,0.15,1)]"
             isEditingProp={isEditingNotes}
             setIsEditingProp={setIsEditingNotes}
           />
@@ -229,7 +229,7 @@ export default function JobListItem({ job, onUpdate, onDelete, onAddStage }) {
           <EditableInput
             initialValue={job.description}
             onSave={(newValue) => onUpdate({ ...job, description: newValue })}
-            className="flex-1 w-full break-words whitespace-pre-wrap"
+            className="flex-1 w-full wrap-break-word whitespace-pre-wrap"
           />
         </div>
       )}
@@ -255,7 +255,7 @@ export default function JobListItem({ job, onUpdate, onDelete, onAddStage }) {
               }
               setIsAddingDescription(false);
             }}
-            className="flex-1 w-full break-words whitespace-pre-wrap"
+            className="flex-1 w-full wrap-break-word whitespace-pre-wrap"
           />
         </div>
       )}
