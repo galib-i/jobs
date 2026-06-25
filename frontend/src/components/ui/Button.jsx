@@ -48,13 +48,13 @@ export function Button({
   onClick,
   className = "",
   type = "button",
-  theme = "blue",
+  theme = "gray",
   isIcon = false,
   isActive = false,
   position = "single",
   size = "md",
 }) {
-  const colours = colourThemes[theme] ?? colourThemes.blue;
+  const colours = colourThemes[theme] ?? colourThemes.gray;
   const posStyle = positionStyles[position] ?? defaultPositionStyle;
   const s = sizeStyles[size] ?? sizeStyles.md;
   const padding = isIcon ? s.padding.icon : s.padding.default;
@@ -119,12 +119,8 @@ export function SplitButton({
 export function TriangleButton({ onClick, theme = "blue", className = "" }) {
   const textThemes = {
     blue: { top: "text-blue-500", bottom: "text-blue-800" },
-    red: { top: "text-red-500", bottom: "text-red-800" },
-    yellow: { top: "text-yellow-500", bottom: "text-yellow-800" },
-    green: { top: "text-green-500", bottom: "text-green-800" },
-    gray: { top: "text-gray-400", bottom: "text-gray-600" },
   };
-  const colors = textThemes[theme] || textThemes.blue;
+  const colours = textThemes[theme] || textThemes.blue;
 
   return (
     <button
@@ -140,14 +136,14 @@ export function TriangleButton({ onClick, theme = "blue", className = "" }) {
         xmlns="http://www.w3.org/2000/svg"
         shapeRendering="crispEdges"
       >
-        <g className={colors.bottom} fill="currentColor">
+        <g className={colours.bottom} fill="currentColor">
           <rect x="0" y="2" width="7" height="1" />
           <rect x="1" y="3" width="5" height="1" />
           <rect x="2" y="4" width="3" height="1" />
           <rect x="3" y="5" width="1" height="1" />
         </g>
         <g
-          className={`${colors.top} group-hover:translate-y-[-0.5px] group-active:translate-y-px transition-transform duration-150 ease-out`}
+          className={`${colours.top} group-hover:translate-y-[-0.5px] group-active:translate-y-px transition-transform duration-150 ease-out`}
           fill="currentColor"
         >
           <rect x="0" y="0" width="7" height="1" />

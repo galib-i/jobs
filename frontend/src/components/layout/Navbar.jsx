@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { Button, SplitButton } from "./Button";
-import { SunIcon, MoonIcon } from "./Icon";
+import { Button, SplitButton } from "../ui/Button";
+import { SunIcon, MoonIcon } from "../ui/Icon";
 
 export default function Navbar({ activePage, setPage }) {
   const [isDarkMode, setIsDarkMode] = useState(false);

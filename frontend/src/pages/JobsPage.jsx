@@ -1,7 +1,7 @@
 import { useState } from "react";
-import JobListItem from "../components/JobListItem";
-import { Button, SplitButton } from "../components/Button";
-import { TextBox } from "../components/TextBox";
+import JobListItem from "../components/job/JobItem";
+import { Button, SplitButton } from "../components/ui/Button";
+import { TextBox } from "../components/ui/TextBox";
 
 const INITIAL_FORM = {
   company: "",
