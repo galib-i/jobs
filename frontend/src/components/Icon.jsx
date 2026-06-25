@@ -64,3 +64,12 @@ export function InfoIcon({ size = "md" }) {
     </SvgIcon>
   );
 }
+
+export function ChevronDownIcon({ size = "md" }) {
+  const iconSize = size === "sm" ? "w-3.5 h-3.5" : themeIconSize;
+  return (
+    <SvgIcon className={iconSize}>
+      <path d="m6 9 6 6 6-6" />
+    </SvgIcon>
+  );
+}

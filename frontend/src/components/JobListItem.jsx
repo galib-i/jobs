@@ -1,12 +1,17 @@
 import { useState, useRef, useEffect } from "react";
-import { Button } from "./Button";
-import { BinIcon, InfoIcon } from "./Icon";
+import { getStageColour } from "../colours";
+import { Button, TriangleButton } from "./Button";
+import { BinIcon, InfoIcon, ChevronDownIcon } from "./Icon";
 import ExternalLink from "./ExternalLink";
 import EditableInput from "./EditableInput";
 import Confirm from "./Confirmation";
+import Tooltip from "./Tooltip";
+
+const PREDEFINED_STAGES = ["Interview", "Offer", "Rejected", "Withdrawn"];
 
 export default function JobListItem({ job, onUpdate, onDelete, onAddStage }) {
   const [isAddingStage, setIsAddingStage] = useState(false);
+  const [hoveredStage, setHoveredStage] = useState(null);
   const [newStageName, setNewStageName] = useState("");
   const [showDescription, setShowDescription] = useState(false);
   const [isAddingDescription, setIsAddingDescription] = useState(false);
@@ -48,8 +53,13 @@ export default function JobListItem({ job, onUpdate, onDelete, onAddStage }) {
     setIsEditingRoleLink(false);
   };
 
-  const lastStage = job.stages?.[job.stages.length - 1] ?? "";
-  const tooltipText = job.stages?.join(" ➔ ") ?? "";
+  const formatStage = (s) => (s ? s.charAt(0).toUpperCase() + s.slice(1) : "");
+  const formattedStages = job.stages?.map(formatStage) || [];
+  const lastStage = formattedStages[formattedStages.length - 1] || "";
+  const tooltipText = formattedStages.join(" ➔ ");
+
+  const bgColour = getStageColour(lastStage);
+  const textColour = bgColour === "#FFC107" ? "#333333" : "#ffffff";
 
   return (
     <div className="contents">
@@ -145,43 +155,82 @@ export default function JobListItem({ job, onUpdate, onDelete, onAddStage }) {
             className="block w-full truncate"
           />
         </div>
-        <div className="flex items-center px-4 py-3 truncate">
-          <span
-            title={tooltipText}
-            className="border-blue-500/40 border-b-2 border-dotted text-blue-300 truncate cursor-help"
-          >
-            {lastStage || "None"}
-          </span>
-          {isAddingStage ? (
-            <form
-              className="inline-block ml-2"
-              onSubmit={(e) => {
-                e.preventDefault();
-                handleStageSubmit();
-              }}
+        <div className="flex items-center px-4 py-3 min-w-0">
+          <Tooltip text={tooltipText} className="min-w-0">
+            <span
+              className="block px-2 py-1 rounded font-bold text-xs truncate cursor-help"
+              style={{ backgroundColor: bgColour, color: textColour }}
             >
-              <input
-                type="text"
-                className="bg-slate-700 px-2 py-1 border-2 border-blue-500 rounded-xl outline-none w-24 text-blue-200 text-sm placeholder-blue-400/50"
-                placeholder="Stage..."
-                value={newStageName}
-                onChange={(e) => setNewStageName(e.target.value)}
-                onKeyDown={(e) => e.key === "Escape" && setIsAddingStage(false)}
-                onBlur={() => setIsAddingStage(false)}
-                autoFocus
-              />
-            </form>
-          ) : (
-            <div className="inline-block mt-1.5 ml-2">
-              <Button
-                theme="blue"
-                onClick={() => setIsAddingStage(true)}
-                isIcon
-              >
-                +
-              </Button>
-            </div>
-          )}
+              {lastStage || "None"}
+            </span>
+          </Tooltip>
+          {!job.stages?.some((s) => s === "Rejected" || s === "Withdrawn") &&
+            (isAddingStage ? (
+              <div className="inline-block z-40 relative ml-auto">
+                <div
+                  className="fixed inset-0"
+                  onClick={() => setIsAddingStage(false)}
+                ></div>
+                <div className="top-1/2 left-full absolute bg-slate-800 shadow-2xl ml-2 py-2 border-2 border-slate-600 rounded-xl w-36 overflow-hidden -translate-y-1/2">
+                  <div className="mb-2 px-3 pb-2 border-slate-700 border-b font-bold text-slate-400 text-xs uppercase tracking-wider">
+                    Select Stage
+                  </div>
+                  <div className="space-y-0.5 px-1.5 pb-1.5 max-h-48 overflow-y-auto overscroll-contain custom-scrollbar">
+                    {PREDEFINED_STAGES.map((stage) => {
+                      const isTerminalStage =
+                        stage === "Rejected" || stage === "Withdrawn";
+                      const isDisabled =
+                        isTerminalStage && job.stages?.includes(stage);
+                      const isHovered = hoveredStage === stage;
+                      const stageBg = getStageColour(stage);
+                      const stageText =
+                        stageBg === "#FFC107" ? "#333333" : "#ffffff";
+
+                      const defaultBg = isDisabled
+                        ? "rgba(30, 41, 59, 0.5)"
+                        : "transparent";
+                      const defaultText = isDisabled ? "#64748b" : "#e2e8f0";
+
+                      return (
+                        <button
+                          key={stage}
+                          disabled={isDisabled}
+                          className={`block w-full text-left px-2.5 py-1.5 text-sm transition-colors font-bold rounded ${
+                            isDisabled ? "cursor-not-allowed" : "cursor-pointer"
+                          }`}
+                          style={{
+                            backgroundColor:
+                              isHovered && !isDisabled ? stageBg : defaultBg,
+                            color:
+                              isHovered && !isDisabled
+                                ? stageText
+                                : defaultText,
+                          }}
+                          onMouseEnter={() => setHoveredStage(stage)}
+                          onMouseLeave={() => setHoveredStage(null)}
+                          onClick={() => {
+                            if (!isDisabled) {
+                              onAddStage(job.id, stage);
+                              setIsAddingStage(false);
+                              setHoveredStage(null);
+                            }
+                          }}
+                        >
+                          {stage}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="inline-block mt-0.5 ml-auto" title="Add Stage">
+                <TriangleButton
+                  theme="blue"
+                  onClick={() => setIsAddingStage(true)}
+                />
+              </div>
+            ))}
         </div>
         <div className="flex justify-center items-center px-4 py-3 truncate">
           {job.createdAt

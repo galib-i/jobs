@@ -115,3 +115,47 @@ export function SplitButton({
     </div>
   );
 }
+
+export function TriangleButton({ onClick, theme = "blue", className = "" }) {
+  const textThemes = {
+    blue: { top: "text-blue-500", bottom: "text-blue-800" },
+    red: { top: "text-red-500", bottom: "text-red-800" },
+    yellow: { top: "text-yellow-500", bottom: "text-yellow-800" },
+    green: { top: "text-green-500", bottom: "text-green-800" },
+    gray: { top: "text-gray-400", bottom: "text-gray-600" },
+  };
+  const colors = textThemes[theme] || textThemes.blue;
+
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`relative group focus:outline-none cursor-pointer block ${className}`}
+    >
+      <svg
+        width="14"
+        height="12"
+        viewBox="0 0 7 6"
+        className="overflow-visible"
+        xmlns="http://www.w3.org/2000/svg"
+        shapeRendering="crispEdges"
+      >
+        <g className={colors.bottom} fill="currentColor">
+          <rect x="0" y="2" width="7" height="1" />
+          <rect x="1" y="3" width="5" height="1" />
+          <rect x="2" y="4" width="3" height="1" />
+          <rect x="3" y="5" width="1" height="1" />
+        </g>
+        <g
+          className={`${colors.top} group-hover:translate-y-[-0.5px] group-active:translate-y-px transition-transform duration-150 ease-out`}
+          fill="currentColor"
+        >
+          <rect x="0" y="0" width="7" height="1" />
+          <rect x="1" y="1" width="5" height="1" />
+          <rect x="2" y="2" width="3" height="1" />
+          <rect x="3" y="3" width="1" height="1" />
+        </g>
+      </svg>
+    </button>
+  );
+}
