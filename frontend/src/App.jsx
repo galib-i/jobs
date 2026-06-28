@@ -2,8 +2,7 @@ import { useState } from "react";
 import { useJobs } from "./hooks/useJobs";
 import Navbar from "./components/layout/Navbar";
 import JobsPage from "./pages/JobsPage";
-import SankeyDiagram from "./components/diagrams/SankeyDiagram";
-import TimeDiagram from "./components/diagrams/TimeDiagram";
+import DiagramsPage from "./pages/DiagramsPage";
 
 function App() {
   const [page, setPage] = useState("jobs");
@@ -34,12 +33,7 @@ function App() {
         wipeDatabase={wipeDatabase}
       />
 
-      {page === "diagrams" && (
-        <div className="flex flex-col gap-8">
-          <TimeDiagram />
-          <SankeyDiagram />
-        </div>
-      )}
+      {page === "diagrams" && <DiagramsPage />}
 
       {page === "jobs" && (
         <JobsPage

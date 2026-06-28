@@ -53,8 +53,7 @@ func NewJobService() *JobService {
 	var count int
 	err = db.QueryRow(`SELECT count(*) FROM available_stages`).Scan(&count)
 	if err == nil && count == 0 {
-		defaultStages := []string{"Interview", "Offer", "Rejected", "Withdrawn"}
-		for _, stage := range defaultStages {
+		for _, stage := range DefaultAvailableStages {
 			db.Exec(`INSERT INTO available_stages (name) VALUES (?)`, stage)
 		}
 	}
@@ -73,7 +72,7 @@ func (js *JobService) AddAvailableStage(name string) error {
 }
 
 func (js *JobService) DeleteAvailableStage(name string) error {
-	if strings.EqualFold(name, "Rejected") || strings.EqualFold(name, "Withdrawn") {
+	if isLastStage(name) {
 		return fmt.Errorf("cannot delete reserved stage: %s", name)
 	}
 	query := `DELETE FROM available_stages WHERE name = ?`
@@ -97,8 +96,7 @@ func (js *JobService) ResetAvailableStages() error {
 		return err
 	}
 
-	defaultStages := []string{"Interview", "Offer", "Rejected", "Withdrawn"}
-	for _, stage := range defaultStages {
+	for _, stage := range DefaultAvailableStages {
 		if _, err := tx.Exec(`INSERT INTO available_stages (name) VALUES (?)`, stage); err != nil {
 			log.Printf("failed to insert default stage %s: %v", stage, err)
 			return err

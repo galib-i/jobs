@@ -1,56 +1,10 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import JobListItem from "../components/job/JobItem";
-import { Button, SplitButton } from "../components/ui/Button";
+import { SplitButton, TriangleButton } from "../components/ui/Button";
+import { SearchIcon } from "../components/ui/Icon";
 import { TextBox } from "../components/ui/TextBox";
 
-const INITIAL_FORM = {
-  company: "",
-  role: "",
-  location: "",
-  link: "",
-  description: "",
-  notes: "",
-};
-
-const FIELD_CONFIG = [
-  {
-    key: "company",
-    placeholder: "Company",
-    rounded: "rounded-tl-xl rounded-bl-none rounded-r-none lg:rounded-bl-xl",
-    border: "border border-b-2 border-r",
-  },
-  {
-    key: "role",
-    placeholder: "Role",
-    rounded: "rounded-none",
-    border: "border border-b-2 border-x",
-  },
-  {
-    key: "location",
-    placeholder: "Location",
-    rounded: "rounded-tr-xl rounded-br-none rounded-l-none lg:rounded-tr-none",
-    border: "border border-b-2 border-l lg:border-x",
-  },
-  {
-    key: "link",
-    placeholder: "Link",
-    type: "url",
-    rounded: "rounded-bl-xl rounded-tl-none rounded-r-none lg:rounded-bl-none",
-    border: "border border-b-2 border-t-0 border-r lg:border-t lg:border-x",
-  },
-  {
-    key: "description",
-    placeholder: "Description",
-    rounded: "rounded-none",
-    border: "border border-b-2 border-t-0 border-x lg:border-t",
-  },
-  {
-    key: "notes",
-    placeholder: "Notes",
-    rounded: "rounded-br-xl rounded-tr-none rounded-l-none lg:rounded-tr-xl",
-    border: "border border-b-2 border-t-0 border-l lg:border-t",
-  },
-];
+import JobForm from "../components/job/JobForm";
 
 export default function JobsPage({
   jobs,
@@ -62,67 +16,99 @@ export default function JobsPage({
   onDeleteJob,
   onAddStage,
 }) {
-  const [form, setForm] = useState(INITIAL_FORM);
+  const [searchQuery, setSearchQuery] = useState("");
   const inactive = viewMode === "inactive";
-  const filteredJobs = inactive
-    ? jobs.filter((job) => !job.isActive)
-    : jobs.filter((job) => job.isActive);
+  const filteredJobs = useMemo(() => {
+    return jobs.filter((job) => {
+      if (inactive && job.isActive) return false;
+      if (!inactive && !job.isActive) return false;
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!form.company.trim() || !form.role.trim()) return;
-    onAddJob(form);
-    setForm(INITIAL_FORM);
+      if (searchQuery.trim()) {
+        const q = searchQuery.toLowerCase();
+        const searchableFields = [
+          job.company,
+          job.role,
+          job.location,
+          job.link,
+          job.description,
+          job.notes,
+          job.lastStage,
+        ];
+
+        const match = searchableFields.some((field) =>
+          (field || "").toLowerCase().includes(q),
+        );
+
+        if (!match) return false;
+      }
+      return true;
+    });
+  }, [jobs, inactive, searchQuery]);
+
+  const [stageSort, setStageSort] = useState("none"); // none, asc, desc
+  const [dateSort, setDateSort] = useState("desc"); // asc, desc
+
+  const toggleStageSort = () => {
+    if (stageSort === "none") setStageSort("asc");
+    else if (stageSort === "asc") setStageSort("desc");
+    else setStageSort("none");
   };
 
-  const updateField = (key, value) => {
-    setForm((prev) => ({ ...prev, [key]: value }));
+  const toggleDateSort = () => {
+    setDateSort((prev) => (prev === "desc" ? "asc" : "desc"));
   };
+
+  const sortedJobs = useMemo(() => {
+    return [...filteredJobs].sort((a, b) => {
+      const dateDiff = b.id - a.id; // job IDs are sequential, newest first
+      const dateComparison = dateSort === "asc" ? -dateDiff : dateDiff;
+
+      if (stageSort !== "none") {
+        const stageA = a.lastStage || "";
+        const stageB = b.lastStage || "";
+        const stageComparison = stageA.localeCompare(stageB);
+
+        if (stageComparison !== 0) {
+          return stageSort === "asc" ? stageComparison : -stageComparison;
+        }
+      }
+
+      // Fallback date sort
+      return dateComparison;
+    });
+  }, [filteredJobs, dateSort, stageSort]);
 
   return (
     <div>
-      <form
-        className="flex flex-wrap lg:flex-nowrap items-center mx-auto mb-6 w-full lg:max-w-none max-w-3xl font-pixel"
-        onSubmit={handleSubmit}
-      >
-        {FIELD_CONFIG.map((field) => (
-          <TextBox
-            key={field.key}
-            theme="dark"
-            type={field.type || "text"}
-            className="lg:flex-1 w-1/3"
-            position="middle"
-            roundedOverride={field.rounded}
-            borderOverride={field.border}
-            value={form[field.key]}
-            placeholder={field.placeholder}
-            onChange={(e) => updateField(field.key, e.target.value)}
+      <JobForm onAddJob={onAddJob} />
+      <div className="flex justify-between items-center text-xs">
+        <div className="flex items-center gap-4">
+          <SplitButton
+            left={{ label: "ACTIVE", value: "active", theme: "yellow" }}
+            right={{ label: "INACTIVE", value: "inactive", theme: "yellow" }}
+            activeValue={viewMode}
+            onChange={setViewMode}
+            size="sm"
           />
-        ))}
-        <Button
-          theme="green"
-          type="submit"
-          className="mx-auto lg:mx-0 mt-4 lg:mt-0 lg:ml-4 text-sm"
-        >
-          ADD
-        </Button>
-      </form>
-      <div className="flex items-center gap-4 text-xs">
-        <SplitButton
-          left={{ label: "ACTIVE", value: "active", theme: "yellow" }}
-          right={{ label: "INACTIVE", value: "inactive", theme: "yellow" }}
-          activeValue={viewMode}
-          onChange={setViewMode}
-          size="sm"
-        />
-        <div className="flex items-center pt-1 font-bold text-slate-500 uppercase tracking-wider">
-          <span className="inline-block w-6 tabular-nums text-right">
-            {filteredJobs.length}
-          </span>
-          <span className="mx-2">/</span>
-          <span className="inline-block w-6 tabular-nums text-left">
-            {jobs.length}
-          </span>
+          <div className="flex items-center pt-1 font-bold text-slate-500 uppercase tracking-wider">
+            <span className="inline-block w-6 tabular-nums text-right">
+              {filteredJobs.length}
+            </span>
+            <span className="mx-2">/</span>
+            <span className="inline-block w-6 tabular-nums text-left">
+              {jobs.length}
+            </span>
+          </div>
+        </div>
+        <div className="w-64 font-pixel">
+          <TextBox
+            theme="dark"
+            placeholder="Search..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            icon={SearchIcon}
+            borderOverride="border border-b-2"
+          />
         </div>
       </div>
       <div className="relative mt-4 mb-4">
@@ -151,18 +137,36 @@ export default function JobsPage({
             <div className="flex items-center px-4 py-4 whitespace-nowrap">
               Location
             </div>
-            <div className="flex items-center px-4 py-4 whitespace-nowrap">
-              Stage
+            <div className="flex justify-between items-center px-4 py-4 whitespace-nowrap">
+              <span>Stage</span>
+              <div
+                className={`ml-2 transition-opacity duration-200 ${
+                  stageSort !== "none" ? "opacity-100" : "opacity-30"
+                }`}
+              >
+                <TriangleButton
+                  theme="white"
+                  pointUp={stageSort === "asc"}
+                  onClick={toggleStageSort}
+                />
+              </div>
             </div>
-            <div className="flex items-center px-4 py-4 whitespace-nowrap">
-              Date
+            <div className="flex justify-between items-center px-4 py-4 whitespace-nowrap">
+              <span>Date</span>
+              <div className="opacity-100 ml-2 transition-opacity duration-200">
+                <TriangleButton
+                  theme="white"
+                  pointUp={dateSort === "asc"}
+                  onClick={toggleDateSort}
+                />
+              </div>
             </div>
             <div className="flex items-center px-4 py-4 whitespace-nowrap">
               Notes
             </div>
             <div className="hidden lg:flex items-center px-4 py-4 pr-6 border-l-0"></div>
           </div>
-          {filteredJobs.map((job) => (
+          {sortedJobs.map((job) => (
             <JobListItem
               key={job.id}
               job={job}

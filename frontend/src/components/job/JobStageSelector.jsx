@@ -28,9 +28,9 @@ export default function JobStageSelector({ job, availableStages, onAddStage }) {
             </div>
             <div className="space-y-0.5 px-1.5 pb-1.5 max-h-48 overflow-y-auto overscroll-contain custom-scrollbar">
               {stagesToSelect.map((stage) => {
-                const isTerminalStage = stage.isTerminal;
+                const isLastStage = stage.isLast;
                 const isDisabled =
-                  isTerminalStage && job.stages?.includes(stage.name);
+                  isLastStage && job.stages?.includes(stage.name);
                 const isHovered = hoveredStage === stage.name;
                 const stageBg = stage.colour;
                 const stageText = stage.textColour;

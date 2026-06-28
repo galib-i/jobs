@@ -16,6 +16,7 @@ export function TextBox({
   position = "single",
   roundedOverride,
   borderOverride,
+  icon: Icon,
   ...props
 }) {
   const colours = colourThemes[theme] ?? colourThemes.dark;
@@ -25,13 +26,18 @@ export function TextBox({
 
   return (
     <div className={`relative inline-block ${className}`}>
+      {Icon && (
+        <div className="top-1/2 left-3 z-10 absolute text-slate-400/50 -translate-y-1/2 pointer-events-none">
+          <Icon size="sm" />
+        </div>
+      )}
       <input
         type={type}
         value={value}
         onChange={onChange}
         placeholder={placeholder}
         style={{ textShadow: "none" }}
-        className={`relative w-full h-9 px-4 py-1 text-sm font-sans placeholder:font-pixel font-normal tracking-wide transition-all duration-150 ease-out focus:outline-none ${rounded} ${border} ${colours.top}`}
+        className={`relative w-full h-9 ${Icon ? "pl-9 pr-4" : "px-4"} py-1 text-sm font-sans placeholder:font-pixel font-normal tracking-wide transition-all duration-150 ease-out focus:outline-none ${rounded} ${border} ${colours.top}`}
         {...props}
       />
     </div>

@@ -298,12 +298,12 @@ export class StageMetadata {
              */
             this["textColour"] = "";
         }
-        if (!("isTerminal" in $$source)) {
+        if (!("isLast" in $$source)) {
             /**
              * @member
              * @type {boolean}
              */
-            this["isTerminal"] = false;
+            this["isLast"] = false;
         }
 
         Object.assign(this, $$source);

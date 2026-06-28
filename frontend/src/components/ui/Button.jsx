@@ -116,9 +116,15 @@ export function SplitButton({
   );
 }
 
-export function TriangleButton({ onClick, theme = "blue", className = "" }) {
+export function TriangleButton({
+  onClick,
+  theme = "blue",
+  pointUp = false,
+  className = "",
+}) {
   const textThemes = {
     blue: { top: "text-blue-500", bottom: "text-blue-800" },
+    white: { top: "text-white", bottom: "text-slate-300" },
   };
   const colours = textThemes[theme] || textThemes.blue;
 
@@ -129,27 +135,22 @@ export function TriangleButton({ onClick, theme = "blue", className = "" }) {
       className={`relative group focus:outline-none cursor-pointer block ${className}`}
     >
       <svg
-        width="14"
-        height="12"
+        width="12"
+        height="10"
         viewBox="0 0 7 6"
         className="overflow-visible"
         xmlns="http://www.w3.org/2000/svg"
-        shapeRendering="crispEdges"
       >
         <g className={colours.bottom} fill="currentColor">
-          <rect x="0" y="2" width="7" height="1" />
-          <rect x="1" y="3" width="5" height="1" />
-          <rect x="2" y="4" width="3" height="1" />
-          <rect x="3" y="5" width="1" height="1" />
+          <polygon
+            points={pointUp ? "3.5,0 7,4 7,6 0,6 0,4" : "0,0 7,0 7,2 3.5,6 0,2"}
+          />
         </g>
         <g
           className={`${colours.top} group-hover:translate-y-[-0.5px] group-active:translate-y-px transition-transform duration-150 ease-out`}
           fill="currentColor"
         >
-          <rect x="0" y="0" width="7" height="1" />
-          <rect x="1" y="1" width="5" height="1" />
-          <rect x="2" y="2" width="3" height="1" />
-          <rect x="3" y="3" width="1" height="1" />
+          <polygon points={pointUp ? "3.5,0 7,4 0,4" : "0,0 7,0 3.5,4"} />
         </g>
       </svg>
     </button>

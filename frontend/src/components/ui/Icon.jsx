@@ -73,3 +73,13 @@ export function SettingsIcon() {
     </SvgIcon>
   );
 }
+
+export function SearchIcon({ size = "md" }) {
+  const iconSize = size === "sm" ? "w-3.5 h-3.5" : themeIconSize;
+  return (
+    <SvgIcon className={iconSize}>
+      <circle cx="11" cy="11" r="8" />
+      <path d="m23 23-6.34-6.34" />
+    </SvgIcon>
+  );
+}

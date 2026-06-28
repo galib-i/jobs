@@ -16,16 +16,22 @@ export function useJobs() {
   const [jobs, setJobs] = useState([]);
   const [availableStages, setAvailableStages] = useState([]);
 
-  const loadJobs = useCallback(() => {
-    GetJobs()
-      .then((data) => setJobs(data || []))
-      .catch(console.error);
+  const loadJobs = useCallback(async () => {
+    try {
+      const data = await GetJobs();
+      setJobs(data || []);
+    } catch (err) {
+      console.error(err);
+    }
   }, []);
 
-  const loadStages = useCallback(() => {
-    GetAvailableStages()
-      .then((data) => setAvailableStages(data || []))
-      .catch(console.error);
+  const loadStages = useCallback(async () => {
+    try {
+      const data = await GetAvailableStages();
+      setAvailableStages(data || []);
+    } catch (err) {
+      console.error(err);
+    }
   }, []);
 
   useEffect(() => {

@@ -41,6 +41,12 @@ func getStageTextColour(bgColour string) string {
 	return whiteColour
 }
 
+func isLastStage(stage string) bool {
+	return strings.EqualFold(stage, "rejected") || strings.EqualFold(stage, "withdrawn")
+}
+
+var DefaultAvailableStages = []string{"Interview", "Offer", "Rejected", "Withdrawn"}
+
 type Job struct {
 	ID          int64    `json:"id"`
 	Company     string   `json:"company"`
@@ -65,7 +71,7 @@ type StageMetadata struct {
 	Name       string `json:"name"`
 	Colour     string `json:"colour"`
 	TextColour string `json:"textColour"`
-	IsTerminal bool   `json:"isTerminal"`
+	IsLast     bool   `json:"isLast"`
 }
 
 func (js *JobService) GetAvailableStages() []StageMetadata {
@@ -86,12 +92,11 @@ func (js *JobService) GetAvailableStages() []StageMetadata {
 	meta := make([]StageMetadata, 0, len(stages))
 	for _, s := range stages {
 		bg := getStageColour(s)
-		isTerminal := strings.EqualFold(s, "rejected") || strings.EqualFold(s, "withdrawn")
 		meta = append(meta, StageMetadata{
 			Name:       s,
 			Colour:     bg,
 			TextColour: getStageTextColour(bg),
-			IsTerminal: isTerminal,
+			IsLast:     isLastStage(s),
 		})
 	}
 	return meta
@@ -118,5 +123,5 @@ func (j *Job) computeFields() {
 	}
 
 	// Determine if job is active based on its last stage
-	j.IsActive = !strings.EqualFold(j.LastStage, "rejected") && !strings.EqualFold(j.LastStage, "withdrawn")
+	j.IsActive = !isLastStage(j.LastStage)
 }
