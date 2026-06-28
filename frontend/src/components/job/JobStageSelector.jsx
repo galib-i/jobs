@@ -12,19 +12,20 @@ export default function JobStageSelector({ job, availableStages, onAddStage }) {
   const stagesToSelect = availableStages || [];
 
   return isAddingStage ? (
-    <div className="inline-block z-40 relative ml-auto">
+    <div className="inline-block z-40 ml-auto">
       <div
         className="fixed inset-0"
         onClick={() => setIsAddingStage(false)}
       ></div>
-      <div className="top-1/2 left-full absolute bg-slate-800 shadow-2xl ml-2 py-2 border-2 border-slate-600 rounded-xl w-36 overflow-hidden -translate-y-1/2">
+      <div className="top-full right-2 left-2 absolute bg-slate-800 shadow-2xl mt-1 py-2 border-2 border-slate-600 rounded-md overflow-hidden">
         <div className="mb-2 px-3 pb-2 border-slate-700 border-b font-bold text-slate-400 text-xs uppercase tracking-wider">
           Select Stage
         </div>
         <div className="space-y-0.5 px-1.5 pb-1.5 max-h-48 overflow-y-auto overscroll-contain custom-scrollbar">
           {stagesToSelect.map((stage) => {
             const isTerminalStage = stage.isTerminal;
-            const isDisabled = isTerminalStage && job.stages?.includes(stage.name);
+            const isDisabled =
+              isTerminalStage && job.stages?.includes(stage.name);
             const isHovered = hoveredStage === stage.name;
             const stageBg = stage.colour;
             const stageText = stage.textColour;

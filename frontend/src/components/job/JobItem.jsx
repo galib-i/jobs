@@ -69,7 +69,7 @@ export default function JobListItem({
             className="block w-full truncate"
           />
         </div>
-        <div className="flex items-center px-4 py-3 min-w-0">
+        <div className="relative flex items-center px-4 py-3 min-w-0">
           <Tooltip text={tooltipText} className="min-w-0">
             <span
               className="block px-2 py-1 rounded font-bold text-xs truncate cursor-help"
