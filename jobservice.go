@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
 	"strings"
 
@@ -72,6 +73,9 @@ func (js *JobService) AddAvailableStage(name string) error {
 }
 
 func (js *JobService) DeleteAvailableStage(name string) error {
+	if strings.EqualFold(name, "Rejected") || strings.EqualFold(name, "Withdrawn") {
+		return fmt.Errorf("cannot delete reserved stage: %s", name)
+	}
 	query := `DELETE FROM available_stages WHERE name = ?`
 	_, err := js.Database.Exec(query, name)
 	if err != nil {
@@ -79,6 +83,29 @@ func (js *JobService) DeleteAvailableStage(name string) error {
 		return err
 	}
 	return nil
+}
+
+func (js *JobService) ResetAvailableStages() error {
+	tx, err := js.Database.Begin()
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback()
+
+	if _, err := tx.Exec(`DELETE FROM available_stages`); err != nil {
+		log.Printf("failed to clear available stages: %v", err)
+		return err
+	}
+
+	defaultStages := []string{"Interview", "Offer", "Rejected", "Withdrawn"}
+	for _, stage := range defaultStages {
+		if _, err := tx.Exec(`INSERT INTO available_stages (name) VALUES (?)`, stage); err != nil {
+			log.Printf("failed to insert default stage %s: %v", stage, err)
+			return err
+		}
+	}
+
+	return tx.Commit()
 }
 
 func (js *JobService) SaveJob(j Job) (int64, error) {

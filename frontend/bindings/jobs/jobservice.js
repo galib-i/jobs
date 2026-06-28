@@ -81,6 +81,13 @@ export function GetTimelineData(groupBy) {
 }
 
 /**
+ * @returns {$CancellablePromise<void>}
+ */
+export function ResetAvailableStages() {
+    return $Call.ByID(837502475);
+}
+
+/**
  * @param {$models.Job} j
  * @returns {$CancellablePromise<number>}
  */

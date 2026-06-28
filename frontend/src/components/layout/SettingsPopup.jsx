@@ -35,33 +35,50 @@ export default function SettingsPopup({
       >
         <div className="flex justify-between items-center bg-slate-900 px-4 py-3 border-slate-700 border-b font-bold text-slate-300 text-sm tracking-wider">
           <span>Settings</span>
-          <button onClick={onClose} className="text-slate-500 hover:text-white">
+          <button
+            onClick={onClose}
+            className="text-slate-500 hover:text-white cursor-pointer"
+          >
             ✕
           </button>
         </div>
         <div className="space-y-4 p-4">
           <div>
-            <h3 className="mb-2 font-bold text-slate-400 text-xs uppercase tracking-wider">
-              Manage Stages
-            </h3>
+            <div className="flex justify-between items-center mb-2">
+              <h3 className="font-bold text-slate-400 text-xs uppercase tracking-wider">
+                Manage Stages
+              </h3>
+              <button
+                onClick={onResetStages}
+                className="text-[10px] text-slate-500 hover:text-slate-300 uppercase tracking-wider transition-colors cursor-pointer"
+              >
+                Reset Defaults
+              </button>
+            </div>
             <div className="space-y-1 pr-1 max-h-48 overflow-y-auto custom-scrollbar">
-              {(availableStages || []).map((stage) => (
-                <div
-                  key={stage.name}
-                  className="flex justify-between items-center bg-slate-700/50 px-2 py-1.5 rounded"
-                >
-                  <span className="flex-1 font-sans font-bold text-slate-200 text-sm truncate">
-                    {stage.name}
-                  </span>
-                  <button
-                    onClick={() => onDeleteStage(stage.name)}
-                    className="hover:bg-red-400/20 ml-2 px-1 rounded text-red-400 hover:text-red-300 transition-colors"
-                    title="Delete stage"
+              {(availableStages || []).map((stage) => {
+                const isUndeleteable =
+                  stage.name === "Rejected" || stage.name === "Withdrawn";
+                return (
+                  <div
+                    key={stage.name}
+                    className="flex justify-between items-center bg-slate-700/50 px-2 py-1.5 rounded"
                   >
-                    ✕
-                  </button>
-                </div>
-              ))}
+                    <span className="flex-1 font-sans font-bold text-slate-200 text-sm truncate">
+                      {stage.name}
+                    </span>
+                    {!isUndeleteable && (
+                      <button
+                        onClick={() => onDeleteStage(stage.name)}
+                        className="hover:bg-red-400/20 ml-2 px-1 rounded text-red-400 hover:text-red-300 transition-colors cursor-pointer"
+                        title="Delete stage"
+                      >
+                        ✕
+                      </button>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           </div>
           <form onSubmit={handleAdd} className="flex items-center gap-2 pt-2">
