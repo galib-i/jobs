@@ -52,26 +52,21 @@ const FIELD_CONFIG = [
   },
 ];
 
-const INACTIVE_STAGES = ["rejected", "withdrawn"];
-const isJobInactive = (job) => {
-  const lastStage = job.stages?.[job.stages.length - 1];
-  return lastStage && INACTIVE_STAGES.includes(lastStage.toLowerCase());
-};
-
 export default function JobsPage({
   jobs,
+  availableStages,
+  viewMode,
+  setViewMode,
   onAddJob,
   onUpdateJob,
   onDeleteJob,
   onAddStage,
 }) {
   const [form, setForm] = useState(INITIAL_FORM);
-  const [viewMode, setViewMode] = useState("active");
-
   const inactive = viewMode === "inactive";
   const filteredJobs = inactive
-    ? jobs.filter(isJobInactive)
-    : jobs.filter((job) => !isJobInactive(job));
+    ? jobs.filter((job) => !job.isActive)
+    : jobs.filter((job) => job.isActive);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -162,6 +157,7 @@ export default function JobsPage({
             <JobListItem
               key={job.id}
               job={job}
+              availableStages={availableStages}
               onUpdate={onUpdateJob}
               onDelete={onDeleteJob}
               onAddStage={onAddStage}

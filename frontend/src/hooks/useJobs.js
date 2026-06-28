@@ -5,20 +5,29 @@ import {
   DeleteJob,
   UpdateJob,
   AddJobStage,
+  GetAvailableStages,
 } from "../../bindings/jobs/jobservice";
 
 export function useJobs() {
   const [jobs, setJobs] = useState([]);
+  const [availableStages, setAvailableStages] = useState([]);
 
   const loadJobs = useCallback(() => {
     GetJobs()
-      .then((data) => setJobs(data))
+      .then((data) => setJobs(data || []))
+      .catch(console.error);
+  }, []);
+
+  const loadStages = useCallback(() => {
+    GetAvailableStages()
+      .then((data) => setAvailableStages(data || []))
       .catch(console.error);
   }, []);
 
   useEffect(() => {
     loadJobs();
-  }, [loadJobs]);
+    loadStages();
+  }, [loadJobs, loadStages]);
 
   const addJob = async (job) => {
     await SaveJob(job);
@@ -51,5 +60,5 @@ export function useJobs() {
     loadJobs();
   };
 
-  return { jobs, addJob, updateJob, deleteJob, addStage };
+  return { jobs, availableStages, addJob, updateJob, deleteJob, addStage };
 }

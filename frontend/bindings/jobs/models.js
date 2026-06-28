@@ -75,6 +75,49 @@ export class Job {
              */
             this["createdAt"] = "";
         }
+        if (!("lastStage" in $$source)) {
+            /**
+             * Not stored in database
+             * @member
+             * @type {string}
+             */
+            this["lastStage"] = "";
+        }
+        if (!("lastStageColour" in $$source)) {
+            /**
+             * @member
+             * @type {string}
+             */
+            this["lastStageColour"] = "";
+        }
+        if (!("lastStageTextColour" in $$source)) {
+            /**
+             * @member
+             * @type {string}
+             */
+            this["lastStageTextColour"] = "";
+        }
+        if (!("stageHistory" in $$source)) {
+            /**
+             * @member
+             * @type {string}
+             */
+            this["stageHistory"] = "";
+        }
+        if (!("formattedDate" in $$source)) {
+            /**
+             * @member
+             * @type {string}
+             */
+            this["formattedDate"] = "";
+        }
+        if (!("isActive" in $$source)) {
+            /**
+             * @member
+             * @type {boolean}
+             */
+            this["isActive"] = false;
+        }
 
         Object.assign(this, $$source);
     }
@@ -94,5 +137,236 @@ export class Job {
     }
 }
 
+export class SankeyData {
+    /**
+     * Creates a new SankeyData instance.
+     * @param {Partial<SankeyData>} [$$source = {}] - The source object to create the SankeyData.
+     */
+    constructor($$source = {}) {
+        if (!("nodes" in $$source)) {
+            /**
+             * @member
+             * @type {SankeyNode[]}
+             */
+            this["nodes"] = [];
+        }
+        if (!("links" in $$source)) {
+            /**
+             * @member
+             * @type {SankeyLink[]}
+             */
+            this["links"] = [];
+        }
+
+        Object.assign(this, $$source);
+    }
+
+    /**
+     * Creates a new SankeyData instance from a string or object.
+     * @param {any} [$$source = {}]
+     * @returns {SankeyData}
+     */
+    static createFrom($$source = {}) {
+        const $$createField0_0 = $$createType2;
+        const $$createField1_0 = $$createType4;
+        let $$parsedSource = typeof $$source === 'string' ? JSON.parse($$source) : $$source;
+        if ("nodes" in $$parsedSource) {
+            $$parsedSource["nodes"] = $$createField0_0($$parsedSource["nodes"]);
+        }
+        if ("links" in $$parsedSource) {
+            $$parsedSource["links"] = $$createField1_0($$parsedSource["links"]);
+        }
+        return new SankeyData(/** @type {Partial<SankeyData>} */($$parsedSource));
+    }
+}
+
+export class SankeyLink {
+    /**
+     * Creates a new SankeyLink instance.
+     * @param {Partial<SankeyLink>} [$$source = {}] - The source object to create the SankeyLink.
+     */
+    constructor($$source = {}) {
+        if (!("source" in $$source)) {
+            /**
+             * @member
+             * @type {string}
+             */
+            this["source"] = "";
+        }
+        if (!("target" in $$source)) {
+            /**
+             * @member
+             * @type {string}
+             */
+            this["target"] = "";
+        }
+        if (!("value" in $$source)) {
+            /**
+             * @member
+             * @type {number}
+             */
+            this["value"] = 0;
+        }
+
+        Object.assign(this, $$source);
+    }
+
+    /**
+     * Creates a new SankeyLink instance from a string or object.
+     * @param {any} [$$source = {}]
+     * @returns {SankeyLink}
+     */
+    static createFrom($$source = {}) {
+        let $$parsedSource = typeof $$source === 'string' ? JSON.parse($$source) : $$source;
+        return new SankeyLink(/** @type {Partial<SankeyLink>} */($$parsedSource));
+    }
+}
+
+export class SankeyNode {
+    /**
+     * Creates a new SankeyNode instance.
+     * @param {Partial<SankeyNode>} [$$source = {}] - The source object to create the SankeyNode.
+     */
+    constructor($$source = {}) {
+        if (!("name" in $$source)) {
+            /**
+             * @member
+             * @type {string}
+             */
+            this["name"] = "";
+        }
+        if (!("cleanName" in $$source)) {
+            /**
+             * @member
+             * @type {string}
+             */
+            this["cleanName"] = "";
+        }
+        if (!("colour" in $$source)) {
+            /**
+             * @member
+             * @type {string}
+             */
+            this["colour"] = "";
+        }
+        if (!("textColour" in $$source)) {
+            /**
+             * @member
+             * @type {string}
+             */
+            this["textColour"] = "";
+        }
+
+        Object.assign(this, $$source);
+    }
+
+    /**
+     * Creates a new SankeyNode instance from a string or object.
+     * @param {any} [$$source = {}]
+     * @returns {SankeyNode}
+     */
+    static createFrom($$source = {}) {
+        let $$parsedSource = typeof $$source === 'string' ? JSON.parse($$source) : $$source;
+        return new SankeyNode(/** @type {Partial<SankeyNode>} */($$parsedSource));
+    }
+}
+
+export class StageMetadata {
+    /**
+     * Creates a new StageMetadata instance.
+     * @param {Partial<StageMetadata>} [$$source = {}] - The source object to create the StageMetadata.
+     */
+    constructor($$source = {}) {
+        if (!("name" in $$source)) {
+            /**
+             * @member
+             * @type {string}
+             */
+            this["name"] = "";
+        }
+        if (!("colour" in $$source)) {
+            /**
+             * @member
+             * @type {string}
+             */
+            this["colour"] = "";
+        }
+        if (!("textColour" in $$source)) {
+            /**
+             * @member
+             * @type {string}
+             */
+            this["textColour"] = "";
+        }
+        if (!("isTerminal" in $$source)) {
+            /**
+             * @member
+             * @type {boolean}
+             */
+            this["isTerminal"] = false;
+        }
+
+        Object.assign(this, $$source);
+    }
+
+    /**
+     * Creates a new StageMetadata instance from a string or object.
+     * @param {any} [$$source = {}]
+     * @returns {StageMetadata}
+     */
+    static createFrom($$source = {}) {
+        let $$parsedSource = typeof $$source === 'string' ? JSON.parse($$source) : $$source;
+        return new StageMetadata(/** @type {Partial<StageMetadata>} */($$parsedSource));
+    }
+}
+
+export class TimelineData {
+    /**
+     * Creates a new TimelineData instance.
+     * @param {Partial<TimelineData>} [$$source = {}] - The source object to create the TimelineData.
+     */
+    constructor($$source = {}) {
+        if (!("dates" in $$source)) {
+            /**
+             * @member
+             * @type {string[]}
+             */
+            this["dates"] = [];
+        }
+        if (!("counts" in $$source)) {
+            /**
+             * @member
+             * @type {number[]}
+             */
+            this["counts"] = [];
+        }
+
+        Object.assign(this, $$source);
+    }
+
+    /**
+     * Creates a new TimelineData instance from a string or object.
+     * @param {any} [$$source = {}]
+     * @returns {TimelineData}
+     */
+    static createFrom($$source = {}) {
+        const $$createField0_0 = $$createType0;
+        const $$createField1_0 = $$createType5;
+        let $$parsedSource = typeof $$source === 'string' ? JSON.parse($$source) : $$source;
+        if ("dates" in $$parsedSource) {
+            $$parsedSource["dates"] = $$createField0_0($$parsedSource["dates"]);
+        }
+        if ("counts" in $$parsedSource) {
+            $$parsedSource["counts"] = $$createField1_0($$parsedSource["counts"]);
+        }
+        return new TimelineData(/** @type {Partial<TimelineData>} */($$parsedSource));
+    }
+}
+
 // Private type creation functions
 const $$createType0 = $Create.Array($Create.Any);
+const $$createType1 = SankeyNode.createFrom;
+const $$createType2 = $Create.Array($$createType1);
+const $$createType3 = SankeyLink.createFrom;
+const $$createType4 = $Create.Array($$createType3);
+const $$createType5 = $Create.Array($Create.Any);

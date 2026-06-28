@@ -1,16 +1,15 @@
 import { useState } from "react";
-import { getStageColour, getStageTextColour } from "../../colours";
 import { TriangleButton } from "../ui/Button";
 
-const PREDEFINED_STAGES = ["Interview", "Offer", "Rejected", "Withdrawn"];
-
-export default function JobStageSelector({ job, onAddStage }) {
+export default function JobStageSelector({ job, availableStages, onAddStage }) {
   const [isAddingStage, setIsAddingStage] = useState(false);
   const [hoveredStage, setHoveredStage] = useState(null);
 
-  if (job.stages?.some((s) => s === "Rejected" || s === "Withdrawn")) {
+  if (!job.isActive) {
     return null;
   }
+
+  const stagesToSelect = availableStages || [];
 
   return isAddingStage ? (
     <div className="inline-block z-40 relative ml-auto">
@@ -23,13 +22,12 @@ export default function JobStageSelector({ job, onAddStage }) {
           Select Stage
         </div>
         <div className="space-y-0.5 px-1.5 pb-1.5 max-h-48 overflow-y-auto overscroll-contain custom-scrollbar">
-          {PREDEFINED_STAGES.map((stage) => {
-            const isTerminalStage =
-              stage === "Rejected" || stage === "Withdrawn";
-            const isDisabled = isTerminalStage && job.stages?.includes(stage);
-            const isHovered = hoveredStage === stage;
-            const stageBg = getStageColour(stage);
-            const stageText = getStageTextColour(stageBg);
+          {stagesToSelect.map((stage) => {
+            const isTerminalStage = stage.isTerminal;
+            const isDisabled = isTerminalStage && job.stages?.includes(stage.name);
+            const isHovered = hoveredStage === stage.name;
+            const stageBg = stage.colour;
+            const stageText = stage.textColour;
 
             const defaultBg = isDisabled
               ? "rgba(30, 41, 59, 0.5)"
@@ -38,7 +36,7 @@ export default function JobStageSelector({ job, onAddStage }) {
 
             return (
               <button
-                key={stage}
+                key={stage.name}
                 disabled={isDisabled}
                 className={`block w-full text-left px-2.5 py-1.5 text-sm transition-colors font-bold rounded ${
                   isDisabled ? "cursor-not-allowed" : "cursor-pointer"
@@ -48,17 +46,17 @@ export default function JobStageSelector({ job, onAddStage }) {
                     isHovered && !isDisabled ? stageBg : defaultBg,
                   color: isHovered && !isDisabled ? stageText : defaultText,
                 }}
-                onMouseEnter={() => setHoveredStage(stage)}
+                onMouseEnter={() => setHoveredStage(stage.name)}
                 onMouseLeave={() => setHoveredStage(null)}
                 onClick={() => {
                   if (!isDisabled) {
-                    onAddStage(job.id, stage);
+                    onAddStage(job.id, stage.name);
                     setIsAddingStage(false);
                     setHoveredStage(null);
                   }
                 }}
               >
-                {stage}
+                {stage.name}
               </button>
             );
           })}

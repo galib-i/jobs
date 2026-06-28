@@ -8,5 +8,10 @@ export {
 };
 
 export {
-    Job
+    Job,
+    SankeyData,
+    SankeyLink,
+    SankeyNode,
+    StageMetadata,
+    TimelineData
 } from "./models.js";

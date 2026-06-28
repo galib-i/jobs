@@ -1,34 +1,21 @@
 import ReactECharts from "echarts-for-react";
-import { useMemo, useState } from "react";
+import { useEffect, useState } from "react";
+import { GetTimelineData } from "../../../bindings/jobs/jobservice";
 
-function buildTimelineOption(jobs, groupBy) {
-  if (!jobs?.length) return null;
+export default function TimelineDiagram() {
+  const [groupBy, setGroupBy] = useState("day");
+  const [timelineData, setTimelineData] = useState(null);
 
-  const countsByDate = jobs.reduce((acc, job) => {
-    if (!job.createdAt) return acc;
+  useEffect(() => {
+    GetTimelineData(groupBy).then(setTimelineData).catch(console.error);
+  }, [groupBy]);
 
-    let key = job.createdAt;
-    if (groupBy === "month") {
-      key = key.substring(0, 7);
-    } else if (groupBy === "week") {
-      const d = new Date(key);
-      d.setUTCDate(d.getUTCDate() - (d.getUTCDay() || 7) + 1);
-      key = d.toISOString().split("T")[0];
-    }
+  if (!timelineData || !timelineData.dates || timelineData.dates.length === 0) {
+    return null;
+  }
 
-    acc[key] = (acc[key] || 0) + 1;
-    return acc;
-  }, {});
-
-  const sortedDates = Object.keys(countsByDate).sort();
-  if (sortedDates.length === 0) return null;
-
-  const data = sortedDates.map((date) => countsByDate[date]);
-
-  return {
-    tooltip: {
-      show: false,
-    },
+  const option = {
+    tooltip: { show: false },
     dataZoom: [
       {
         type: "slider",
@@ -50,7 +37,7 @@ function buildTimelineOption(jobs, groupBy) {
     xAxis: {
       type: "category",
       boundaryGap: true,
-      data: sortedDates,
+      data: timelineData.dates,
       axisLabel: {
         color: "#94a3b8",
       },
@@ -64,7 +51,7 @@ function buildTimelineOption(jobs, groupBy) {
     },
     series: [
       {
-        data: data,
+        data: timelineData.counts,
         type: "bar",
         cursor: "default",
         itemStyle: {
@@ -78,21 +65,13 @@ function buildTimelineOption(jobs, groupBy) {
       },
     ],
   };
-}
-
-export default function TimelineDiagram({ jobs }) {
-  const [groupBy, setGroupBy] = useState("day");
-
-  const option = useMemo(
-    () => buildTimelineOption(jobs, groupBy),
-    [jobs, groupBy],
-  );
-
-  if (!option) return null;
 
   return (
     <div className="mb-12">
       <div className="flex justify-between items-center mb-4">
+        <h2 className="font-pixel font-bold text-slate-200 text-xl tracking-wider">
+          Activity
+        </h2>
         <div className="flex space-x-2 text-sm">
           {["day", "week", "month"].map((group) => (
             <button
@@ -111,7 +90,7 @@ export default function TimelineDiagram({ jobs }) {
       </div>
       <ReactECharts
         option={option}
-        style={{ height: 300, width: "50%", margin: "0 auto" }}
+        style={{ height: 300, width: "100%", margin: "0 auto" }}
         opts={{ renderer: "svg" }}
         notMerge
       />

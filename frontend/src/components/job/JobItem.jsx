@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { getStageColour, getStageTextColour } from "../../colours";
+
 import { Button } from "../ui/Button";
 import { BinIcon, InfoIcon, ChevronDownIcon } from "../ui/Icon";
 import EditableInput from "../ui/EditableInput";
@@ -8,20 +8,23 @@ import Tooltip from "../ui/Tooltip";
 import JobRoleEditor from "./JobRoleEditor";
 import JobStageSelector from "./JobStageSelector";
 
-export default function JobListItem({ job, onUpdate, onDelete, onAddStage }) {
+export default function JobListItem({
+  job,
+  availableStages,
+  onUpdate,
+  onDelete,
+  onAddStage,
+}) {
   const [showDescription, setShowDescription] = useState(false);
   const [isAddingDescription, setIsAddingDescription] = useState(false);
   const [isDeleteConfirmationOpen, setisDeleteConfirmationOpen] =
     useState(false);
   const [isEditingNotes, setIsEditingNotes] = useState(false);
 
-  const formatStage = (s) => (s ? s.charAt(0).toUpperCase() + s.slice(1) : "");
-  const formattedStages = job.stages?.map(formatStage) || [];
-  const lastStage = formattedStages.at(-1) || "";
-  const tooltipText = formattedStages.join(" ➔ ");
-
-  const bgColour = getStageColour(lastStage);
-  const textColour = getStageTextColour(bgColour);
+  const lastStage = job.lastStage || "";
+  const bgColour = job.lastStageColour || "var(--color-yellow-500)";
+  const textColour = job.lastStageTextColour || "var(--color-slate-800)";
+  const tooltipText = job.stageHistory || "";
 
   return (
     <div className="contents">
@@ -75,15 +78,14 @@ export default function JobListItem({ job, onUpdate, onDelete, onAddStage }) {
               {lastStage || "None"}
             </span>
           </Tooltip>
-          <JobStageSelector job={job} onAddStage={onAddStage} />
+          <JobStageSelector
+            job={job}
+            availableStages={availableStages}
+            onAddStage={onAddStage}
+          />
         </div>
         <div className="flex justify-center items-center px-4 py-3 truncate">
-          {job.createdAt
-            ? (() => {
-                const [yyyy, mm, dd] = job.createdAt.slice(0, 10).split("-");
-                return `${dd}-${mm}-${yyyy.slice(2)}`;
-              })()
-            : ""}
+          {job.formattedDate}
         </div>
         <div
           className="group/notes flex items-center px-4 py-3 min-w-0 cursor-text"

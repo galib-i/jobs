@@ -7,21 +7,28 @@ import TimeDiagram from "./components/diagrams/TimeDiagram";
 
 function App() {
   const [page, setPage] = useState("jobs");
-  const { jobs, addJob, updateJob, deleteJob, addStage } = useJobs();
+  const [viewMode, setViewMode] = useState("active");
+
+  const { jobs, availableStages, addJob, updateJob, deleteJob, addStage } =
+    useJobs();
+
   return (
     <div className="m-4">
       <Navbar activePage={page} setPage={setPage} />
 
       {page === "diagrams" && (
         <div className="flex flex-col gap-8">
-          <TimeDiagram jobs={jobs} />
-          <SankeyDiagram jobs={jobs} />
+          <TimeDiagram />
+          <SankeyDiagram />
         </div>
       )}
 
       {page === "jobs" && (
         <JobsPage
           jobs={jobs}
+          availableStages={availableStages}
+          viewMode={viewMode}
+          setViewMode={setViewMode}
           onAddJob={addJob}
           onUpdateJob={updateJob}
           onDeleteJob={deleteJob}

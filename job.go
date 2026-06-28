@@ -1,0 +1,109 @@
+package main
+
+import (
+	"strings"
+	"time"
+)
+
+var stageColourRules = []struct {
+	key    string
+	colour string
+}{
+	{"application", "#22c55e"},
+	{"interview", "#eab308"},
+	{"offer", "#3b82f6"},
+	{"rejected", "#ef4444"},
+	{"withdrawn", "#94a3b8"},
+}
+
+const (
+	defaultStageColour = "#eab308"
+	yellowColour       = "#eab308"
+	darkTextColour     = "#1e293b"
+	whiteColour        = "#ffffff"
+)
+
+func getStageColour(stage string) string {
+	stage = strings.ToLower(stage)
+
+	for _, rule := range stageColourRules {
+		if strings.Contains(stage, rule.key) {
+			return rule.colour
+		}
+	}
+	return defaultStageColour
+}
+
+func getStageTextColour(bgColour string) string {
+	if bgColour == yellowColour {
+		return darkTextColour
+	}
+	return whiteColour
+}
+
+type Job struct {
+	ID          int64    `json:"id"`
+	Company     string   `json:"company"`
+	Role        string   `json:"role"`
+	Location    string   `json:"location"`
+	Link        string   `json:"link"`
+	Description string   `json:"description"`
+	Notes       string   `json:"notes"`
+	Stages      []string `json:"stages"`
+	CreatedAt   string   `json:"createdAt"`
+
+	// Not stored in database
+	LastStage           string `json:"lastStage"`
+	LastStageColour     string `json:"lastStageColour"`
+	LastStageTextColour string `json:"lastStageTextColour"`
+	StageHistory        string `json:"stageHistory"`
+	FormattedDate       string `json:"formattedDate"`
+	IsActive            bool   `json:"isActive"`
+}
+
+type StageMetadata struct {
+	Name       string `json:"name"`
+	Colour     string `json:"colour"`
+	TextColour string `json:"textColour"`
+	IsTerminal bool   `json:"isTerminal"`
+}
+
+func (js *JobService) GetAvailableStages() []StageMetadata {
+	stages := []string{"Interview", "Offer", "Rejected", "Withdrawn"}
+	meta := make([]StageMetadata, 0, len(stages))
+	for _, s := range stages {
+		bg := getStageColour(s)
+		isTerminal := strings.EqualFold(s, "rejected") || strings.EqualFold(s, "withdrawn")
+		meta = append(meta, StageMetadata{
+			Name:       s,
+			Colour:     bg,
+			TextColour: getStageTextColour(bg),
+			IsTerminal: isTerminal,
+		})
+	}
+	return meta
+}
+
+func (j *Job) computeFields() {
+	if len(j.Stages) > 0 {
+		j.LastStage = j.Stages[len(j.Stages)-1]
+	}
+
+	j.LastStageColour = getStageColour(j.LastStage)
+	j.LastStageTextColour = getStageTextColour(j.LastStageColour)
+	j.StageHistory = strings.Join(j.Stages, " ➔ ")
+
+	if j.CreatedAt != "" {
+		t, err := time.Parse(time.DateOnly, j.CreatedAt)
+		if err == nil {
+			j.FormattedDate = t.Format("02-01-06") // dd-mm-yy
+		} else {
+			j.FormattedDate = j.CreatedAt
+		}
+	} else {
+		j.FormattedDate = "Unknown"
+	}
+
+	// Determine if job is active based on its last stage
+	j.IsActive = !strings.EqualFold(j.LastStage, "rejected") && !strings.EqualFold(j.LastStage, "withdrawn")
+}

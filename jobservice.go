@@ -12,24 +12,15 @@ type JobService struct {
 	Database *sql.DB
 }
 
-type Job struct {
-	ID          int64    `json:"id"`
-	Company     string   `json:"company"`
-	Role        string   `json:"role"`
-	Location    string   `json:"location"`
-	Link        string   `json:"link"`
-	Description string   `json:"description"`
-	Notes       string   `json:"notes"`
-	Stages      []string `json:"stages"`
-	CreatedAt   string   `json:"createdAt"`
-}
-
 func NewJobService() *JobService {
 	db, err := sql.Open("sqlite", "jobs.db?_pragma=foreign_keys(1)")
 
 	if err != nil {
 		log.Fatalf("failed to open database: %v", err)
 	}
+
+	db.SetMaxOpenConns(1)
+	db.SetMaxIdleConns(1)
 
 	query := `CREATE TABLE IF NOT EXISTS jobs (
 				id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -57,24 +48,35 @@ func NewJobService() *JobService {
 }
 
 func (js *JobService) SaveJob(j Job) (int64, error) {
-	query := `INSERT INTO jobs (company, role, location, link, description, notes)
-				VALUES (?, ?, ?, ?, ?, ?);
-				
-				INSERT INTO stages (job_id, stage)
-				VALUES (last_insert_rowid(), 'Application')`
+	tx, err := js.Database.Begin()
+	if err != nil {
+		return 0, err
+	}
+	defer tx.Rollback()
 
-	result, err := js.Database.Exec(query, j.Company, j.Role, j.Location, j.Link, j.Description, j.Notes)
+	jobQuery := `INSERT INTO jobs (company, role, location, link, description, notes) VALUES (?, ?, ?, ?, ?, ?)`
+	result, err := tx.Exec(jobQuery, j.Company, j.Role, j.Location, j.Link, j.Description, j.Notes)
 	if err != nil {
 		log.Printf("failed to save job (%s, %s...): %v", j.Company, j.Role, err)
 		return 0, err
 	}
 
-	id, err := result.LastInsertId()
+	jobID, err := result.LastInsertId()
 	if err != nil {
 		return 0, err
 	}
 
-	return id, nil
+	stageQuery := `INSERT INTO stages (job_id, stage) VALUES (?, 'Application')`
+	if _, err := tx.Exec(stageQuery, jobID); err != nil {
+		log.Printf("failed to insert initial stage for job %d: %v", jobID, err)
+		return 0, err
+	}
+
+	if err := tx.Commit(); err != nil {
+		return 0, err
+	}
+
+	return jobID, nil
 }
 
 func (js *JobService) GetJobs() ([]Job, error) {
@@ -98,7 +100,7 @@ func (js *JobService) GetJobs() ([]Job, error) {
 						WHERE job_id = jobs.id 
 						ORDER BY id DESC LIMIT 1
 					), 
-					date('now'))
+					date('now')) as last_updated_date
 				FROM jobs`
 
 	rows, err := js.Database.Query(query)
@@ -119,7 +121,12 @@ func (js *JobService) GetJobs() ([]Job, error) {
 			return nil, err
 		}
 
-		currentJob.Stages = strings.Split(stagesString, ",")
+		if stagesString != "" {
+			currentJob.Stages = strings.Split(stagesString, ",")
+		} else {
+			currentJob.Stages = []string{}
+		}
+		currentJob.computeFields()
 		jobs = append(jobs, currentJob)
 	}
 

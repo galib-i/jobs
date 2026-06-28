@@ -28,11 +28,39 @@ export function DeleteJob(id) {
 }
 
 /**
+ * @returns {$CancellablePromise<$models.StageMetadata[]>}
+ */
+export function GetAvailableStages() {
+    return $Call.ByID(1567522294).then(/** @type {($result: any) => any} */(($result) => {
+        return $$createType1($result);
+    }));
+}
+
+/**
  * @returns {$CancellablePromise<$models.Job[]>}
  */
 export function GetJobs() {
     return $Call.ByID(2795355898).then(/** @type {($result: any) => any} */(($result) => {
-        return $$createType1($result);
+        return $$createType3($result);
+    }));
+}
+
+/**
+ * @returns {$CancellablePromise<$models.SankeyData | null>}
+ */
+export function GetSankeyData() {
+    return $Call.ByID(3209808103).then(/** @type {($result: any) => any} */(($result) => {
+        return $$createType5($result);
+    }));
+}
+
+/**
+ * @param {string} groupBy
+ * @returns {$CancellablePromise<$models.TimelineData | null>}
+ */
+export function GetTimelineData(groupBy) {
+    return $Call.ByID(432288241, groupBy).then(/** @type {($result: any) => any} */(($result) => {
+        return $$createType7($result);
     }));
 }
 
@@ -53,5 +81,11 @@ export function UpdateJob(j) {
 }
 
 // Private type creation functions
-const $$createType0 = $models.Job.createFrom;
+const $$createType0 = $models.StageMetadata.createFrom;
 const $$createType1 = $Create.Array($$createType0);
+const $$createType2 = $models.Job.createFrom;
+const $$createType3 = $Create.Array($$createType2);
+const $$createType4 = $models.SankeyData.createFrom;
+const $$createType5 = $Create.Nullable($$createType4);
+const $$createType6 = $models.TimelineData.createFrom;
+const $$createType7 = $Create.Nullable($$createType6);
