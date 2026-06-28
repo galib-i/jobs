@@ -107,7 +107,7 @@ export default function JobsPage({
           ADD
         </Button>
       </form>
-      <div className="text-xs">
+      <div className="flex items-center gap-4 text-xs">
         <SplitButton
           left={{ label: "ACTIVE", value: "active", theme: "yellow" }}
           right={{ label: "INACTIVE", value: "inactive", theme: "yellow" }}
@@ -115,6 +115,15 @@ export default function JobsPage({
           onChange={setViewMode}
           size="sm"
         />
+        <div className="flex items-center pt-1 font-bold text-slate-500 uppercase tracking-wider">
+          <span className="inline-block w-6 tabular-nums text-right">
+            {filteredJobs.length}
+          </span>
+          <span className="mx-2">/</span>
+          <span className="inline-block w-6 tabular-nums text-left">
+            {jobs.length}
+          </span>
+        </div>
       </div>
       <div className="relative mt-4 mb-4">
         <div

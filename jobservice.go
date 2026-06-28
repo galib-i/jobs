@@ -38,13 +38,47 @@ func NewJobService() *JobService {
 				stage TEXT NOT NULL,
 				last_updated DATETIME DEFAULT CURRENT_TIMESTAMP,
 				FOREIGN KEY (job_id) REFERENCES jobs(id) ON DELETE CASCADE
+				);
+				
+				CREATE TABLE IF NOT EXISTS available_stages (
+				id INTEGER PRIMARY KEY AUTOINCREMENT,
+				name TEXT NOT NULL UNIQUE COLLATE NOCASE
 				)`
 
 	if _, err := db.Exec(query); err != nil {
 		log.Fatalf("failed to create tables: %v", err)
 	}
 
+	var count int
+	err = db.QueryRow(`SELECT count(*) FROM available_stages`).Scan(&count)
+	if err == nil && count == 0 {
+		defaultStages := []string{"Interview", "Offer", "Rejected", "Withdrawn"}
+		for _, stage := range defaultStages {
+			db.Exec(`INSERT INTO available_stages (name) VALUES (?)`, stage)
+		}
+	}
+
 	return &JobService{Database: db}
+}
+
+func (js *JobService) AddAvailableStage(name string) error {
+	query := `INSERT INTO available_stages (name) VALUES (?)`
+	_, err := js.Database.Exec(query, strings.TrimSpace(name))
+	if err != nil {
+		log.Printf("failed to add available stage %s: %v", name, err)
+		return err
+	}
+	return nil
+}
+
+func (js *JobService) DeleteAvailableStage(name string) error {
+	query := `DELETE FROM available_stages WHERE name = ?`
+	_, err := js.Database.Exec(query, name)
+	if err != nil {
+		log.Printf("failed to delete available stage %s: %v", name, err)
+		return err
+	}
+	return nil
 }
 
 func (js *JobService) SaveJob(j Job) (int64, error) {
@@ -77,6 +111,25 @@ func (js *JobService) SaveJob(j Job) (int64, error) {
 	}
 
 	return jobID, nil
+}
+
+func (js *JobService) WipeDatabase() error {
+	tx, err := js.Database.Begin()
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback()
+
+	if _, err := tx.Exec(`DELETE FROM jobs`); err != nil {
+		log.Printf("failed to clear jobs: %v", err)
+		return err
+	}
+
+	if _, err := tx.Exec(`DELETE FROM sqlite_sequence WHERE name='jobs'`); err != nil {
+		log.Printf("failed to reset jobs sequence: %v", err)
+	}
+
+	return tx.Commit()
 }
 
 func (js *JobService) GetJobs() ([]Job, error) {

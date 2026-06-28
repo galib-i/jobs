@@ -69,7 +69,20 @@ type StageMetadata struct {
 }
 
 func (js *JobService) GetAvailableStages() []StageMetadata {
-	stages := []string{"Interview", "Offer", "Rejected", "Withdrawn"}
+	rows, err := js.Database.Query(`SELECT name FROM available_stages ORDER BY id ASC`)
+	if err != nil {
+		return []StageMetadata{} // Return empty list on error
+	}
+	defer rows.Close()
+
+	var stages []string
+	for rows.Next() {
+		var name string
+		if err := rows.Scan(&name); err == nil {
+			stages = append(stages, name)
+		}
+	}
+
 	meta := make([]StageMetadata, 0, len(stages))
 	for _, s := range stages {
 		bg := getStageColour(s)

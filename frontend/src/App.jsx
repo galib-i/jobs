@@ -9,12 +9,30 @@ function App() {
   const [page, setPage] = useState("jobs");
   const [viewMode, setViewMode] = useState("active");
 
-  const { jobs, availableStages, addJob, updateJob, deleteJob, addStage } =
-    useJobs();
+  const {
+    jobs,
+    availableStages,
+    addJob,
+    updateJob,
+    deleteJob,
+    addStage,
+    addAvailableStage,
+    deleteAvailableStage,
+    resetAvailableStages,
+    wipeDatabase,
+  } = useJobs();
 
   return (
     <div className="m-4">
-      <Navbar activePage={page} setPage={setPage} />
+      <Navbar
+        activePage={page}
+        setPage={setPage}
+        availableStages={availableStages}
+        addAvailableStage={addAvailableStage}
+        deleteAvailableStage={deleteAvailableStage}
+        resetAvailableStages={resetAvailableStages}
+        wipeDatabase={wipeDatabase}
+      />
 
       {page === "diagrams" && (
         <div className="flex flex-col gap-8">

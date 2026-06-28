@@ -6,6 +6,10 @@ import {
   UpdateJob,
   AddJobStage,
   GetAvailableStages,
+  AddAvailableStage,
+  DeleteAvailableStage,
+  ResetAvailableStages,
+  WipeDatabase,
 } from "../../bindings/jobs/jobservice";
 
 export function useJobs() {
@@ -60,5 +64,37 @@ export function useJobs() {
     loadJobs();
   };
 
-  return { jobs, availableStages, addJob, updateJob, deleteJob, addStage };
+  const addAvailableStage = async (stageName) => {
+    if (!stageName.trim()) return;
+    await AddAvailableStage(stageName);
+    loadStages();
+  };
+
+  const deleteAvailableStage = async (stageName) => {
+    await DeleteAvailableStage(stageName);
+    loadStages();
+  };
+
+  const resetAvailableStages = async () => {
+    await ResetAvailableStages();
+    loadStages();
+  };
+
+  const wipeDatabase = async () => {
+    await WipeDatabase();
+    loadJobs();
+  };
+
+  return {
+    jobs,
+    availableStages,
+    addJob,
+    updateJob,
+    deleteJob,
+    addStage,
+    addAvailableStage,
+    deleteAvailableStage,
+    resetAvailableStages,
+    wipeDatabase,
+  };
 }

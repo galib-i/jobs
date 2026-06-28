@@ -11,12 +11,28 @@ import { Call as $Call, CancellablePromise as $CancellablePromise, Create as $Cr
 import * as $models from "./models.js";
 
 /**
+ * @param {string} name
+ * @returns {$CancellablePromise<void>}
+ */
+export function AddAvailableStage(name) {
+    return $Call.ByID(3927907374, name);
+}
+
+/**
  * @param {number} jobId
  * @param {string} stage
  * @returns {$CancellablePromise<void>}
  */
 export function AddJobStage(jobId, stage) {
     return $Call.ByID(1679456146, jobId, stage);
+}
+
+/**
+ * @param {string} name
+ * @returns {$CancellablePromise<void>}
+ */
+export function DeleteAvailableStage(name) {
+    return $Call.ByID(2535730274, name);
 }
 
 /**
@@ -78,6 +94,13 @@ export function SaveJob(j) {
  */
 export function UpdateJob(j) {
     return $Call.ByID(1878109278, j);
+}
+
+/**
+ * @returns {$CancellablePromise<void>}
+ */
+export function WipeDatabase() {
+    return $Call.ByID(1458813272);
 }
 
 // Private type creation functions

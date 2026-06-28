@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import { Button } from "../ui/Button";
-import { BinIcon, InfoIcon, ChevronDownIcon } from "../ui/Icon";
+import { BinIcon, InfoIcon } from "../ui/Icon";
 import EditableInput from "../ui/EditableInput";
 import Confirm from "../ui/Confirmation";
 import Tooltip from "../ui/Tooltip";
