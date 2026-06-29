@@ -15,6 +15,7 @@ function App() {
     updateJob,
     deleteJob,
     addStage,
+    removeStage,
     addAvailableStage,
     deleteAvailableStage,
     resetAvailableStages,
@@ -45,6 +46,7 @@ function App() {
           onUpdateJob={updateJob}
           onDeleteJob={deleteJob}
           onAddStage={addStage}
+          onRemoveStage={removeStage}
         />
       )}
     </div>

@@ -252,3 +252,42 @@ func (js *JobService) AddJobStage(jobId int64, stage string) error {
 
 	return nil
 }
+
+func (js *JobService) RemoveJobStageAt(jobId int64, index int) error {
+	query := `SELECT id 
+				FROM stages 
+				WHERE job_id = ? 
+				ORDER BY id ASC`
+
+	rows, err := js.Database.Query(query, jobId)
+	if err != nil {
+		return err
+	}
+	defer rows.Close()
+
+	var ids []int64
+	for rows.Next() {
+		var id int64
+		if err := rows.Scan(&id); err == nil {
+			ids = append(ids, id)
+		}
+	}
+
+	if err := rows.Err(); err != nil {
+		return err
+	}
+
+	if index < 0 || index >= len(ids) {
+		return fmt.Errorf("stage index out of bounds")
+	}
+
+	targetId := ids[index]
+
+	_, err = js.Database.Exec(`DELETE FROM stages WHERE id = ?`, targetId)
+	if err != nil {
+		log.Printf("failed to remove stage at index %d for job %d: %v", index, jobId, err)
+		return err
+	}
+
+	return nil
+}

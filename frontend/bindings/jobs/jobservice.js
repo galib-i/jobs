@@ -81,6 +81,15 @@ export function GetTimelineData(groupBy) {
 }
 
 /**
+ * @param {number} jobId
+ * @param {number} index
+ * @returns {$CancellablePromise<void>}
+ */
+export function RemoveJobStageAt(jobId, index) {
+    return $Call.ByID(2297914840, jobId, index);
+}
+
+/**
  * @returns {$CancellablePromise<void>}
  */
 export function ResetAvailableStages() {

@@ -15,6 +15,7 @@ export default function JobsPage({
   onUpdateJob,
   onDeleteJob,
   onAddStage,
+  onRemoveStage,
 }) {
   const [searchQuery, setSearchQuery] = useState("");
   const inactive = viewMode === "inactive";
@@ -174,6 +175,7 @@ export default function JobsPage({
               onUpdate={onUpdateJob}
               onDelete={onDeleteJob}
               onAddStage={onAddStage}
+              onRemoveStage={onRemoveStage}
             />
           ))}
         </div>

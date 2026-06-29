@@ -14,6 +14,7 @@ export default function JobListItem({
   onUpdate,
   onDelete,
   onAddStage,
+  onRemoveStage,
 }) {
   const [showDescription, setShowDescription] = useState(false);
   const [isAddingDescription, setIsAddingDescription] = useState(false);
@@ -70,7 +71,37 @@ export default function JobListItem({
           />
         </div>
         <div className="relative flex items-center px-4 py-3 min-w-0">
-          <Tooltip text={tooltipText} className="min-w-0">
+          <Tooltip 
+            content={
+              <div className="flex items-center gap-2">
+                {job.stages && job.stages.length > 0 ? (
+                  job.stages.map((stage, index) => (
+                    <div key={index} className="flex items-center gap-1 group/stage">
+                      <span>{stage}</span>
+                      {stage.toLowerCase() !== "application" && (
+                        <button 
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (onRemoveStage) onRemoveStage(job.id, index);
+                          }}
+                          className="opacity-0 group-hover/stage:opacity-100 text-slate-400 hover:text-red-400 transition-all focus:opacity-100"
+                          title="Remove stage"
+                        >
+                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                          </svg>
+                        </button>
+                      )}
+                      {index < job.stages.length - 1 && <span className="text-slate-500 ml-1">➔</span>}
+                    </div>
+                  ))
+                ) : (
+                  <span>None</span>
+                )}
+              </div>
+            } 
+            className="min-w-0"
+          >
             <span
               className="block px-2 py-1 rounded font-bold text-xs truncate cursor-help"
               style={{ backgroundColor: bgColour, color: textColour }}
