@@ -71,35 +71,50 @@ export default function JobListItem({
           />
         </div>
         <div className="relative flex items-center px-4 py-3 min-w-0">
-          <Tooltip 
+          <Tooltip
             content={
               <div className="flex items-center gap-2">
                 {job.stages && job.stages.length > 0 ? (
                   job.stages.map((stage, index) => (
-                    <div key={index} className="flex items-center gap-1 group/stage">
+                    <div
+                      key={index}
+                      className="group/stage flex items-center gap-1"
+                    >
                       <span>{stage}</span>
                       {stage.toLowerCase() !== "application" && (
-                        <button 
+                        <button
                           onClick={(e) => {
                             e.stopPropagation();
                             if (onRemoveStage) onRemoveStage(job.id, index);
                           }}
-                          className="opacity-0 group-hover/stage:opacity-100 text-slate-400 hover:text-red-400 transition-all focus:opacity-100"
+                          className="text-slate-400 hover:text-red-400 transition-all"
                           title="Remove stage"
                         >
-                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                          <svg
+                            className="w-4 h-4"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M6 18L18 6M6 6l12 12"
+                            />
                           </svg>
                         </button>
                       )}
-                      {index < job.stages.length - 1 && <span className="text-slate-500 ml-1">➔</span>}
+                      {index < job.stages.length - 1 && (
+                        <span className="ml-1 text-slate-500">➔</span>
+                      )}
                     </div>
                   ))
                 ) : (
                   <span>None</span>
                 )}
               </div>
-            } 
+            }
             className="min-w-0"
           >
             <span
