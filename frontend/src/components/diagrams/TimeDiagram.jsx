@@ -7,12 +7,23 @@ export default function TimelineDiagram() {
   const [timelineData, setTimelineData] = useState(null);
 
   useEffect(() => {
-    GetTimelineData(groupBy).then(setTimelineData).catch(console.error);
+    GetTimelineData(groupBy + "_apps")
+      .then(setTimelineData)
+      .catch(console.error);
   }, [groupBy]);
 
   if (!timelineData || !timelineData.dates || timelineData.dates.length === 0) {
     return null;
   }
+
+  const maxSpans = {
+    day: 180,
+    week: 26,
+    month: 6,
+  };
+  const maxSpan = maxSpans[groupBy];
+  const dataLen = timelineData.dates.length;
+  const startPercent = dataLen > maxSpan ? 100 - (maxSpan / dataLen) * 100 : 0;
 
   const option = {
     tooltip: { show: false },
@@ -21,15 +32,16 @@ export default function TimelineDiagram() {
         type: "slider",
         show: true,
         xAxisIndex: [0],
-        start: 50,
+        start: startPercent,
         end: 100,
+        maxValueSpan: maxSpan,
         bottom: 25,
         height: 6,
         showDataShadow: false,
         showDetail: false,
-        borderColor: "transparent",
-        backgroundColor: "transparent",
-        fillerColor: "rgba(0, 0, 0, 0.2)",
+        borderColor: "red",
+        backgroundColor: "rgba(255, 0, 0, 0.2)",
+        fillerColor: "rgba(255, 0, 0, 0.6)",
         handleSize: 0,
         brushSelect: false,
       },
@@ -67,11 +79,8 @@ export default function TimelineDiagram() {
   };
 
   return (
-    <div className="mb-12">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="font-pixel font-bold text-slate-200 text-xl tracking-wider">
-          Activity
-        </h2>
+    <div className="flex flex-col">
+      <div className="flex justify-end items-center mb-4">
         <div className="flex space-x-2 text-sm">
           {["day", "week", "month"].map((group) => (
             <button
@@ -88,12 +97,14 @@ export default function TimelineDiagram() {
           ))}
         </div>
       </div>
-      <ReactECharts
-        option={option}
-        style={{ height: 300, width: "100%", margin: "0 auto" }}
-        opts={{ renderer: "svg" }}
-        notMerge
-      />
+      <div className="bg-slate-900 p-6 pb-4 rounded-xl">
+        <ReactECharts
+          option={option}
+          style={{ height: 260, width: "100%", margin: "0 auto" }}
+          opts={{ renderer: "svg" }}
+          notMerge
+        />
+      </div>
     </div>
   );
 }

@@ -65,7 +65,7 @@ export default function SankeyDiagram() {
     <ReactECharts
       option={option}
       style={{
-        height: Math.max(400, option.series[0].data.length * 50),
+        height: Math.max(200, option.series[0].data.length * 25),
         width: "100%",
       }}
       opts={{ renderer: "svg" }}

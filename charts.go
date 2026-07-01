@@ -2,6 +2,7 @@ package main
 
 import (
 	"strconv"
+	"strings"
 )
 
 type SankeyNode struct {
@@ -61,7 +62,7 @@ func (js *JobService) GetSankeyData() (*SankeyData, error) {
 			nodeSet[current] = true
 
 			if i < len(job.Stages)-1 {
-				next := NodeKey{Name: job.Stages[i+1], Index: i+1}
+				next := NodeKey{Name: job.Stages[i+1], Index: i + 1}
 				linkKey := LinkKey{Source: current, Target: next}
 				linkMap[linkKey]++
 			}
@@ -98,6 +99,12 @@ func (js *JobService) GetSankeyData() (*SankeyData, error) {
 
 func (js *JobService) GetTimelineData(groupBy string) (*TimelineData, error) {
 	dateExpr := `date(last_updated)`
+	filterExpr := `WHERE last_updated IS NOT NULL`
+
+	if strings.HasSuffix(groupBy, "_apps") {
+		filterExpr += ` AND stage = 'Application'`
+		groupBy = strings.TrimSuffix(groupBy, "_apps")
+	}
 
 	switch groupBy {
 	case "month":
@@ -108,7 +115,7 @@ func (js *JobService) GetTimelineData(groupBy string) (*TimelineData, error) {
 
 	query := `SELECT ` + dateExpr + ` as date_group, count(*) 
 			  FROM stages 
-			  WHERE last_updated IS NOT NULL
+			  ` + filterExpr + `
 			  GROUP BY date_group 
 			  ORDER BY date_group ASC`
 
