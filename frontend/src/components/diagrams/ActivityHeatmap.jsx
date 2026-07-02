@@ -218,12 +218,12 @@ export default function ActivityHeatmap() {
   }
 
   return (
-    <div className="flex flex-col mx-auto w-[850px]">
+    <div className="flex flex-col w-[850px] shrink-0">
       <div className="relative grid grid-cols-[200px_1fr] bg-slate-900 border-2 border-blue-500 rounded-2xl overflow-hidden contain-content">
         {/* Overall Header */}
         <div className="col-span-full bg-blue-600 border-blue-500 border-b-2 font-pixel font-bold text-white tracking-wider select-none">
           <div className="flex items-center px-4 py-3 pl-6 whitespace-nowrap">
-            Application Activity
+            Activity
           </div>
         </div>
 
