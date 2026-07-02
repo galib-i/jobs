@@ -36,7 +36,7 @@ export default function JobListItem({
             : "bg-slate-800 hover:bg-slate-700 border-slate-700 divide-slate-600/50"
         }`}
       >
-        <div className="flex items-center px-4 py-3 pl-6 overflow-hidden">
+        <div className="flex items-center px-4 py-2 pl-6 overflow-hidden">
           <EditableInput
             initialValue={job.company}
             onSave={(newValue) => onUpdate({ ...job, company: newValue })}
@@ -44,7 +44,7 @@ export default function JobListItem({
           />
         </div>
 
-        <div className="flex items-center px-4 py-3 truncate">
+        <div className="flex items-center px-4 py-2 truncate">
           <div className="mt-1 mr-2 shrink-0">
             <Button
               theme={job.description ? "yellow" : "gray"}
@@ -63,14 +63,14 @@ export default function JobListItem({
           </div>
           <JobRoleEditor job={job} onUpdate={onUpdate} />
         </div>
-        <div className="flex items-center px-4 py-3 overflow-hidden">
+        <div className="flex items-center px-4 py-2 overflow-hidden">
           <EditableInput
             initialValue={job.location}
             onSave={(newValue) => onUpdate({ ...job, location: newValue })}
             className="block w-full truncate"
           />
         </div>
-        <div className="relative flex items-center px-4 py-3 min-w-0">
+        <div className="relative flex items-center px-4 py-2 min-w-0">
           <Tooltip
             content={
               <div className="flex items-center gap-2">
@@ -130,11 +130,11 @@ export default function JobListItem({
             onAddStage={onAddStage}
           />
         </div>
-        <div className="flex justify-center items-center px-4 py-3 truncate">
+        <div className="flex justify-center items-center px-4 py-2 truncate">
           {job.formattedDate}
         </div>
         <div
-          className="group/notes flex items-center px-4 py-3 min-w-0 cursor-text"
+          className="group/notes flex items-center px-4 py-2 min-w-0 cursor-text"
           onDoubleClick={() => setIsEditingNotes(true)}
         >
           <EditableInput
@@ -145,7 +145,7 @@ export default function JobListItem({
             setIsEditingProp={setIsEditingNotes}
           />
         </div>
-        <div className="hidden lg:flex justify-end items-center px-4 py-3 pr-6">
+        <div className="hidden lg:flex justify-end items-center px-4 py-2 pr-6">
           <div className="mt-1.5">
             <Button
               theme="red"
