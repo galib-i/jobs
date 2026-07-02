@@ -3,6 +3,7 @@ package main
 import (
 	"strconv"
 	"strings"
+	"time"
 )
 
 type SankeyNode struct {
@@ -26,6 +27,13 @@ type SankeyData struct {
 type TimelineData struct {
 	Dates  []string `json:"dates"`
 	Counts []int    `json:"counts"`
+}
+
+type ActivityStats struct {
+	CurrentStreak      int    `json:"currentStreak"`
+	LongestStreak      int    `json:"longestStreak"`
+	LongestStreakMonth string `json:"longestStreakMonth"`
+	MostActiveDay      string `json:"mostActiveDay"`
 }
 
 type NodeKey struct {
@@ -140,4 +148,95 @@ func (js *JobService) GetTimelineData(groupBy string) (*TimelineData, error) {
 	}
 
 	return &TimelineData{Dates: dates, Counts: counts}, nil
+}
+
+func (js *JobService) GetActivityStats() (*ActivityStats, error) {
+	timeline, err := js.GetTimelineData("day")
+	if err != nil {
+		return nil, err
+	}
+
+	if timeline == nil || len(timeline.Dates) == 0 {
+		return &ActivityStats{}, nil
+	}
+
+	// Build date -> count map
+	countMap := make(map[string]int)
+	for i, date := range timeline.Dates {
+		countMap[date] = timeline.Counts[i]
+	}
+
+	// Current streak: consecutive days ending at today (or yesterday)
+	today := time.Now().Truncate(24 * time.Hour)
+	checkDate := today
+
+	// If no activity today, try starting from yesterday
+	if countMap[checkDate.Format("2006-01-02")] == 0 {
+		checkDate = checkDate.AddDate(0, 0, -1)
+	}
+
+	currentStreak := 0
+	for {
+		key := checkDate.Format("2006-01-02")
+		if countMap[key] > 0 {
+			currentStreak++
+			checkDate = checkDate.AddDate(0, 0, -1)
+		} else {
+			break
+		}
+	}
+
+	// Longest streak
+	longestStreak := 0
+	longestStreakMonth := ""
+
+	if len(timeline.Dates) > 0 {
+		tempStreak := 1
+		tempStart, _ := time.Parse("2006-01-02", timeline.Dates[0])
+		longestStreak = 1
+		longestStreakMonth = tempStart.Month().String()
+
+		for i := 1; i < len(timeline.Dates); i++ {
+			curr, _ := time.Parse("2006-01-02", timeline.Dates[i])
+			prev, _ := time.Parse("2006-01-02", timeline.Dates[i-1])
+
+			// Check if consecutive day
+			if curr.Sub(prev).Hours() == 24 {
+				tempStreak++
+			} else {
+				tempStreak = 1
+				tempStart = curr
+			}
+
+			if tempStreak > longestStreak {
+				longestStreak = tempStreak
+				longestStreakMonth = tempStart.Month().String()
+			}
+		}
+	}
+
+	// Most active day of week
+	dayNames := []string{"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"}
+	dayTotals := make([]int, 7)
+	for i, dateStr := range timeline.Dates {
+		t, err := time.Parse("2006-01-02", dateStr)
+		if err != nil {
+			continue
+		}
+		dayTotals[t.Weekday()] += timeline.Counts[i]
+	}
+
+	maxDay := 0
+	for i, total := range dayTotals {
+		if total > dayTotals[maxDay] {
+			maxDay = i
+		}
+	}
+
+	return &ActivityStats{
+		CurrentStreak:      currentStreak,
+		LongestStreak:      longestStreak,
+		LongestStreakMonth: longestStreakMonth,
+		MostActiveDay:      dayNames[maxDay],
+	}, nil
 }

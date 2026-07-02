@@ -8,6 +8,7 @@ export {
 };
 
 export {
+    ActivityStats,
     Job,
     SankeyData,
     SankeyLink,

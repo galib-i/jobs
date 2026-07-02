@@ -6,6 +6,55 @@
 // @ts-ignore: Unused imports
 import { Create as $Create } from "@wailsio/runtime";
 
+export class ActivityStats {
+    /**
+     * Creates a new ActivityStats instance.
+     * @param {Partial<ActivityStats>} [$$source = {}] - The source object to create the ActivityStats.
+     */
+    constructor($$source = {}) {
+        if (!("currentStreak" in $$source)) {
+            /**
+             * @member
+             * @type {number}
+             */
+            this["currentStreak"] = 0;
+        }
+        if (!("longestStreak" in $$source)) {
+            /**
+             * @member
+             * @type {number}
+             */
+            this["longestStreak"] = 0;
+        }
+        if (!("longestStreakMonth" in $$source)) {
+            /**
+             * @member
+             * @type {string}
+             */
+            this["longestStreakMonth"] = "";
+        }
+        if (!("mostActiveDay" in $$source)) {
+            /**
+             * @member
+             * @type {string}
+             */
+            this["mostActiveDay"] = "";
+        }
+
+        Object.assign(this, $$source);
+    }
+
+    /**
+     * Creates a new ActivityStats instance from a string or object.
+     * @param {any} [$$source = {}]
+     * @returns {ActivityStats}
+     */
+    static createFrom($$source = {}) {
+        let $$parsedSource = typeof $$source === 'string' ? JSON.parse($$source) : $$source;
+        return new ActivityStats(/** @type {Partial<ActivityStats>} */($$parsedSource));
+    }
+}
+
 export class Job {
     /**
      * Creates a new Job instance.

@@ -97,7 +97,7 @@ export default function TimelineDiagram() {
           ))}
         </div>
       </div>
-      <div className="bg-slate-900 p-6 pb-4 rounded-xl">
+      <div className="bg-slate-900 p-6 pb-4 border-2 border-slate-700 rounded-xl">
         <ReactECharts
           option={option}
           style={{ height: 260, width: "100%", margin: "0 auto" }}

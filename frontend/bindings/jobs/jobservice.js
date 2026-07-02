@@ -44,11 +44,20 @@ export function DeleteJob(id) {
 }
 
 /**
+ * @returns {$CancellablePromise<$models.ActivityStats | null>}
+ */
+export function GetActivityStats() {
+    return $Call.ByID(2624316250).then(/** @type {($result: any) => any} */(($result) => {
+        return $$createType1($result);
+    }));
+}
+
+/**
  * @returns {$CancellablePromise<$models.StageMetadata[]>}
  */
 export function GetAvailableStages() {
     return $Call.ByID(1567522294).then(/** @type {($result: any) => any} */(($result) => {
-        return $$createType1($result);
+        return $$createType3($result);
     }));
 }
 
@@ -57,7 +66,7 @@ export function GetAvailableStages() {
  */
 export function GetJobs() {
     return $Call.ByID(2795355898).then(/** @type {($result: any) => any} */(($result) => {
-        return $$createType3($result);
+        return $$createType5($result);
     }));
 }
 
@@ -66,7 +75,7 @@ export function GetJobs() {
  */
 export function GetSankeyData() {
     return $Call.ByID(3209808103).then(/** @type {($result: any) => any} */(($result) => {
-        return $$createType5($result);
+        return $$createType7($result);
     }));
 }
 
@@ -76,7 +85,7 @@ export function GetSankeyData() {
  */
 export function GetTimelineData(groupBy) {
     return $Call.ByID(432288241, groupBy).then(/** @type {($result: any) => any} */(($result) => {
-        return $$createType7($result);
+        return $$createType9($result);
     }));
 }
 
@@ -120,11 +129,13 @@ export function WipeDatabase() {
 }
 
 // Private type creation functions
-const $$createType0 = $models.StageMetadata.createFrom;
-const $$createType1 = $Create.Array($$createType0);
-const $$createType2 = $models.Job.createFrom;
+const $$createType0 = $models.ActivityStats.createFrom;
+const $$createType1 = $Create.Nullable($$createType0);
+const $$createType2 = $models.StageMetadata.createFrom;
 const $$createType3 = $Create.Array($$createType2);
-const $$createType4 = $models.SankeyData.createFrom;
-const $$createType5 = $Create.Nullable($$createType4);
-const $$createType6 = $models.TimelineData.createFrom;
+const $$createType4 = $models.Job.createFrom;
+const $$createType5 = $Create.Array($$createType4);
+const $$createType6 = $models.SankeyData.createFrom;
 const $$createType7 = $Create.Nullable($$createType6);
+const $$createType8 = $models.TimelineData.createFrom;
+const $$createType9 = $Create.Nullable($$createType8);
