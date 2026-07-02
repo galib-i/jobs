@@ -5,6 +5,7 @@ build/linux/appimage/build
 build/windows/nsis/MicrosoftEdgeWebview2Setup.exe
 .task
 .bindings-tmp*
+sankey_diagram.png
 
 # Frontend (Vite / React)
 frontend/node_modules/

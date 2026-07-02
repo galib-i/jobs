@@ -2,7 +2,7 @@ import { useState } from "react";
 import { createPortal } from "react-dom";
 import { Button } from "../ui/Button";
 import { TextBox } from "../ui/TextBox";
-import Confirm from "../ui/Confirmation";
+import Confirm from "../ui/DeleteConfirmationPopup";
 
 export default function SettingsPopup({
   availableStages,
@@ -83,7 +83,7 @@ export default function SettingsPopup({
           </div>
           <form onSubmit={handleAdd} className="flex items-center gap-2 pt-2">
             <TextBox
-              theme="dark"
+
               type="text"
               className="flex-1 font-sans"
               placeholder="New stage..."

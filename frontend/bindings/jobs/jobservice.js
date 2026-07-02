@@ -44,6 +44,14 @@ export function DeleteJob(id) {
 }
 
 /**
+ * @param {string} base64Data
+ * @returns {$CancellablePromise<string>}
+ */
+export function ExportSankeyImage(base64Data) {
+    return $Call.ByID(3269862258, base64Data);
+}
+
+/**
  * @returns {$CancellablePromise<$models.ActivityStats | null>}
  */
 export function GetActivityStats() {

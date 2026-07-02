@@ -2,8 +2,11 @@ package main
 
 import (
 	"database/sql"
+	"encoding/base64"
 	"fmt"
 	"log"
+	"os"
+	"path/filepath"
 	"strings"
 
 	_ "modernc.org/sqlite"
@@ -290,4 +293,35 @@ func (js *JobService) RemoveJobStageAt(jobId int64, index int) error {
 	}
 
 	return nil
+}
+
+func (js *JobService) ExportSankeyImage(base64Data string) (string, error) {
+	idx := strings.Index(base64Data, ",")
+	if idx != -1 {
+		base64Data = base64Data[idx+1:]
+	}
+
+	decoded, err := base64.StdEncoding.DecodeString(base64Data)
+	if err != nil {
+		log.Printf("failed to decode base64 image: %v", err)
+		return "", err
+	}
+
+	filename := "sankey_diagram.png"
+	err = os.WriteFile(filename, decoded, 0644)
+	if err != nil {
+		log.Printf("failed to write image to disk: %v", err)
+		return "", err
+	}
+
+	absPath, err := filepath.Abs(filename)
+	if err == nil {
+		homeDir, err := os.UserHomeDir()
+		if err == nil && strings.HasPrefix(absPath, homeDir) {
+			return "~" + strings.TrimPrefix(absPath, homeDir), nil
+		}
+		return absPath, nil
+	}
+
+	return filename, nil
 }

@@ -218,7 +218,7 @@ export default function ActivityHeatmap() {
   }
 
   return (
-    <div className="flex flex-col w-[850px] shrink-0">
+    <div className="flex flex-col w-212.5 shrink-0">
       <div className="relative grid grid-cols-[200px_1fr] bg-slate-900 border-2 border-blue-500 rounded-2xl overflow-hidden contain-content">
         {/* Overall Header */}
         <div className="col-span-full bg-blue-600 border-blue-500 border-b-2 font-pixel font-bold text-white tracking-wider select-none">
@@ -271,7 +271,7 @@ export default function ActivityHeatmap() {
             <div className="flex items-baseline font-pixel font-bold text-slate-100 text-base whitespace-nowrap">
               {stats.longestStreak} day{stats.longestStreak !== 1 ? "s" : ""}
               {stats.longestStreakMonth && (
-                <div className="-top-[2px] relative ml-1.5 font-sans font-normal text-slate-500 text-xs">
+                <div className="-top-0.5 relative ml-1.5 font-sans font-normal text-slate-500 text-xs">
                   · {stats.longestStreakMonth}
                 </div>
               )}

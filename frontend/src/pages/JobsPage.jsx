@@ -103,7 +103,7 @@ export default function JobsPage({
         </div>
         <div className="w-64 font-pixel">
           <TextBox
-            theme="dark"
+
             placeholder="Search..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}

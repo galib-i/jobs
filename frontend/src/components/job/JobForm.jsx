@@ -73,7 +73,7 @@ export default function JobForm({ onAddJob }) {
       {FIELD_CONFIG.map((field) => (
         <TextBox
           key={field.key}
-          theme="dark"
+
           type={field.type || "text"}
           className="lg:flex-1 w-1/3"
           position="middle"

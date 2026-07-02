@@ -121,7 +121,7 @@ export default function TimelineDiagram() {
   };
 
   return (
-    <div className="flex flex-col w-[850px] xl:w-[425px] shrink-0">
+    <div className="flex flex-col w-212.5 xl:w-106.25 shrink-0">
       <div className="relative bg-slate-900 border-2 border-blue-500 rounded-2xl overflow-hidden contain-content">
         {/* Overall Header */}
         <div className="flex justify-between items-center bg-blue-600 border-blue-500 border-b-2 font-pixel font-bold text-white tracking-wider select-none">

@@ -9,9 +9,9 @@ var stageColourRules = []struct {
 	key    string
 	colour string
 }{
-	{"application", "#22c55e"},
+	{"application", "#64748b"},
 	{"interview", "#eab308"},
-	{"offer", "#3b82f6"},
+	{"offer", "#22c55e"},
 	{"rejected", "#ef4444"},
 	{"withdrawn", "#94a3b8"},
 }
@@ -42,7 +42,7 @@ func getStageTextColour(bgColour string) string {
 }
 
 func isLastStage(stage string) bool {
-	return strings.EqualFold(stage, "rejected") || strings.EqualFold(stage, "withdrawn")
+	return strings.EqualFold(stage, "rejected") || strings.EqualFold(stage, "withdrawn") || strings.EqualFold(stage, "offer")
 }
 
 var DefaultAvailableStages = []string{"Interview", "Offer", "Rejected", "Withdrawn"}

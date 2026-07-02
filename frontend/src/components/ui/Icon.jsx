@@ -54,10 +54,9 @@ export function BinIcon() {
   );
 }
 
-export function InfoIcon({ size = "md" }) {
-  const iconSize = size === "sm" ? "w-3.5 h-3.5" : themeIconSize;
+export function InfoIcon() {
   return (
-    <SvgIcon className={iconSize}>
+    <SvgIcon className="w-3.5 h-3.5">
       <circle cx="12" cy="12" r="10" />
       <path d="M12 16v-4" />
       <path d="M12 8h.01" />
@@ -74,12 +73,21 @@ export function SettingsIcon() {
   );
 }
 
-export function SearchIcon({ size = "md" }) {
-  const iconSize = size === "sm" ? "w-3.5 h-3.5" : themeIconSize;
+export function SearchIcon() {
   return (
-    <SvgIcon className={iconSize}>
+    <SvgIcon>
       <circle cx="11" cy="11" r="8" />
       <path d="m23 23-6.34-6.34" />
+    </SvgIcon>
+  );
+}
+
+export function DownloadIcon() {
+  return (
+    <SvgIcon className="w-3.5 h-3.5">
+      <path d="M12 15V3" />
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+      <path d="m7 10 5 5 5-5" />
     </SvgIcon>
   );
 }

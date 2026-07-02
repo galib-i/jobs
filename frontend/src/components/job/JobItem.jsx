@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Button } from "../ui/Button";
 import { BinIcon, InfoIcon } from "../ui/Icon";
 import EditableInput from "../ui/EditableInput";
-import Confirm from "../ui/Confirmation";
+import Confirm from "../ui/DeleteConfirmationPopup";
 import Tooltip from "../ui/Tooltip";
 import JobRoleEditor from "./JobRoleEditor";
 import JobStageSelector from "./JobStageSelector";
@@ -58,7 +58,7 @@ export default function JobListItem({
               isIcon
               size="sm"
             >
-              <InfoIcon size="sm" />
+              <InfoIcon />
             </Button>
           </div>
           <JobRoleEditor job={job} onUpdate={onUpdate} />
