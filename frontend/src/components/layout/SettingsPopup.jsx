@@ -58,7 +58,9 @@ export default function SettingsPopup({
             <div className="space-y-1 pr-1 max-h-48 overflow-y-auto custom-scrollbar">
               {(availableStages || []).map((stage) => {
                 const isUndeleteable =
-                  stage.name === "Rejected" || stage.name === "Withdrawn";
+                  stage.name === "Rejected" ||
+                  stage.name === "Withdrawn" ||
+                  stage.name === "Offer";
                 return (
                   <div
                     key={stage.name}
@@ -83,12 +85,13 @@ export default function SettingsPopup({
           </div>
           <form onSubmit={handleAdd} className="flex items-center gap-2 pt-2">
             <TextBox
-
               type="text"
               className="flex-1 font-sans"
               placeholder="New stage..."
               value={newStageName}
-              onChange={(e) => setNewStageName(e.target.value)}
+              onChange={(e) =>
+                setNewStageName(e.target.value.replace(/[()]/g, ""))
+              }
             />
             <Button theme="green" type="submit" size="sm">
               ADD

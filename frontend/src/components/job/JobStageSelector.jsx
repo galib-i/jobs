@@ -40,6 +40,11 @@ export default function JobStageSelector({ job, availableStages, onAddStage }) {
                   : "transparent";
                 const defaultText = isDisabled ? "#64748b" : "#e2e8f0";
 
+                const count =
+                  job.stages?.filter((s) => s === stage.name).length || 0;
+                const displayStage =
+                  count > 0 ? `${stage.name} (${count + 1})` : stage.name;
+
                 return (
                   <button
                     key={stage.name}
@@ -62,7 +67,7 @@ export default function JobStageSelector({ job, availableStages, onAddStage }) {
                       }
                     }}
                   >
-                    {stage.name}
+                    {displayStage}
                   </button>
                 );
               })}

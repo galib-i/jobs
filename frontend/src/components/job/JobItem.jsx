@@ -23,9 +23,25 @@ export default function JobListItem({
   const [isEditingNotes, setIsEditingNotes] = useState(false);
 
   const lastStage = job.lastStage || "";
+  const lastStageCount = job.stages
+    ? job.stages.filter((s) => s === lastStage).length
+    : 0;
+  const displayLastStage =
+    lastStageCount > 1 ? `${lastStage} (${lastStageCount})` : lastStage;
+
   const bgColour = job.lastStageColour || "var(--color-yellow-500)";
   const textColour = job.lastStageTextColour || "var(--color-slate-800)";
   const tooltipText = job.stageHistory || "";
+
+  const stageCounts = {};
+  const formattedStages = (job.stages || []).map((stage) => {
+    stageCounts[stage] = (stageCounts[stage] || 0) + 1;
+    return {
+      raw: stage,
+      display:
+        stageCounts[stage] > 1 ? `${stage} (${stageCounts[stage]})` : stage,
+    };
+  });
 
   return (
     <>
@@ -74,42 +90,45 @@ export default function JobListItem({
           <Tooltip
             content={
               <div className="flex items-center gap-2">
-                {job.stages && job.stages.length > 0 ? (
-                  job.stages.map((stage, index) => (
-                    <div
-                      key={index}
-                      className="group/stage flex items-center gap-1"
-                    >
-                      <span>{stage}</span>
-                      {stage.toLowerCase() !== "application" && (
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            if (onRemoveStage) onRemoveStage(job.id, index);
-                          }}
-                          className="text-slate-400 hover:text-red-400 transition-all"
-                          title="Remove stage"
-                        >
-                          <svg
-                            className="w-4 h-4"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M6 18L18 6M6 6l12 12"
-                            />
-                          </svg>
-                        </button>
-                      )}
-                      {index < job.stages.length - 1 && (
-                        <span className="ml-1 text-slate-500">➔</span>
-                      )}
-                    </div>
-                  ))
+                {formattedStages.length > 0 ? (
+                  formattedStages.map((stageObj, index) => {
+                    return (
+                      <div
+                        key={index}
+                        className="group/stage flex items-center gap-1"
+                      >
+                        <span>{stageObj.display}</span>
+                        {stageObj.raw.toLowerCase() !== "application" &&
+                          stageObj.raw.toLowerCase() !== "offer" && (
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                if (onRemoveStage) onRemoveStage(job.id, index);
+                              }}
+                              className="text-slate-400 hover:text-red-400 transition-all"
+                              title="Remove stage"
+                            >
+                              <svg
+                                className="w-4 h-4"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M6 18L18 6M6 6l12 12"
+                                />
+                              </svg>
+                            </button>
+                          )}
+                        {index < job.stages.length - 1 && (
+                          <span className="ml-1 text-slate-500">➔</span>
+                        )}
+                      </div>
+                    );
+                  })
                 ) : (
                   <span>None</span>
                 )}
@@ -121,7 +140,7 @@ export default function JobListItem({
               className="block px-2 py-1 rounded font-bold text-xs truncate cursor-help"
               style={{ backgroundColor: bgColour, color: textColour }}
             >
-              {lastStage || "None"}
+              {displayLastStage || "None"}
             </span>
           </Tooltip>
           <JobStageSelector
