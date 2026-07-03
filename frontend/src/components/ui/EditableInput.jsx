@@ -57,7 +57,7 @@ export default function EditableInput({
         onBlur={handleSave}
         onKeyDown={handleKeyDown}
         rows={1}
-        className={`p-1 w-full text-[length:inherit] font-[inherit] resize-none overflow-hidden bg-slate-800 text-slate-200 border border-slate-600 rounded outline-none ${className}`}
+        className={`p-1 w-full text-[length:inherit] font-[inherit] resize-none overflow-hidden bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-600 rounded outline-none ${className}`}
       />
     );
   }

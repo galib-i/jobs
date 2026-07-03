@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useJobs } from "./hooks/useJobs";
 import Navbar from "./components/layout/Navbar";
 import JobsPage from "./pages/JobsPage";
@@ -21,12 +21,24 @@ function App() {
     resetAvailableStages,
     wipeDatabase,
   } = useJobs();
+  const [theme, setTheme] = useState("dark");
+
+  // Apply dark mode class to html root
+  useEffect(() => {
+    if (theme === "dark") {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  }, [theme]);
 
   return (
     <div className="m-4">
       <Navbar
         activePage={page}
         setPage={setPage}
+        theme={theme}
+        setTheme={setTheme}
         availableStages={availableStages}
         addAvailableStage={addAvailableStage}
         deleteAvailableStage={deleteAvailableStage}
@@ -34,7 +46,7 @@ function App() {
         wipeDatabase={wipeDatabase}
       />
 
-      {page === "diagrams" && <DiagramsPage />}
+      {page === "diagrams" && <DiagramsPage theme={theme} />}
 
       {page === "jobs" && (
         <JobsPage

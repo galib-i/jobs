@@ -9,7 +9,7 @@ import { Button } from "../ui/Button";
 import { DownloadIcon } from "../ui/Icon";
 import SuccessPopup from "../ui/SuccessPopup";
 
-export default function SankeyDiagram() {
+export default function SankeyDiagram({ theme }) {
   const [sankeyData, setSankeyData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [showSuccess, setShowSuccess] = useState(false);
@@ -35,7 +35,7 @@ export default function SankeyDiagram() {
       const base64Data = tempInstance.getDataURL({
         type: "png",
         pixelRatio: 2,
-        backgroundColor: "#0f172a",
+        backgroundColor: theme === "dark" ? "#0f172a" : "#f1f5f9",
       });
       ExportSankeyImage(base64Data)
         .then((path) => {
@@ -115,7 +115,9 @@ export default function SankeyDiagram() {
   if (isLoading) return null;
   if (!option)
     return (
-      <p className="mt-8 mb-4 font-pixel text-slate-400 text-center">No data</p>
+      <p className="mt-8 mb-4 font-pixel text-slate-500 dark:text-slate-400 text-center">
+        No data
+      </p>
     );
 
   const nodeCount = option.series[0].data.length;
@@ -124,7 +126,7 @@ export default function SankeyDiagram() {
   return (
     <>
       <div className="flex flex-col mx-auto w-212.5 xl:w-324.75 shrink-0">
-        <div className="relative bg-slate-900 border-2 border-blue-500 rounded-2xl overflow-hidden">
+        <div className="relative bg-slate-100 dark:bg-slate-900 border-2 border-blue-500 rounded-2xl overflow-hidden">
           {/* Overall Header */}
           <div className="flex justify-between items-center bg-blue-600 border-blue-500 border-b-2 font-pixel font-bold text-white tracking-wider select-none">
             <div className="px-4 py-3 pl-6 whitespace-nowrap">Progress</div>

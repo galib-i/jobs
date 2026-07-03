@@ -46,10 +46,10 @@ export default function JobListItem({
   return (
     <>
       <div
-        className={`grid grid-cols-subgrid col-span-full border-b-2 last:border-b-0 last:rounded-b-[14px] text-slate-200 text-sm tracking-wide divide-x ${
+        className={`grid grid-cols-subgrid col-span-full border-b-2 last:border-b-0 last:rounded-b-[14px] text-slate-800 dark:text-slate-200 text-sm tracking-wide divide-x ${
           isDeleteConfirmationOpen
-            ? "bg-red-900/60 border-red-800 divide-red-800/50"
-            : "bg-slate-800 hover:bg-slate-700 border-slate-700 divide-slate-600/50"
+            ? "bg-red-100 dark:bg-red-900/60 border-red-300 dark:border-red-800 divide-red-300 dark:divide-red-800/50"
+            : "bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 border-slate-300 dark:border-slate-700 divide-slate-300 dark:divide-slate-600/50"
         }`}
       >
         <div className="flex items-center px-4 py-2 pl-6 overflow-hidden">
@@ -177,9 +177,9 @@ export default function JobListItem({
         </div>
       </div>
       {showDescription && job.description && (
-        <div className="flex items-center gap-2 col-span-full bg-slate-800/80 px-6 py-3 border-slate-700 border-b-2 last:border-b-0 last:rounded-b-[14px] font-normal text-slate-200 text-sm">
+        <div className="flex items-center gap-2 col-span-full bg-slate-50 dark:bg-slate-800/80 px-6 py-3 border-slate-300 dark:border-slate-700 border-b-2 last:border-b-0 last:rounded-b-[14px] font-normal text-slate-800 dark:text-slate-200 text-sm">
           <span
-            className="font-pixel font-bold text-yellow-400 uppercase tracking-wider select-none shrink-0"
+            className="font-pixel font-bold text-yellow-600 dark:text-yellow-400 uppercase tracking-wider select-none shrink-0"
             draggable={false}
             style={{ WebkitUserDrag: "none" }}
           >
@@ -193,9 +193,9 @@ export default function JobListItem({
         </div>
       )}
       {isAddingDescription && (
-        <div className="flex items-center gap-2 col-span-full bg-slate-800/80 px-6 py-3 border-slate-700 border-b-2 last:border-b-0 last:rounded-b-[14px] text-sm">
+        <div className="flex items-center gap-2 col-span-full bg-slate-50 dark:bg-slate-800/80 px-6 py-3 border-slate-300 dark:border-slate-700 border-b-2 last:border-b-0 last:rounded-b-[14px] text-slate-800 dark:text-slate-200 text-sm">
           <span
-            className="font-pixel font-bold text-slate-400 uppercase tracking-wider select-none shrink-0"
+            className="font-pixel font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider select-none shrink-0"
             draggable={false}
             style={{ WebkitUserDrag: "none" }}
           >

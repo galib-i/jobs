@@ -19,7 +19,7 @@ function formatDate(d) {
   return `${y}-${m}-${day}`;
 }
 
-export default function ActivityHeatmap() {
+export default function ActivityHeatmap({ theme }) {
   const [timelineData, setTimelineData] = useState(null);
   const [stats, setStats] = useState(null);
 
@@ -86,9 +86,15 @@ export default function ActivityHeatmap() {
 
           return `${count} activit${count === 1 ? "y" : "ies"} on ${d}-${m}`;
         },
-        backgroundColor: "rgba(15, 23, 42, 0.9)",
-        borderColor: "#334155",
-        textStyle: { color: "#f8fafc", fontSize: 12 },
+        backgroundColor:
+          theme === "dark"
+            ? "rgba(15, 23, 42, 0.9)"
+            : "rgba(255, 255, 255, 0.9)",
+        borderColor: theme === "dark" ? "#334155" : "#cbd5e1",
+        textStyle: {
+          color: theme === "dark" ? "#f8fafc" : "#1e293b",
+          fontSize: 12,
+        },
       },
       visualMap: {
         dimension: 2,
@@ -106,9 +112,13 @@ export default function ActivityHeatmap() {
         showLabel: false,
         text: ["More", "Less"],
         textGap: 6,
-        textStyle: { color: "#94a3b8", fontSize: 11, fontWeight: "bold" },
+        textStyle: {
+          color: theme === "dark" ? "#94a3b8" : "#64748b",
+          fontSize: 11,
+          fontWeight: "bold",
+        },
         pieces: [
-          { value: 0, color: "#1e293b" },
+          { value: 0, color: theme === "dark" ? "#1e293b" : "#e2e8f0" },
           { min: 1, max: 2, color: "#0e4429" },
           { min: 3, max: 4, color: "#006d32" },
           { min: 5, max: 6, color: "#26a641" },
@@ -130,7 +140,7 @@ export default function ActivityHeatmap() {
         axisLine: { show: false },
         axisTick: { show: false },
         axisLabel: {
-          color: "#94a3b8",
+          color: theme === "dark" ? "#94a3b8" : "#64748b",
           fontWeight: "bold",
           interval: 0,
           formatter: (value) => {
@@ -162,7 +172,7 @@ export default function ActivityHeatmap() {
         axisLine: { show: false },
         axisTick: { show: false },
         axisLabel: {
-          color: "#94a3b8",
+          color: theme === "dark" ? "#94a3b8" : "#64748b",
           fontWeight: "bold",
           formatter: (value) => {
             if (value === "Mon" || value === "Wed" || value === "Fri") {
@@ -184,9 +194,9 @@ export default function ActivityHeatmap() {
           height: 8,
           showDataShadow: false,
           showDetail: false,
-          borderColor: "#1e293b", // slate-800
-          backgroundColor: "#0f172a", // slate-900
-          fillerColor: "#3b82f6", // blue-500
+          borderColor: theme === "dark" ? "#1e293b" : "#e2e8f0",
+          backgroundColor: theme === "dark" ? "#0f172a" : "#f1f5f9",
+          fillerColor: "#3b82f6",
           handleSize: 0,
           brushSelect: false,
         },
@@ -204,7 +214,7 @@ export default function ActivityHeatmap() {
           data: heatmapData,
           itemStyle: {
             borderRadius: 4,
-            borderColor: "#0f172a",
+            borderColor: theme === "dark" ? "#0f172a" : "#f1f5f9",
             borderWidth: 2,
           },
         },
@@ -212,7 +222,7 @@ export default function ActivityHeatmap() {
     };
 
     return chart;
-  }, [timelineData]);
+  }, [timelineData, theme]);
 
   if (!option || !stats) {
     return null;
@@ -220,7 +230,7 @@ export default function ActivityHeatmap() {
 
   return (
     <div className="flex flex-col w-212.5 shrink-0">
-      <div className="relative grid grid-cols-[200px_1fr] bg-slate-900 border-2 border-blue-500 rounded-2xl overflow-hidden contain-content">
+      <div className="relative grid grid-cols-[200px_1fr] bg-slate-100 dark:bg-slate-900 border-2 border-blue-500 rounded-2xl overflow-hidden contain-content">
         {/* Overall Header */}
         <div className="col-span-full bg-blue-600 border-blue-500 border-b-2 font-pixel font-bold text-white tracking-wider select-none">
           <div className="flex items-center px-4 py-3 pl-6 whitespace-nowrap">
@@ -229,26 +239,28 @@ export default function ActivityHeatmap() {
         </div>
 
         {/* Left Column: Stats */}
-        <div className="flex flex-col justify-between gap-4 p-6 border-slate-700 border-r">
+        <div className="flex flex-col justify-between gap-4 p-6 border-slate-300 dark:border-slate-700 border-r">
           <div>
-            <div className="flex items-center gap-1.5 mb-1 text-slate-400 text-xs">
+            <div className="flex items-center gap-1.5 mb-1 text-slate-500 dark:text-slate-400 text-xs">
               <ClockIcon />
               Current streak
             </div>
-            <div className="font-pixel font-bold text-slate-100 text-base">
+            <div className="font-pixel font-bold text-slate-800 dark:text-slate-100 text-base">
               {stats.currentStreak} day{stats.currentStreak !== 1 ? "s" : ""}
             </div>
           </div>
 
           <div>
-            <div className="flex items-center gap-1.5 mb-1 text-slate-400 text-xs">
+            <div className="flex items-center gap-1.5 mb-1 text-slate-500 dark:text-slate-400 text-xs">
               <FlameIcon />
               Longest streak
             </div>
-            <div className="flex items-baseline font-pixel font-bold text-slate-100 text-base whitespace-nowrap">
-              {stats.longestStreak} day{stats.longestStreak !== 1 ? "s" : ""}
+            <div className="flex items-baseline font-bold text-slate-800 dark:text-slate-100 text-base whitespace-nowrap">
+              <span className="font-pixel">
+                {stats.longestStreak} day{stats.longestStreak !== 1 ? "s" : ""}
+              </span>
               {stats.longestStreakMonth && (
-                <div className="-top-0.5 relative ml-1.5 font-sans font-normal text-slate-500 text-xs">
+                <div className="-top-0.5 relative ml-1.5 font-normal text-slate-500 text-xs">
                   · {stats.longestStreakMonth}
                 </div>
               )}
@@ -256,11 +268,11 @@ export default function ActivityHeatmap() {
           </div>
 
           <div>
-            <div className="flex items-center gap-1.5 mb-1 text-slate-400 text-xs">
+            <div className="flex items-center gap-1.5 mb-1 text-slate-500 dark:text-slate-400 text-xs">
               <CalendarIcon />
               Most active day
             </div>
-            <div className="font-pixel font-bold text-slate-100 text-base">
+            <div className="font-pixel font-bold text-slate-800 dark:text-slate-100 text-base">
               {stats.mostActiveDay}
             </div>
           </div>

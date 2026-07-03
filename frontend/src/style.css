@@ -1,9 +1,9 @@
 @import "tailwindcss";
-
+@custom-variant dark (&:where(.dark, .dark *));
 @utility font-pixel {
   font-family: "Press Start 2P", cursive;
   font-size: 0.7em;
-  text-shadow: 0 2px 1px rgba(0, 0, 0, 0.2);
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.2);
 }
 
 @utility grid-cols-jobs {
@@ -28,12 +28,29 @@
 }
 
 svg {
-  filter: drop-shadow(0 2px 1px rgba(0, 0, 0, 0.2));
+  filter: drop-shadow(0 1px 0 rgba(0, 0, 0, 0.2));
+}
+
+:root {
+  --sb-track: var(--color-slate-200);
+  --sb-track-border: var(--color-slate-300);
+  --sb-thumb: var(--color-slate-400);
+  --sb-thumb-border: var(--color-slate-300);
+  --sb-thumb-hover: var(--color-slate-500);
+  --sb-corner: var(--color-slate-200);
+}
+
+:root.dark {
+  --sb-track: var(--color-slate-900);
+  --sb-track-border: var(--color-slate-800);
+  --sb-thumb: var(--color-blue-500);
+  --sb-thumb-border: var(--color-slate-800);
+  --sb-thumb-hover: var(--color-blue-400);
+  --sb-corner: var(--color-slate-900);
 }
 
 body {
-  background-color: var(--color-slate-900);
-  color: var(--color-slate-200);
+  @apply bg-slate-100 dark:bg-slate-900 text-slate-800 dark:text-slate-200;
 }
 
 /* Custom scrollbar */
@@ -43,20 +60,20 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--color-slate-900);
-  border-left: 2px solid var(--color-slate-800);
+  background: var(--sb-track);
+  border-left: 2px solid var(--sb-track-border);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--color-blue-500);
-  border: 2px solid var(--color-slate-800);
+  background: var(--sb-thumb);
+  border: 2px solid var(--sb-thumb-border);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--color-blue-400);
+  background: var(--sb-thumb-hover);
 }
 
 ::-webkit-scrollbar-corner {
-  background: var(--color-slate-900);
+  background: var(--sb-corner);
 }

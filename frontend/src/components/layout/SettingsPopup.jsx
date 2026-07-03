@@ -29,15 +29,15 @@ export default function SettingsPopup({
       onClick={onClose}
     >
       <div
-        className="bg-slate-800 shadow-xl mx-4 border-2 border-slate-600 rounded-xl w-full max-w-sm overflow-hidden font-pixel select-none"
+        className="bg-white dark:bg-slate-800 shadow-xl mx-4 border-2 border-slate-300 dark:border-slate-600 rounded-xl w-full max-w-sm overflow-hidden select-none"
         style={{ "--wails-draggable": "no-drag" }}
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex justify-between items-center bg-slate-900 px-4 py-3 border-slate-700 border-b font-bold text-slate-300 text-sm tracking-wider">
-          <span>Settings</span>
+        <div className="flex justify-between items-center bg-slate-100 dark:bg-slate-900 px-4 py-3 border-slate-300 dark:border-slate-700 border-b font-bold text-slate-800 dark:text-slate-300 text-sm tracking-wider">
+          <span className="font-pixel">Settings</span>
           <button
             onClick={onClose}
-            className="text-slate-500 hover:text-white cursor-pointer"
+            className="text-slate-500 hover:text-slate-900 dark:hover:text-white cursor-pointer"
           >
             ✕
           </button>
@@ -45,12 +45,12 @@ export default function SettingsPopup({
         <div className="space-y-4 p-4">
           <div>
             <div className="flex justify-between items-center mb-2">
-              <h3 className="font-bold text-slate-400 text-xs uppercase tracking-wider">
+              <h3 className="font-pixel font-bold text-slate-500 dark:text-slate-400 text-xs uppercase tracking-wider">
                 Manage Stages
               </h3>
               <button
                 onClick={onResetStages}
-                className="text-[10px] text-slate-500 hover:text-slate-300 uppercase tracking-wider transition-colors cursor-pointer"
+                className="font-pixel text-[10px] text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 dark:text-slate-500 uppercase tracking-wider transition-colors cursor-pointer"
               >
                 Reset Defaults
               </button>
@@ -64,9 +64,9 @@ export default function SettingsPopup({
                 return (
                   <div
                     key={stage.name}
-                    className="flex justify-between items-center bg-slate-700/50 px-2 py-1.5 rounded"
+                    className="flex justify-between items-center bg-slate-100 dark:bg-slate-700/50 px-2 py-1.5 rounded"
                   >
-                    <span className="flex-1 font-sans font-bold text-slate-200 text-sm truncate">
+                    <span className="flex-1 font-bold text-slate-800 dark:text-slate-200 text-sm truncate">
                       {stage.name}
                     </span>
                     {!isUndeleteable && (
@@ -86,7 +86,7 @@ export default function SettingsPopup({
           <form onSubmit={handleAdd} className="flex items-center gap-2 pt-2">
             <TextBox
               type="text"
-              className="flex-1 font-sans"
+              className="flex-1"
               placeholder="New stage..."
               value={newStageName}
               onChange={(e) =>
@@ -97,8 +97,8 @@ export default function SettingsPopup({
               ADD
             </Button>
           </form>
-          <div className="pt-4 border-slate-700 border-t">
-            <h3 className="mb-2 font-bold text-red-400 text-xs uppercase tracking-wider">
+          <div className="pt-4 border-slate-300 dark:border-slate-700 border-t">
+            <h3 className="mb-2 font-pixel font-bold text-red-400 text-xs uppercase tracking-wider">
               Reset
             </h3>
             <Button

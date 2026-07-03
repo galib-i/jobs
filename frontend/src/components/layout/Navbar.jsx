@@ -6,13 +6,14 @@ import SettingsPopup from "./SettingsPopup";
 export default function Navbar({
   activePage,
   setPage,
+  theme,
+  setTheme,
   availableStages,
   addAvailableStage,
   deleteAvailableStage,
   resetAvailableStages,
   wipeDatabase,
 }) {
-  const [isDarkMode, setIsDarkMode] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   return (
@@ -30,13 +31,13 @@ export default function Navbar({
       </div>
 
       {/* Theme */}
-      <div className="flex flex-1 justify-start">
+      <div className="flex flex-1 justify-start gap-2">
         <Button
           theme="yellow"
-          onClick={() => setIsDarkMode((prev) => !prev)}
+          onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
           isIcon
         >
-          {isDarkMode ? <SunIcon /> : <MoonIcon />}
+          {theme === "dark" ? <SunIcon /> : <MoonIcon />}
         </Button>
         <div className="relative">
           <Button isIcon theme="blue" onClick={() => setIsSettingsOpen(true)}>

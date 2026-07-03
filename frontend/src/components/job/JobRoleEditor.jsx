@@ -42,14 +42,14 @@ export default function JobRoleEditor({ job, onUpdate }) {
       <input
         autoFocus
         type="text"
-        className="bg-slate-800 px-2 py-1 border border-slate-600 rounded outline-none w-full text-slate-200 text-sm"
+        className="bg-white dark:bg-slate-800 px-2 py-1 border border-slate-300 dark:border-slate-600 rounded outline-none w-full text-slate-800 dark:text-slate-200 text-sm"
         value={editRole}
         onChange={(e) => setEditRole(e.target.value)}
         placeholder="Role"
       />
       <input
         type="url"
-        className="bg-slate-800 px-2 py-1 border border-slate-600 rounded outline-none w-full text-blue-400 text-xs"
+        className="bg-white dark:bg-slate-800 px-2 py-1 border border-slate-300 dark:border-slate-600 rounded outline-none w-full text-blue-600 dark:text-blue-400 text-xs"
         value={editLink}
         onChange={(e) => setEditLink(e.target.value)}
         placeholder="Link"

@@ -113,14 +113,14 @@ export default function JobsPage({
       </div>
       <div className="relative mt-4 mb-4">
         <div
-          className={`relative grid grid-cols-jobs lg:grid-cols-jobs-lg bg-slate-900 selection:text-white border-2 rounded-2xl ${
+          className={`relative grid grid-cols-jobs lg:grid-cols-jobs-lg bg-slate-100 dark:bg-slate-900 selection:text-white border-2 rounded-2xl ${
             inactive
               ? "border-gray-500 selection:bg-gray-500"
               : "border-blue-500 selection:bg-blue-500"
           }`}
         >
           <div
-            className={`grid grid-cols-subgrid col-span-full border-b-2 font-pixel font-bold text-white tracking-wider select-none rounded-t-2xl last:rounded-b-[14px] last:border-b-0 ${
+            className={`grid grid-cols-subgrid col-span-full border-b-2 font-pixel font-bold text-white tracking-wider select-none rounded-t-[14px] last:rounded-b-[14px] last:border-b-0 ${
               inactive
                 ? "bg-gray-600 border-gray-500 divide-x divide-gray-500"
                 : "bg-blue-600 border-blue-500 divide-x divide-blue-500"
