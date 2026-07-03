@@ -5,8 +5,8 @@ on:
     branches:
       - main
     paths-ignore:
-      - '**.md'
-      - 'docs/**'
+      - "**.md"
+      - "docs/**"
 
 concurrency:
   group: build-${{ github.ref }}
@@ -110,7 +110,6 @@ jobs:
           name: "Latest Automatic Build"
           body: |
             Latest update commit: ${{ github.sha }}
-          prerelease: true
           files: |
             bin/jobs.exe
             bin/jobs-linux

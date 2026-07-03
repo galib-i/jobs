@@ -11,17 +11,10 @@ import (
 //go:embed all:frontend/dist
 var assets embed.FS
 
-func init() {
-	// Register a custom event whose associated data type is string.
-	// This is not required, but the binding generator will pick up registered events
-	// and provide a strongly typed JS/TS API for them.
-
-}
-
 func main() {
 	app := application.New(application.Options{
-		Name:        "jobs",
-		Description: "A demo of using raw HTML & CSS",
+		Name:        "job-application-tracker",
+		Description: "Track your job applications.",
 		Services: []application.Service{
 			application.NewService(NewJobService()),
 		},
