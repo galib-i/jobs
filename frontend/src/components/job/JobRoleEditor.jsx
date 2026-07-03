@@ -59,11 +59,7 @@ export default function JobRoleEditor({ job, onUpdate }) {
     <>
       <span
         onDoubleClick={handleStartEditRoleLink}
-        style={{
-          padding: "4px",
-          border: "1px solid transparent",
-        }}
-        className="truncate"
+        className="p-1 border border-transparent truncate"
       >
         {job.role}
       </span>

@@ -11,6 +11,7 @@ import SuccessPopup from "../ui/SuccessPopup";
 
 export default function SankeyDiagram() {
   const [sankeyData, setSankeyData] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [showSuccess, setShowSuccess] = useState(false);
   const [savedPath, setSavedPath] = useState("");
   const chartRef = useRef(null);
@@ -18,38 +19,41 @@ export default function SankeyDiagram() {
   const handleExport = () => {
     if (!option) return;
 
-    // Load an invisible full-width container to always save the large version
     const tempDiv = document.createElement("div");
-    tempDiv.style.width = "1299px";
-    tempDiv.style.height =
-      Math.max(300, option.series[0].data.length * 20) + "px";
-    tempDiv.style.position = "absolute";
-    tempDiv.style.left = "-9999px";
+    Object.assign(tempDiv.style, {
+      width: "1299px",
+      height: Math.max(120, option.series[0].data.length * 40) + "px",
+      position: "absolute",
+      left: "-9999px",
+    });
+
     document.body.appendChild(tempDiv);
 
     const tempInstance = echarts.init(tempDiv, null, { renderer: "canvas" });
-    tempInstance.setOption({ ...option, animation: false });
-
-    const base64Data = tempInstance.getDataURL({
-      type: "png",
-      pixelRatio: 2,
-      backgroundColor: "#0f172a",
-    });
-
-    // Clean up
-    tempInstance.dispose();
-    document.body.removeChild(tempDiv);
-
-    ExportSankeyImage(base64Data)
-      .then((path) => {
-        setSavedPath(path);
-        setShowSuccess(true);
-      })
-      .catch(console.error);
+    try {
+      tempInstance.setOption({ ...option, animation: false });
+      const base64Data = tempInstance.getDataURL({
+        type: "png",
+        pixelRatio: 2,
+        backgroundColor: "#0f172a",
+      });
+      ExportSankeyImage(base64Data)
+        .then((path) => {
+          setSavedPath(path);
+          setShowSuccess(true);
+        })
+        .catch(console.error);
+    } finally {
+      tempInstance.dispose();
+      document.body.removeChild(tempDiv);
+    }
   };
 
   useEffect(() => {
-    GetSankeyData().then(setSankeyData).catch(console.error);
+    GetSankeyData()
+      .then(setSankeyData)
+      .catch(console.error)
+      .finally(() => setIsLoading(false));
   }, []);
 
   const option = useMemo(() => {
@@ -69,6 +73,7 @@ export default function SankeyDiagram() {
       return {
         name: node.name,
         cleanName: node.cleanName,
+        value: node.value,
         itemStyle: { color: node.colour },
         label: {
           rich: {
@@ -84,6 +89,11 @@ export default function SankeyDiagram() {
       series: [
         {
           type: "sankey",
+          top: "10%",
+          bottom: "10%",
+          left: 40,
+          right: 150,
+          nodeWidth: 20,
           layoutIterations: 32,
           silent: true,
           nodeAlign: "left",
@@ -102,12 +112,19 @@ export default function SankeyDiagram() {
     };
   }, [sankeyData]);
 
-  if (!option) return <p>No data</p>;
+  if (isLoading) return null;
+  if (!option)
+    return (
+      <p className="mt-8 mb-4 font-pixel text-slate-400 text-center">No data</p>
+    );
+
+  const nodeCount = option.series[0].data.length;
+  const chartHeight = Math.max(120, nodeCount * 40);
 
   return (
     <>
       <div className="flex flex-col mx-auto w-212.5 xl:w-324.75 shrink-0">
-        <div className="relative bg-slate-900 border-2 border-blue-500 rounded-2xl overflow-hidden contain-content">
+        <div className="relative bg-slate-900 border-2 border-blue-500 rounded-2xl overflow-hidden">
           {/* Overall Header */}
           <div className="flex justify-between items-center bg-blue-600 border-blue-500 border-b-2 font-pixel font-bold text-white tracking-wider select-none">
             <div className="px-4 py-3 pl-6 whitespace-nowrap">Progress</div>
@@ -124,7 +141,7 @@ export default function SankeyDiagram() {
               ref={chartRef}
               option={option}
               style={{
-                height: Math.max(300, option.series[0].data.length * 20),
+                height: chartHeight,
                 width: "100%",
               }}
               notMerge

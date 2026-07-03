@@ -91,3 +91,31 @@ export function DownloadIcon() {
     </SvgIcon>
   );
 }
+
+export function ClockIcon() {
+  return (
+    <SvgIcon className="w-3.5 h-3.5">
+      <circle cx="12" cy="12" r="10" />
+      <polyline points="12 6 12 12 16 14" />
+    </SvgIcon>
+  );
+}
+
+export function FlameIcon() {
+  return (
+    <SvgIcon className="w-3.5 h-3.5">
+      <path d="M12 3q1 4 4 6.5t3 5.5a1 1 0 0 1-14 0 5 5 0 0 1 1-3 1 1 0 0 0 5 0c0-2-1.5-3-1.5-5q0-2 2.5-4" />
+    </SvgIcon>
+  );
+}
+
+export function CalendarIcon() {
+  return (
+    <SvgIcon className="w-3.5 h-3.5">
+      <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+      <line x1="16" y1="2" x2="16" y2="6" />
+      <line x1="8" y1="2" x2="8" y2="6" />
+      <line x1="3" y1="10" x2="21" y2="10" />
+    </SvgIcon>
+  );
+}

@@ -1,22 +1,24 @@
 import { useState, useRef, useEffect } from "react";
 
-const EditableInput = ({
+export default function EditableInput({
   initialValue,
   onSave,
   className = "",
-  isEditingProp,
-  setIsEditingProp,
-}) => {
-  const [internalIsEditing, setInternalIsEditing] = useState(false);
-
-  // Use controlled props if provided, otherwise fallback to internal state
-  const isEditing =
-    isEditingProp !== undefined ? isEditingProp : internalIsEditing;
-  const setIsEditing =
-    setIsEditingProp !== undefined ? setIsEditingProp : setInternalIsEditing;
-
+  editing,
+  onEditingChange,
+}) {
+  const [isEditing, setIsEditing] = useState(editing ?? false);
   const [value, setValue] = useState(initialValue);
   const textareaRef = useRef(null);
+
+  useEffect(() => {
+    if (editing !== undefined) setIsEditing(editing);
+  }, [editing]);
+
+  const updateEditing = (val) => {
+    setIsEditing(val);
+    onEditingChange?.(val);
+  };
 
   useEffect(() => {
     if (isEditing && textareaRef.current) {
@@ -27,14 +29,14 @@ const EditableInput = ({
   }, [isEditing, value]);
 
   const handleSave = () => {
-    setIsEditing(false);
+    updateEditing(false);
     if (value !== initialValue && onSave) {
       onSave(value);
     }
   };
 
   const handleCancel = () => {
-    setIsEditing(false);
+    updateEditing(false);
     setValue(initialValue);
   };
 
@@ -55,35 +57,17 @@ const EditableInput = ({
         onBlur={handleSave}
         onKeyDown={handleKeyDown}
         rows={1}
-        style={{
-          padding: "4px",
-          fontSize: "inherit",
-          fontFamily: "inherit",
-          width: "100%",
-          resize: "none",
-          overflow: "hidden",
-          backgroundColor: "#1e293b",
-          color: "#e2e8f0",
-          border: "1px solid #475569",
-          borderRadius: "4px",
-        }}
-        className={className}
+        className={`p-1 w-full text-[length:inherit] font-[inherit] resize-none overflow-hidden bg-slate-800 text-slate-200 border border-slate-600 rounded outline-none ${className}`}
       />
     );
   }
 
   return (
     <span
-      onDoubleClick={() => setIsEditing(true)}
-      style={{
-        padding: "4px",
-        border: "1px solid transparent",
-      }}
-      className={className}
+      onDoubleClick={() => updateEditing(true)}
+      className={`p-1 border border-transparent ${className}`}
     >
       {value}
     </span>
   );
-};
-
-export default EditableInput;
+}

@@ -11,6 +11,7 @@ type SankeyNode struct {
 	CleanName  string `json:"cleanName"`
 	Colour     string `json:"colour"`
 	TextColour string `json:"textColour"`
+	Value      int    `json:"value"`
 }
 
 type SankeyLink struct {
@@ -56,7 +57,7 @@ func (js *JobService) GetSankeyData() (*SankeyData, error) {
 		return nil, nil
 	}
 
-	nodeSet := make(map[NodeKey]bool)
+	nodeCount := make(map[NodeKey]int)
 	linkMap := make(map[LinkKey]int)
 
 	for _, job := range jobs {
@@ -67,7 +68,7 @@ func (js *JobService) GetSankeyData() (*SankeyData, error) {
 		for i, stage := range job.Stages {
 			// Diagram should show step-by-step and not looping back - an index is added to treat each as a unique node
 			current := NodeKey{Name: stage, Index: i}
-			nodeSet[current] = true
+			nodeCount[current]++
 
 			if i < len(job.Stages)-1 {
 				next := NodeKey{Name: job.Stages[i+1], Index: i + 1}
@@ -77,12 +78,12 @@ func (js *JobService) GetSankeyData() (*SankeyData, error) {
 		}
 	}
 
-	if len(nodeSet) == 0 {
+	if len(nodeCount) == 0 {
 		return nil, nil
 	}
 
-	nodes := make([]SankeyNode, 0, len(nodeSet))
-	for nodeKey := range nodeSet {
+	nodes := make([]SankeyNode, 0, len(nodeCount))
+	for nodeKey, count := range nodeCount {
 		bg := getStageColour(nodeKey.Name)
 		nodes = append(nodes, SankeyNode{
 			// Create a unique string name only when sending to the frontend
@@ -90,6 +91,7 @@ func (js *JobService) GetSankeyData() (*SankeyData, error) {
 			CleanName:  nodeKey.Name,
 			Colour:     bg,
 			TextColour: getStageTextColour(bg),
+			Value:      count,
 		})
 	}
 

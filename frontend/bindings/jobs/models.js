@@ -305,6 +305,13 @@ export class SankeyNode {
              */
             this["textColour"] = "";
         }
+        if (!("value" in $$source)) {
+            /**
+             * @member
+             * @type {number}
+             */
+            this["value"] = 0;
+        }
 
         Object.assign(this, $$source);
     }

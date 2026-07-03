@@ -28,9 +28,9 @@ export default function JobListItem({
   const tooltipText = job.stageHistory || "";
 
   return (
-    <div className="contents">
+    <>
       <div
-        className={`grid grid-cols-subgrid col-span-full border-b-2 last:border-b-0 text-slate-200 text-sm tracking-wide divide-x ${
+        className={`grid grid-cols-subgrid col-span-full border-b-2 last:border-b-0 last:rounded-b-[14px] text-slate-200 text-sm tracking-wide divide-x ${
           isDeleteConfirmationOpen
             ? "bg-red-900/60 border-red-800 divide-red-800/50"
             : "bg-slate-800 hover:bg-slate-700 border-slate-700 divide-slate-600/50"
@@ -141,8 +141,8 @@ export default function JobListItem({
             initialValue={job.notes}
             onSave={(newValue) => onUpdate({ ...job, notes: newValue })}
             className="w-full max-h-7 group-hover/notes:max-h-96 overflow-hidden wrap-break-word whitespace-pre-wrap transition-[max-height] duration-1000 ease-[cubic-bezier(0.85,0,0.15,1)]"
-            isEditingProp={isEditingNotes}
-            setIsEditingProp={setIsEditingNotes}
+            editing={isEditingNotes}
+            onEditingChange={setIsEditingNotes}
           />
         </div>
         <div className="hidden lg:flex justify-end items-center px-4 py-2 pr-6">
@@ -158,7 +158,7 @@ export default function JobListItem({
         </div>
       </div>
       {showDescription && job.description && (
-        <div className="flex items-center gap-2 col-span-full bg-slate-800/80 px-6 py-3 border-slate-700 border-b-2 font-normal text-slate-200 text-sm">
+        <div className="flex items-center gap-2 col-span-full bg-slate-800/80 px-6 py-3 border-slate-700 border-b-2 last:border-b-0 last:rounded-b-[14px] font-normal text-slate-200 text-sm">
           <span
             className="font-pixel font-bold text-yellow-400 uppercase tracking-wider select-none shrink-0"
             draggable={false}
@@ -174,7 +174,7 @@ export default function JobListItem({
         </div>
       )}
       {isAddingDescription && (
-        <div className="flex items-center gap-2 col-span-full bg-slate-800/80 px-6 py-3 border-slate-700 border-b-2 text-sm">
+        <div className="flex items-center gap-2 col-span-full bg-slate-800/80 px-6 py-3 border-slate-700 border-b-2 last:border-b-0 last:rounded-b-[14px] text-sm">
           <span
             className="font-pixel font-bold text-slate-400 uppercase tracking-wider select-none shrink-0"
             draggable={false}
@@ -184,8 +184,8 @@ export default function JobListItem({
           </span>
           <EditableInput
             initialValue=""
-            isEditingProp={true}
-            setIsEditingProp={(isEditing) => {
+            editing={true}
+            onEditingChange={(isEditing) => {
               if (!isEditing) setIsAddingDescription(false);
             }}
             onSave={(newValue) => {
@@ -208,6 +208,6 @@ export default function JobListItem({
           onDelete(job.id);
         }}
       />
-    </div>
+    </>
   );
 }
