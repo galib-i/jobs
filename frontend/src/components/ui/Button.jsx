@@ -67,16 +67,14 @@ export function Button({
     <button
       type={type}
       onClick={onClick}
-      className={`relative inline-block group focus:outline-none cursor-pointer ${s.margin} ${className}`}
+      className={`group relative inline-block cursor-pointer focus:outline-none ${s.margin} ${className}`}
     >
       {/* Bottom shadow */}
-      <span
-        className={`absolute inset-0 ${s.shadow} ${posStyle.rounded} ${colours.bottom}`}
-      ></span>
+      <span className={`absolute inset-0 ${s.shadow} ${posStyle.rounded} ${colours.bottom}`}></span>
 
       {/* Top face */}
       <span
-        className={`relative flex items-center justify-center font-pixel ${s.height} ${padding} text-white font-bold tracking-wide transition-all duration-150 ease-out ${posStyle.rounded} ${posStyle.border} ${colours.top} ${transformStyles}`}
+        className={`font-pixel relative flex items-center justify-center ${s.height} ${padding} font-bold tracking-wide text-white transition-all duration-150 ease-out ${posStyle.rounded} ${posStyle.border} ${colours.top} ${transformStyles}`}
       >
         {children}
       </span>
@@ -84,14 +82,7 @@ export function Button({
   );
 }
 
-export function SplitButton({
-  left,
-  right,
-  activeValue,
-  onChange,
-  theme = "blue",
-  size = "md",
-}) {
+export function SplitButton({ left, right, activeValue, onChange, theme = "blue", size = "md" }) {
   return (
     <div className="flex items-center select-none">
       <Button
@@ -116,12 +107,7 @@ export function SplitButton({
   );
 }
 
-export function TriangleButton({
-  onClick,
-  theme = "blue",
-  pointUp = false,
-  className = "",
-}) {
+export function TriangleButton({ onClick, theme = "blue", pointUp = false, className = "" }) {
   const textThemes = {
     blue: { top: "text-blue-500", bottom: "text-blue-800" },
     white: { top: "text-white", bottom: "text-slate-300" },
@@ -132,7 +118,7 @@ export function TriangleButton({
     <button
       type="button"
       onClick={onClick}
-      className={`relative group focus:outline-none cursor-pointer block ${className}`}
+      className={`group relative block cursor-pointer focus:outline-none ${className}`}
     >
       <svg
         width="12"
@@ -142,12 +128,10 @@ export function TriangleButton({
         xmlns="http://www.w3.org/2000/svg"
       >
         <g className={colours.bottom} fill="currentColor">
-          <polygon
-            points={pointUp ? "3.5,0 7,4 7,6 0,6 0,4" : "0,0 7,0 7,2 3.5,6 0,2"}
-          />
+          <polygon points={pointUp ? "3.5,0 7,4 7,6 0,6 0,4" : "0,0 7,0 7,2 3.5,6 0,2"} />
         </g>
         <g
-          className={`${colours.top} group-hover:translate-y-[-0.5px] group-active:translate-y-px transition-transform duration-150 ease-out`}
+          className={`${colours.top} transition-transform duration-150 ease-out group-hover:translate-y-[-0.5px] group-active:translate-y-px`}
           fill="currentColor"
         >
           <polygon points={pointUp ? "3.5,0 7,4 0,4" : "0,0 7,0 3.5,4"} />

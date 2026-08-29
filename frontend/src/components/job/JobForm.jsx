@@ -67,7 +67,7 @@ export default function JobForm({ onAddJob }) {
 
   return (
     <form
-      className="flex flex-wrap lg:flex-nowrap items-center mx-auto mb-6 w-full lg:max-w-none max-w-3xl font-pixel"
+      className="font-pixel mx-auto mb-6 flex w-full max-w-3xl flex-wrap items-center lg:max-w-none lg:flex-nowrap"
       onSubmit={handleSubmit}
     >
       {FIELD_CONFIG.map((field) => (
@@ -75,7 +75,7 @@ export default function JobForm({ onAddJob }) {
           key={field.key}
 
           type={field.type || "text"}
-          className="lg:flex-1 w-1/3"
+          className="w-1/3 lg:flex-1"
           position="middle"
           roundedOverride={field.rounded}
           borderOverride={field.border}
@@ -84,11 +84,7 @@ export default function JobForm({ onAddJob }) {
           onChange={(e) => updateField(field.key, e.target.value)}
         />
       ))}
-      <Button
-        theme="green"
-        type="submit"
-        className="mx-auto lg:mx-0 mt-4 lg:mt-0 lg:ml-4 text-sm"
-      >
+      <Button theme="green" type="submit" className="mx-auto mt-4 text-sm lg:mx-0 lg:mt-0 lg:ml-4">
         ADD
       </Button>
     </form>

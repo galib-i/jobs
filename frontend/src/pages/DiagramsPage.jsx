@@ -14,7 +14,7 @@ export default function DiagramsPage({ theme }) {
 
   if (!isReady) {
     return (
-      <div className="flex justify-center items-center mt-32 font-pixel text-slate-500 dark:text-slate-400 text-sm animate-pulse">
+      <div className="font-pixel mt-32 flex animate-pulse items-center justify-center text-sm text-slate-500 dark:text-slate-400">
         LOADING STATISTICS...
       </div>
     );
@@ -22,7 +22,7 @@ export default function DiagramsPage({ theme }) {
 
   return (
     <div className="flex flex-col items-center gap-6">
-      <div className="flex xl:flex-row flex-col justify-center items-center xl:items-start gap-6 w-full">
+      <div className="flex w-full flex-col items-center justify-center gap-6 xl:flex-row xl:items-start">
         <ActivityHeatmap theme={theme} />
         <TimeDiagram theme={theme} />
       </div>

@@ -36,9 +36,7 @@ export default function JobsPage({
           job.lastStage,
         ];
 
-        const match = searchableFields.some((field) =>
-          (field || "").toLowerCase().includes(q),
-        );
+        const match = searchableFields.some((field) => (field || "").toLowerCase().includes(q));
 
         if (!match) return false;
       }
@@ -82,7 +80,7 @@ export default function JobsPage({
   return (
     <div>
       <JobForm onAddJob={onAddJob} />
-      <div className="flex justify-between items-center text-xs">
+      <div className="flex items-center justify-between text-xs">
         <div className="flex items-center gap-4">
           <SplitButton
             left={{ label: "ACTIVE", value: "active", theme: "yellow" }}
@@ -91,17 +89,13 @@ export default function JobsPage({
             onChange={setViewMode}
             size="sm"
           />
-          <div className="flex items-center pt-1 font-bold text-slate-500 uppercase tracking-wider">
-            <span className="inline-block w-6 tabular-nums text-right">
-              {filteredJobs.length}
-            </span>
+          <div className="flex items-center pt-1 font-bold tracking-wider text-slate-500 uppercase">
+            <span className="inline-block w-6 text-right tabular-nums">{filteredJobs.length}</span>
             <span className="mx-2">/</span>
-            <span className="inline-block w-6 tabular-nums text-left">
-              {jobs.length}
-            </span>
+            <span className="inline-block w-6 text-left tabular-nums">{jobs.length}</span>
           </div>
         </div>
-        <div className="w-64 font-pixel">
+        <div className="font-pixel w-64">
           <TextBox
             placeholder="Search..."
             value={searchQuery}
@@ -113,31 +107,25 @@ export default function JobsPage({
       </div>
       <div className="relative mt-4 mb-4">
         <div
-          className={`relative grid grid-cols-jobs lg:grid-cols-jobs-lg bg-slate-100 dark:bg-slate-900 selection:text-white border-2 rounded-2xl ${
+          className={`grid-cols-jobs lg:grid-cols-jobs-lg relative grid rounded-2xl border-2 bg-slate-100 selection:text-white dark:bg-slate-900 ${
             inactive
               ? "border-gray-500 selection:bg-gray-500"
               : "border-blue-500 selection:bg-blue-500"
           }`}
         >
           <div
-            className={`grid grid-cols-subgrid col-span-full border-b-2 font-pixel font-bold text-white tracking-wider select-none rounded-t-[14px] last:rounded-b-[14px] last:border-b-0 ${
+            className={`font-pixel col-span-full grid grid-cols-subgrid rounded-t-[14px] border-b-2 font-bold tracking-wider text-white select-none last:rounded-b-[14px] last:border-b-0 ${
               inactive
-                ? "bg-gray-600 border-gray-500 divide-x divide-gray-500"
-                : "bg-blue-600 border-blue-500 divide-x divide-blue-500"
+                ? "divide-x divide-gray-500 border-gray-500 bg-gray-600"
+                : "divide-x divide-blue-500 border-blue-500 bg-blue-600"
             }`}
             draggable={false}
             style={{ WebkitUserDrag: "none" }}
           >
-            <div className="flex items-center px-4 py-4 pl-6 whitespace-nowrap">
-              Company
-            </div>
-            <div className="flex items-center px-4 py-4 whitespace-nowrap">
-              Role
-            </div>
-            <div className="flex items-center px-4 py-4 whitespace-nowrap">
-              Location
-            </div>
-            <div className="flex justify-between items-center px-4 py-4 whitespace-nowrap">
+            <div className="flex items-center px-4 py-4 pl-6 whitespace-nowrap">Company</div>
+            <div className="flex items-center px-4 py-4 whitespace-nowrap">Role</div>
+            <div className="flex items-center px-4 py-4 whitespace-nowrap">Location</div>
+            <div className="flex items-center justify-between px-4 py-4 whitespace-nowrap">
               <span>Stage</span>
               <div
                 className={`ml-2 transition-opacity duration-200 ${
@@ -151,9 +139,9 @@ export default function JobsPage({
                 />
               </div>
             </div>
-            <div className="flex justify-between items-center px-4 py-4 whitespace-nowrap">
+            <div className="flex items-center justify-between px-4 py-4 whitespace-nowrap">
               <span>Date</span>
-              <div className="opacity-100 ml-2 transition-opacity duration-200">
+              <div className="ml-2 opacity-100 transition-opacity duration-200">
                 <TriangleButton
                   theme="white"
                   pointUp={dateSort === "asc"}
@@ -161,10 +149,8 @@ export default function JobsPage({
                 />
               </div>
             </div>
-            <div className="flex items-center px-4 py-4 whitespace-nowrap">
-              Notes
-            </div>
-            <div className="hidden lg:flex items-center px-4 py-4 pr-6 border-l-0"></div>
+            <div className="flex items-center px-4 py-4 whitespace-nowrap">Notes</div>
+            <div className="hidden items-center border-l-0 px-4 py-4 pr-6 lg:flex"></div>
           </div>
           {sortedJobs.map((job, idx) => (
             <JobListItem

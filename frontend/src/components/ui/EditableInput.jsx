@@ -57,7 +57,7 @@ export default function EditableInput({
         onBlur={handleSave}
         onKeyDown={handleKeyDown}
         rows={1}
-        className={`p-1 w-full text-[length:inherit] font-[inherit] resize-none overflow-hidden bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-600 rounded outline-none ${className}`}
+        className={`w-full resize-none overflow-hidden rounded border border-slate-300 bg-white p-1 font-[inherit] text-[length:inherit] text-slate-800 outline-none dark:border-slate-600 dark:bg-slate-800 dark:text-slate-200 ${className}`}
       />
     );
   }
@@ -65,7 +65,7 @@ export default function EditableInput({
   return (
     <span
       onDoubleClick={() => updateEditing(true)}
-      className={`p-1 border border-transparent ${className}`}
+      className={`border border-transparent p-1 ${className}`}
     >
       {value}
     </span>

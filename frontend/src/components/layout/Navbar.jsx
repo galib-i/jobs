@@ -17,7 +17,7 @@ export default function Navbar({
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   return (
-    <nav className="flex justify-between items-center gap-4 p-4 text-sm">
+    <nav className="flex items-center justify-between gap-4 p-4 text-sm">
       <div className="flex-1"></div>
 
       {/* Navigation */}
@@ -32,11 +32,7 @@ export default function Navbar({
 
       {/* Theme */}
       <div className="flex flex-1 justify-start gap-2">
-        <Button
-          theme="yellow"
-          onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-          isIcon
-        >
+        <Button theme="yellow" onClick={() => setTheme(theme === "dark" ? "light" : "dark")} isIcon>
           {theme === "dark" ? <SunIcon /> : <MoonIcon />}
         </Button>
         <div className="relative">

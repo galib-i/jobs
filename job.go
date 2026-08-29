@@ -62,7 +62,6 @@ type Job struct {
 	LastStage           string `json:"lastStage"`
 	LastStageColour     string `json:"lastStageColour"`
 	LastStageTextColour string `json:"lastStageTextColour"`
-	StageHistory        string `json:"stageHistory"`
 	FormattedDate       string `json:"formattedDate"`
 	IsActive            bool   `json:"isActive"`
 }
@@ -109,7 +108,6 @@ func (j *Job) computeFields() {
 
 	j.LastStageColour = getStageColour(j.LastStage)
 	j.LastStageTextColour = getStageTextColour(j.LastStageColour)
-	j.StageHistory = strings.Join(j.Stages, " ➔ ")
 
 	if j.CreatedAt != "" {
 		t, err := time.Parse(time.DateOnly, j.CreatedAt)

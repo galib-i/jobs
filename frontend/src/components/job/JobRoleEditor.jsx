@@ -25,7 +25,7 @@ export default function JobRoleEditor({ job, onUpdate }) {
 
   return isEditingRoleLink ? (
     <div
-      className="flex flex-col gap-1 w-full min-w-0"
+      className="flex w-full min-w-0 flex-col gap-1"
       onBlur={(e) => {
         if (!e.currentTarget.contains(e.relatedTarget)) {
           handleSaveRoleLink();
@@ -42,14 +42,14 @@ export default function JobRoleEditor({ job, onUpdate }) {
       <input
         autoFocus
         type="text"
-        className="bg-white dark:bg-slate-800 px-2 py-1 border border-slate-300 dark:border-slate-600 rounded outline-none w-full text-slate-800 dark:text-slate-200 text-sm"
+        className="w-full rounded border border-slate-300 bg-white px-2 py-1 text-sm text-slate-800 outline-none dark:border-slate-600 dark:bg-slate-800 dark:text-slate-200"
         value={editRole}
         onChange={(e) => setEditRole(e.target.value)}
         placeholder="Role"
       />
       <input
         type="url"
-        className="bg-white dark:bg-slate-800 px-2 py-1 border border-slate-300 dark:border-slate-600 rounded outline-none w-full text-blue-600 dark:text-blue-400 text-xs"
+        className="w-full rounded border border-slate-300 bg-white px-2 py-1 text-xs text-blue-600 outline-none dark:border-slate-600 dark:bg-slate-800 dark:text-blue-400"
         value={editLink}
         onChange={(e) => setEditLink(e.target.value)}
         placeholder="Link"
@@ -59,14 +59,14 @@ export default function JobRoleEditor({ job, onUpdate }) {
     <>
       <span
         onDoubleClick={handleStartEditRoleLink}
-        className="p-1 border border-transparent truncate"
+        className="truncate border border-transparent p-1"
       >
         {job.role}
       </span>
       {job.link && (
         <ExternalLink
           href={job.link}
-          className="ml-1 text-blue-400 hover:text-blue-300 text-xs truncate transition-colors"
+          className="ml-1 truncate text-xs text-blue-400 transition-colors hover:text-blue-300"
         />
       )}
     </>

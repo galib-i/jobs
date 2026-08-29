@@ -1,0 +1,4 @@
+{
+  "sortTailwindcss": true,
+  "ignorePatterns": ["bindings/**"]
+}

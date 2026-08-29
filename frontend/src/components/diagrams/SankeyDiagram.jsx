@@ -1,10 +1,7 @@
 import ReactECharts from "echarts-for-react";
 import * as echarts from "echarts";
 import { useEffect, useState, useMemo, useRef } from "react";
-import {
-  GetSankeyData,
-  ExportSankeyImage,
-} from "../../../bindings/jobs/jobservice";
+import { GetSankeyData, ExportSankeyImage } from "../../../bindings/jobs/jobservice";
 import { Button } from "../ui/Button";
 import { DownloadIcon } from "../ui/Icon";
 import SuccessPopup from "../ui/SuccessPopup";
@@ -104,8 +101,7 @@ export default function SankeyDiagram({ theme }) {
           label: {
             position: "right",
             textBorderWidth: 0,
-            formatter: ({ data, value }) =>
-              `{nameBlock|${data.cleanName}} {valBlock|${value}}`,
+            formatter: ({ data, value }) => `{nameBlock|${data.cleanName}} {valBlock|${value}}`,
           },
         },
       ],
@@ -115,9 +111,7 @@ export default function SankeyDiagram({ theme }) {
   if (isLoading) return null;
   if (!option)
     return (
-      <p className="mt-8 mb-4 font-pixel text-slate-500 dark:text-slate-400 text-center">
-        No data
-      </p>
+      <p className="font-pixel mt-8 mb-4 text-center text-slate-500 dark:text-slate-400">No data</p>
     );
 
   const nodeCount = option.series[0].data.length;
@@ -125,10 +119,10 @@ export default function SankeyDiagram({ theme }) {
 
   return (
     <>
-      <div className="flex flex-col mx-auto w-212.5 xl:w-324.75 shrink-0">
-        <div className="relative bg-slate-100 dark:bg-slate-900 border-2 border-blue-500 rounded-2xl overflow-hidden">
+      <div className="mx-auto flex w-212.5 shrink-0 flex-col xl:w-324.75">
+        <div className="relative overflow-hidden rounded-2xl border-2 border-blue-500 bg-slate-100 dark:bg-slate-900">
           {/* Overall Header */}
-          <div className="flex justify-between items-center bg-blue-600 border-blue-500 border-b-2 font-pixel font-bold text-white tracking-wider select-none">
+          <div className="font-pixel flex items-center justify-between border-b-2 border-blue-500 bg-blue-600 font-bold tracking-wider text-white select-none">
             <div className="px-4 py-3 pl-6 whitespace-nowrap">Progress</div>
             <div className="flex items-center pr-4">
               <Button theme="green" isIcon size="sm" onClick={handleExport}>
@@ -138,7 +132,7 @@ export default function SankeyDiagram({ theme }) {
           </div>
 
           {/* Chart Container */}
-          <div className="flex justify-center items-center p-4 pt-6 min-w-0">
+          <div className="flex min-w-0 items-center justify-center p-4 pt-6">
             <ReactECharts
               ref={chartRef}
               option={option}

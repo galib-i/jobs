@@ -1,8 +1,9 @@
 # Simple Job Application Tracker
 
 A local Wails v3 desktop application for tracking job applications and visualising your interview progress.
+
 > [!NOTE]
-> 
+>
 > <details>
 > <summary>Screenshots</summary>
 >
@@ -16,6 +17,7 @@ A local Wails v3 desktop application for tracking job applications and visualisi
 - Visualise progress through an activity heatmap, a time volume chart and a sankey diagram.
 
 ## Get Started
+
 ### Installation
 
 Download the latest pre-compiled version for your operating system.
@@ -24,12 +26,14 @@ Download the latest pre-compiled version for your operating system.
 2. Extract the file and run the application.
 
 ### Development
+
 To build and run this project from source, you will need:
 
 - **[Wails v3](https://v3.wails.io/quick-start/installation/)** for the Wails CLI and its system dependencies.
 - **[Bun](https://bun.sh/)** for the JavaScript runtime and package manager for the frontend.
 
 1. Clone the repository and install the frontend packages:
+
 ```bash
 git clone https://github.com/galib-i/jobs.git
 cd jobs/frontend

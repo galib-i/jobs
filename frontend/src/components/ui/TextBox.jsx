@@ -27,7 +27,7 @@ export function TextBox({
   return (
     <div className={`relative inline-block ${className}`}>
       {Icon && (
-        <div className="top-1/2 left-3 z-10 absolute text-slate-400 dark:text-slate-400/50 -translate-y-1/2 pointer-events-none">
+        <div className="pointer-events-none absolute top-1/2 left-3 z-10 -translate-y-1/2 text-slate-400 dark:text-slate-400/50">
           <Icon size="sm" />
         </div>
       )}
@@ -37,7 +37,7 @@ export function TextBox({
         onChange={onChange}
         placeholder={placeholder}
         style={{ textShadow: "none" }}
-        className={`relative w-full h-9 ${Icon ? "pl-9 pr-4" : "px-4"} py-1 text-sm font-sans placeholder:font-pixel font-normal tracking-wide transition-all duration-150 ease-out focus:outline-none ${rounded} ${border} ${colours.top}`}
+        className={`relative h-9 w-full ${Icon ? "pr-4 pl-9" : "px-4"} placeholder:font-pixel py-1 font-sans text-sm font-normal tracking-wide transition-all duration-150 ease-out focus:outline-none ${rounded} ${border} ${colours.top}`}
         {...props}
       />
     </div>

@@ -18,41 +18,35 @@ export default function JobListItem({
 }) {
   const [showDescription, setShowDescription] = useState(false);
   const [isAddingDescription, setIsAddingDescription] = useState(false);
-  const [isDeleteConfirmationOpen, setisDeleteConfirmationOpen] =
-    useState(false);
+  const [isDeleteConfirmationOpen, setisDeleteConfirmationOpen] = useState(false);
   const [isEditingNotes, setIsEditingNotes] = useState(false);
 
   const lastStage = job.lastStage || "";
-  const lastStageCount = job.stages
-    ? job.stages.filter((s) => s === lastStage).length
-    : 0;
-  const displayLastStage =
-    lastStageCount > 1 ? `${lastStage} (${lastStageCount})` : lastStage;
+  const lastStageCount = job.stages ? job.stages.filter((s) => s === lastStage).length : 0;
+  const displayLastStage = lastStageCount > 1 ? `${lastStage} (${lastStageCount})` : lastStage;
 
   const bgColour = job.lastStageColour || "var(--color-yellow-500)";
   const textColour = job.lastStageTextColour || "var(--color-slate-800)";
-  const tooltipText = job.stageHistory || "";
 
   const stageCounts = {};
   const formattedStages = (job.stages || []).map((stage) => {
     stageCounts[stage] = (stageCounts[stage] || 0) + 1;
     return {
       raw: stage,
-      display:
-        stageCounts[stage] > 1 ? `${stage} (${stageCounts[stage]})` : stage,
+      display: stageCounts[stage] > 1 ? `${stage} (${stageCounts[stage]})` : stage,
     };
   });
 
   return (
     <>
       <div
-        className={`grid grid-cols-subgrid col-span-full border-b-2 last:border-b-0 last:rounded-b-[14px] text-slate-800 dark:text-slate-200 text-sm tracking-wide divide-x ${
+        className={`col-span-full grid grid-cols-subgrid divide-x border-b-2 text-sm tracking-wide text-slate-800 last:rounded-b-[14px] last:border-b-0 dark:text-slate-200 ${
           isDeleteConfirmationOpen
-            ? "bg-red-100 dark:bg-red-900/60 border-red-300 dark:border-red-800 divide-red-300 dark:divide-red-800/50"
-            : "bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 border-slate-300 dark:border-slate-700 divide-slate-300 dark:divide-slate-600/50"
+            ? "divide-red-300 border-red-300 bg-red-100 dark:divide-red-800/50 dark:border-red-800 dark:bg-red-900/60"
+            : "divide-slate-300 border-slate-300 bg-white hover:bg-slate-50 dark:divide-slate-600/50 dark:border-slate-700 dark:bg-slate-800 dark:hover:bg-slate-700"
         }`}
       >
-        <div className="flex items-center px-4 py-2 pl-6 overflow-hidden">
+        <div className="flex items-center overflow-hidden px-4 py-2 pl-6">
           <EditableInput
             initialValue={job.company}
             onSave={(newValue) => onUpdate({ ...job, company: newValue })}
@@ -60,7 +54,7 @@ export default function JobListItem({
           />
         </div>
 
-        <div className="flex items-center px-4 py-2 truncate">
+        <div className="flex items-center truncate px-4 py-2">
           <div className="mt-1 mr-2 shrink-0">
             <Button
               theme={job.description ? "yellow" : "gray"}
@@ -79,24 +73,21 @@ export default function JobListItem({
           </div>
           <JobRoleEditor job={job} onUpdate={onUpdate} />
         </div>
-        <div className="flex items-center px-4 py-2 overflow-hidden">
+        <div className="flex items-center overflow-hidden px-4 py-2">
           <EditableInput
             initialValue={job.location}
             onSave={(newValue) => onUpdate({ ...job, location: newValue })}
             className="block w-full truncate"
           />
         </div>
-        <div className="relative flex items-center px-4 py-2 min-w-0">
+        <div className="relative flex min-w-0 items-center px-4 py-2">
           <Tooltip
             content={
               <div className="flex items-center gap-2">
                 {formattedStages.length > 0 ? (
                   formattedStages.map((stageObj, index) => {
                     return (
-                      <div
-                        key={index}
-                        className="group/stage flex items-center gap-1"
-                      >
+                      <div key={index} className="group/stage flex items-center gap-1">
                         <span>{stageObj.display}</span>
                         {stageObj.raw.toLowerCase() !== "application" &&
                           stageObj.raw.toLowerCase() !== "offer" && (
@@ -105,11 +96,11 @@ export default function JobListItem({
                                 e.stopPropagation();
                                 if (onRemoveStage) onRemoveStage(job.id, index);
                               }}
-                              className="text-slate-400 hover:text-red-400 transition-all"
+                              className="text-slate-400 transition-all hover:text-red-400"
                               title="Remove stage"
                             >
                               <svg
-                                className="w-4 h-4"
+                                className="h-4 w-4"
                                 fill="none"
                                 viewBox="0 0 24 24"
                                 stroke="currentColor"
@@ -137,49 +128,41 @@ export default function JobListItem({
             className="min-w-0"
           >
             <span
-              className="block px-2 py-1 rounded font-bold text-xs truncate cursor-help"
+              className="block cursor-help truncate rounded px-2 py-1 text-xs font-bold"
               style={{ backgroundColor: bgColour, color: textColour }}
             >
               {displayLastStage || "None"}
             </span>
           </Tooltip>
-          <JobStageSelector
-            job={job}
-            availableStages={availableStages}
-            onAddStage={onAddStage}
-          />
+          <JobStageSelector job={job} availableStages={availableStages} onAddStage={onAddStage} />
         </div>
-        <div className="flex justify-center items-center px-4 py-2 truncate">
+        <div className="flex items-center justify-center truncate px-4 py-2">
           {job.formattedDate}
         </div>
         <div
-          className="group/notes flex items-center px-4 py-2 min-w-0 cursor-text"
+          className="group/notes flex min-w-0 cursor-text items-center px-4 py-2"
           onDoubleClick={() => setIsEditingNotes(true)}
         >
           <EditableInput
             initialValue={job.notes}
             onSave={(newValue) => onUpdate({ ...job, notes: newValue })}
-            className="w-full max-h-7 group-hover/notes:max-h-96 overflow-hidden wrap-break-word whitespace-pre-wrap transition-[max-height] duration-1000 ease-[cubic-bezier(0.85,0,0.15,1)]"
+            className="max-h-7 w-full overflow-hidden wrap-break-word whitespace-pre-wrap transition-[max-height] duration-1000 ease-[cubic-bezier(0.85,0,0.15,1)] group-hover/notes:max-h-96"
             editing={isEditingNotes}
             onEditingChange={setIsEditingNotes}
           />
         </div>
-        <div className="hidden lg:flex justify-end items-center px-4 py-2 pr-6">
+        <div className="hidden items-center justify-end px-4 py-2 pr-6 lg:flex">
           <div className="mt-1.5">
-            <Button
-              theme="red"
-              onClick={() => setisDeleteConfirmationOpen(true)}
-              isIcon
-            >
+            <Button theme="red" onClick={() => setisDeleteConfirmationOpen(true)} isIcon>
               <BinIcon />
             </Button>
           </div>
         </div>
       </div>
       {showDescription && job.description && (
-        <div className="flex items-center gap-2 col-span-full bg-slate-50 dark:bg-slate-800/80 px-6 py-3 border-slate-300 dark:border-slate-700 border-b-2 last:border-b-0 last:rounded-b-[14px] font-normal text-slate-800 dark:text-slate-200 text-sm">
+        <div className="col-span-full flex items-center gap-2 border-b-2 border-slate-300 bg-slate-50 px-6 py-3 text-sm font-normal text-slate-800 last:rounded-b-[14px] last:border-b-0 dark:border-slate-700 dark:bg-slate-800/80 dark:text-slate-200">
           <span
-            className="font-pixel font-bold text-yellow-600 dark:text-yellow-400 uppercase tracking-wider select-none shrink-0"
+            className="font-pixel shrink-0 font-bold tracking-wider text-yellow-600 uppercase select-none dark:text-yellow-400"
             draggable={false}
             style={{ WebkitUserDrag: "none" }}
           >
@@ -188,14 +171,14 @@ export default function JobListItem({
           <EditableInput
             initialValue={job.description}
             onSave={(newValue) => onUpdate({ ...job, description: newValue })}
-            className="flex-1 w-full wrap-break-word whitespace-pre-wrap"
+            className="w-full flex-1 wrap-break-word whitespace-pre-wrap"
           />
         </div>
       )}
       {isAddingDescription && (
-        <div className="flex items-center gap-2 col-span-full bg-slate-50 dark:bg-slate-800/80 px-6 py-3 border-slate-300 dark:border-slate-700 border-b-2 last:border-b-0 last:rounded-b-[14px] text-slate-800 dark:text-slate-200 text-sm">
+        <div className="col-span-full flex items-center gap-2 border-b-2 border-slate-300 bg-slate-50 px-6 py-3 text-sm text-slate-800 last:rounded-b-[14px] last:border-b-0 dark:border-slate-700 dark:bg-slate-800/80 dark:text-slate-200">
           <span
-            className="font-pixel font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider select-none shrink-0"
+            className="font-pixel shrink-0 font-bold tracking-wider text-slate-500 uppercase select-none dark:text-slate-400"
             draggable={false}
             style={{ WebkitUserDrag: "none" }}
           >
@@ -214,7 +197,7 @@ export default function JobListItem({
               }
               setIsAddingDescription(false);
             }}
-            className="flex-1 w-full wrap-break-word whitespace-pre-wrap"
+            className="w-full flex-1 wrap-break-word whitespace-pre-wrap"
           />
         </div>
       )}

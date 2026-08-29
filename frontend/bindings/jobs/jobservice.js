@@ -4,7 +4,11 @@
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore: Unused imports
-import { Call as $Call, CancellablePromise as $CancellablePromise, Create as $Create } from "@wailsio/runtime";
+import {
+  Call as $Call,
+  CancellablePromise as $CancellablePromise,
+  Create as $Create,
+} from "@wailsio/runtime";
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore: Unused imports
@@ -15,7 +19,7 @@ import * as $models from "./models.js";
  * @returns {$CancellablePromise<void>}
  */
 export function AddAvailableStage(name) {
-    return $Call.ByID(3927907374, name);
+  return $Call.ByID(3927907374, name);
 }
 
 /**
@@ -24,7 +28,7 @@ export function AddAvailableStage(name) {
  * @returns {$CancellablePromise<void>}
  */
 export function AddJobStage(jobId, stage) {
-    return $Call.ByID(1679456146, jobId, stage);
+  return $Call.ByID(1679456146, jobId, stage);
 }
 
 /**
@@ -32,7 +36,7 @@ export function AddJobStage(jobId, stage) {
  * @returns {$CancellablePromise<void>}
  */
 export function DeleteAvailableStage(name) {
-    return $Call.ByID(2535730274, name);
+  return $Call.ByID(2535730274, name);
 }
 
 /**
@@ -40,7 +44,7 @@ export function DeleteAvailableStage(name) {
  * @returns {$CancellablePromise<void>}
  */
 export function DeleteJob(id) {
-    return $Call.ByID(1245916576, id);
+  return $Call.ByID(1245916576, id);
 }
 
 /**
@@ -48,43 +52,59 @@ export function DeleteJob(id) {
  * @returns {$CancellablePromise<string>}
  */
 export function ExportSankeyImage(base64Data) {
-    return $Call.ByID(3269862258, base64Data);
+  return $Call.ByID(3269862258, base64Data);
 }
 
 /**
  * @returns {$CancellablePromise<$models.ActivityStats | null>}
  */
 export function GetActivityStats() {
-    return $Call.ByID(2624316250).then(/** @type {($result: any) => any} */(($result) => {
+  return $Call.ByID(2624316250).then(
+    /** @type {($result: any) => any} */ (
+      ($result) => {
         return $$createType1($result);
-    }));
+      }
+    ),
+  );
 }
 
 /**
  * @returns {$CancellablePromise<$models.StageMetadata[]>}
  */
 export function GetAvailableStages() {
-    return $Call.ByID(1567522294).then(/** @type {($result: any) => any} */(($result) => {
+  return $Call.ByID(1567522294).then(
+    /** @type {($result: any) => any} */ (
+      ($result) => {
         return $$createType3($result);
-    }));
+      }
+    ),
+  );
 }
 
 /**
  * @returns {$CancellablePromise<$models.Job[]>}
  */
 export function GetJobs() {
-    return $Call.ByID(2795355898).then(/** @type {($result: any) => any} */(($result) => {
+  return $Call.ByID(2795355898).then(
+    /** @type {($result: any) => any} */ (
+      ($result) => {
         return $$createType5($result);
-    }));
+      }
+    ),
+  );
 }
 
 /**
  * @returns {$CancellablePromise<$models.SankeyData | null>}
  */
 export function GetSankeyData() {
-    return $Call.ByID(3209808103).then(/** @type {($result: any) => any} */(($result) => {
+  return $Call.ByID(3209808103).then(
+    /** @type {($result: any) => any} */ (
+      ($result) => {
         return $$createType7($result);
-    }));
+      }
+    ),
+  );
 }
 
 /**
@@ -92,9 +112,13 @@ export function GetSankeyData() {
  * @returns {$CancellablePromise<$models.TimelineData | null>}
  */
 export function GetTimelineData(groupBy) {
-    return $Call.ByID(432288241, groupBy).then(/** @type {($result: any) => any} */(($result) => {
+  return $Call.ByID(432288241, groupBy).then(
+    /** @type {($result: any) => any} */ (
+      ($result) => {
         return $$createType9($result);
-    }));
+      }
+    ),
+  );
 }
 
 /**
@@ -103,14 +127,14 @@ export function GetTimelineData(groupBy) {
  * @returns {$CancellablePromise<void>}
  */
 export function RemoveJobStageAt(jobId, index) {
-    return $Call.ByID(2297914840, jobId, index);
+  return $Call.ByID(2297914840, jobId, index);
 }
 
 /**
  * @returns {$CancellablePromise<void>}
  */
 export function ResetAvailableStages() {
-    return $Call.ByID(837502475);
+  return $Call.ByID(837502475);
 }
 
 /**
@@ -118,7 +142,7 @@ export function ResetAvailableStages() {
  * @returns {$CancellablePromise<number>}
  */
 export function SaveJob(j) {
-    return $Call.ByID(3923482130, j);
+  return $Call.ByID(3923482130, j);
 }
 
 /**
@@ -126,14 +150,14 @@ export function SaveJob(j) {
  * @returns {$CancellablePromise<void>}
  */
 export function UpdateJob(j) {
-    return $Call.ByID(1878109278, j);
+  return $Call.ByID(1878109278, j);
 }
 
 /**
  * @returns {$CancellablePromise<void>}
  */
 export function WipeDatabase() {
-    return $Call.ByID(1458813272);
+  return $Call.ByID(1458813272);
 }
 
 // Private type creation functions

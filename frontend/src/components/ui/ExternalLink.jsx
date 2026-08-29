@@ -1,11 +1,6 @@
 import { Browser } from "@wailsio/runtime";
 
-export default function ExternalLink({
-  href,
-  children,
-  className = "",
-  ...props
-}) {
+export default function ExternalLink({ href, children, className = "", ...props }) {
   const handleClick = (e) => {
     e.preventDefault();
     let url = href;

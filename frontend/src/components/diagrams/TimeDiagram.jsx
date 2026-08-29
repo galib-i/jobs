@@ -33,9 +33,7 @@ export default function TimelineDiagram({ theme }) {
       show: true,
       appendToBody: true,
       padding: [4, 8],
-      backgroundColor: isDark
-        ? "rgba(15, 23, 42, 0.9)"
-        : "rgba(255, 255, 255, 0.9)",
+      backgroundColor: isDark ? "rgba(15, 23, 42, 0.9)" : "rgba(255, 255, 255, 0.9)",
       borderColor: isDark ? "#334155" : "#cbd5e1",
       textStyle: { color: isDark ? "#f8fafc" : "#1e293b", fontSize: 12 },
     },
@@ -125,15 +123,14 @@ export default function TimelineDiagram({ theme }) {
   };
 
   return (
-    <div className="flex flex-col w-212.5 xl:w-106.25 shrink-0">
-      <div className="relative bg-slate-100 dark:bg-slate-900 border-2 border-blue-500 rounded-2xl overflow-hidden contain-content">
+    <div className="flex w-212.5 shrink-0 flex-col xl:w-106.25">
+      <div className="relative overflow-hidden rounded-2xl border-2 border-blue-500 bg-slate-100 contain-content dark:bg-slate-900">
         {/* Overall Header */}
-        <div className="flex justify-between items-center bg-blue-600 border-blue-500 border-b-2 font-pixel font-bold text-white tracking-wider select-none">
+        <div className="font-pixel flex items-center justify-between border-b-2 border-blue-500 bg-blue-600 font-bold tracking-wider text-white select-none">
           <div className="px-4 py-3 pl-6 whitespace-nowrap">Volume</div>
           <div className="flex items-center pr-4 select-none">
             {["day", "week", "month"].map((group, index) => {
-              const position =
-                index === 0 ? "left" : index === 1 ? "middle" : "right";
+              const position = index === 0 ? "left" : index === 1 ? "middle" : "right";
               return (
                 <Button
                   key={group}
@@ -151,7 +148,7 @@ export default function TimelineDiagram({ theme }) {
         </div>
 
         {/* Chart Container */}
-        <div className="flex justify-center items-center p-4 pt-6 min-w-0">
+        <div className="flex min-w-0 items-center justify-center p-4 pt-6">
           <ReactECharts
             option={option}
             style={{ height: 200, width: "100%", margin: "0 auto" }}

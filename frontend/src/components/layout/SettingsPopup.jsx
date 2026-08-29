@@ -25,54 +25,52 @@ export default function SettingsPopup({
 
   return createPortal(
     <div
-      className="z-50 fixed inset-0 flex justify-center items-center bg-black/60"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60"
       onClick={onClose}
     >
       <div
-        className="bg-white dark:bg-slate-800 shadow-xl mx-4 border-2 border-slate-300 dark:border-slate-600 rounded-xl w-full max-w-sm overflow-hidden select-none"
+        className="mx-4 w-full max-w-sm overflow-hidden rounded-xl border-2 border-slate-300 bg-white shadow-xl select-none dark:border-slate-600 dark:bg-slate-800"
         style={{ "--wails-draggable": "no-drag" }}
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex justify-between items-center bg-slate-100 dark:bg-slate-900 px-4 py-3 border-slate-300 dark:border-slate-700 border-b font-bold text-slate-800 dark:text-slate-300 text-sm tracking-wider">
+        <div className="flex items-center justify-between border-b border-slate-300 bg-slate-100 px-4 py-3 text-sm font-bold tracking-wider text-slate-800 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300">
           <span className="font-pixel">Settings</span>
           <button
             onClick={onClose}
-            className="text-slate-500 hover:text-slate-900 dark:hover:text-white cursor-pointer"
+            className="cursor-pointer text-slate-500 hover:text-slate-900 dark:hover:text-white"
           >
             ✕
           </button>
         </div>
         <div className="space-y-4 p-4">
           <div>
-            <div className="flex justify-between items-center mb-2">
-              <h3 className="font-pixel font-bold text-slate-500 dark:text-slate-400 text-xs uppercase tracking-wider">
+            <div className="mb-2 flex items-center justify-between">
+              <h3 className="font-pixel text-xs font-bold tracking-wider text-slate-500 uppercase dark:text-slate-400">
                 Manage Stages
               </h3>
               <button
                 onClick={onResetStages}
-                className="font-pixel text-[10px] text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 dark:text-slate-500 uppercase tracking-wider transition-colors cursor-pointer"
+                className="font-pixel cursor-pointer text-[10px] tracking-wider text-slate-400 uppercase transition-colors hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300"
               >
                 Reset Defaults
               </button>
             </div>
-            <div className="space-y-1 pr-1 max-h-48 overflow-y-auto custom-scrollbar">
+            <div className="custom-scrollbar max-h-48 space-y-1 overflow-y-auto pr-1">
               {(availableStages || []).map((stage) => {
                 const isUndeleteable =
-                  stage.name === "Rejected" ||
-                  stage.name === "Withdrawn" ||
-                  stage.name === "Offer";
+                  stage.name === "Rejected" || stage.name === "Withdrawn" || stage.name === "Offer";
                 return (
                   <div
                     key={stage.name}
-                    className="flex justify-between items-center bg-slate-100 dark:bg-slate-700/50 px-2 py-1.5 rounded"
+                    className="flex items-center justify-between rounded bg-slate-100 px-2 py-1.5 dark:bg-slate-700/50"
                   >
-                    <span className="flex-1 font-bold text-slate-800 dark:text-slate-200 text-sm truncate">
+                    <span className="flex-1 truncate text-sm font-bold text-slate-800 dark:text-slate-200">
                       {stage.name}
                     </span>
                     {!isUndeleteable && (
                       <button
                         onClick={() => onDeleteStage(stage.name)}
-                        className="hover:bg-red-400/20 ml-2 px-1 rounded text-red-400 hover:text-red-300 transition-colors cursor-pointer"
+                        className="ml-2 cursor-pointer rounded px-1 text-red-400 transition-colors hover:bg-red-400/20 hover:text-red-300"
                         title="Delete stage"
                       >
                         ✕
@@ -89,16 +87,14 @@ export default function SettingsPopup({
               className="flex-1"
               placeholder="New stage..."
               value={newStageName}
-              onChange={(e) =>
-                setNewStageName(e.target.value.replace(/[()]/g, ""))
-              }
+              onChange={(e) => setNewStageName(e.target.value.replace(/[()]/g, ""))}
             />
             <Button theme="green" type="submit" size="sm">
               ADD
             </Button>
           </form>
-          <div className="pt-4 border-slate-300 dark:border-slate-700 border-t">
-            <h3 className="mb-2 font-pixel font-bold text-red-400 text-xs uppercase tracking-wider">
+          <div className="border-t border-slate-300 pt-4 dark:border-slate-700">
+            <h3 className="font-pixel mb-2 text-xs font-bold tracking-wider text-red-400 uppercase">
               Reset
             </h3>
             <Button

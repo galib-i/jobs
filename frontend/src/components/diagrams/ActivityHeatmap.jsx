@@ -1,9 +1,6 @@
 import ReactECharts from "echarts-for-react";
-import { useEffect, useState, useMemo, useRef } from "react";
-import {
-  GetTimelineData,
-  GetActivityStats,
-} from "../../../bindings/jobs/jobservice";
+import { useEffect, useState, useMemo } from "react";
+import { GetTimelineData, GetActivityStats } from "../../../bindings/jobs/jobservice";
 import { ClockIcon, FlameIcon, CalendarIcon } from "../ui/Icon";
 
 function parseDate(str) {
@@ -29,11 +26,7 @@ export default function ActivityHeatmap({ theme }) {
   }, []);
 
   const option = useMemo(() => {
-    if (
-      !timelineData ||
-      !timelineData.dates ||
-      timelineData.dates.length === 0
-    ) {
+    if (!timelineData || !timelineData.dates || timelineData.dates.length === 0) {
       return null;
     }
 
@@ -71,8 +64,7 @@ export default function ActivityHeatmap({ theme }) {
 
     const maxSpan = 26;
     const dataLen = weeks.length;
-    const startPercent =
-      dataLen > maxSpan ? 100 - (maxSpan / dataLen) * 100 : 0;
+    const startPercent = dataLen > maxSpan ? 100 - (maxSpan / dataLen) * 100 : 0;
 
     const chart = {
       tooltip: {
@@ -82,14 +74,11 @@ export default function ActivityHeatmap({ theme }) {
         formatter: function (p) {
           const count = p.data[2];
           const date = p.data[3];
-          const [y, m, d] = date.split("-");
+          const [_y, m, d] = date.split("-");
 
           return `${count} activit${count === 1 ? "y" : "ies"} on ${d}-${m}`;
         },
-        backgroundColor:
-          theme === "dark"
-            ? "rgba(15, 23, 42, 0.9)"
-            : "rgba(255, 255, 255, 0.9)",
+        backgroundColor: theme === "dark" ? "rgba(15, 23, 42, 0.9)" : "rgba(255, 255, 255, 0.9)",
         borderColor: theme === "dark" ? "#334155" : "#cbd5e1",
         textStyle: {
           color: theme === "dark" ? "#f8fafc" : "#1e293b",
@@ -155,9 +144,7 @@ export default function ActivityHeatmap({ theme }) {
             const curr = parseDate(value);
             const prev = parseDate(weeks[absIndex - 1]);
             if (curr.getMonth() !== prev.getMonth()) {
-              return curr
-                .toLocaleDateString("en-US", { month: "short" })
-                .toUpperCase();
+              return curr.toLocaleDateString("en-US", { month: "short" }).toUpperCase();
             }
             return "";
           },
@@ -229,38 +216,36 @@ export default function ActivityHeatmap({ theme }) {
   }
 
   return (
-    <div className="flex flex-col w-212.5 shrink-0">
-      <div className="relative grid grid-cols-[200px_1fr] bg-slate-100 dark:bg-slate-900 border-2 border-blue-500 rounded-2xl overflow-hidden contain-content">
+    <div className="flex w-212.5 shrink-0 flex-col">
+      <div className="relative grid grid-cols-[200px_1fr] overflow-hidden rounded-2xl border-2 border-blue-500 bg-slate-100 contain-content dark:bg-slate-900">
         {/* Overall Header */}
-        <div className="col-span-full bg-blue-600 border-blue-500 border-b-2 font-pixel font-bold text-white tracking-wider select-none">
-          <div className="flex items-center px-4 py-3 pl-6 whitespace-nowrap">
-            Activity
-          </div>
+        <div className="font-pixel col-span-full border-b-2 border-blue-500 bg-blue-600 font-bold tracking-wider text-white select-none">
+          <div className="flex items-center px-4 py-3 pl-6 whitespace-nowrap">Activity</div>
         </div>
 
         {/* Left Column: Stats */}
-        <div className="flex flex-col justify-between gap-4 p-6 border-slate-300 dark:border-slate-700 border-r">
+        <div className="flex flex-col justify-between gap-4 border-r border-slate-300 p-6 dark:border-slate-700">
           <div>
-            <div className="flex items-center gap-1.5 mb-1 text-slate-500 dark:text-slate-400 text-xs">
+            <div className="mb-1 flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400">
               <ClockIcon />
               Current streak
             </div>
-            <div className="font-pixel font-bold text-slate-800 dark:text-slate-100 text-base">
+            <div className="font-pixel text-base font-bold text-slate-800 dark:text-slate-100">
               {stats.currentStreak} day{stats.currentStreak !== 1 ? "s" : ""}
             </div>
           </div>
 
           <div>
-            <div className="flex items-center gap-1.5 mb-1 text-slate-500 dark:text-slate-400 text-xs">
+            <div className="mb-1 flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400">
               <FlameIcon />
               Longest streak
             </div>
-            <div className="flex items-baseline font-bold text-slate-800 dark:text-slate-100 text-base whitespace-nowrap">
+            <div className="flex items-baseline text-base font-bold whitespace-nowrap text-slate-800 dark:text-slate-100">
               <span className="font-pixel">
                 {stats.longestStreak} day{stats.longestStreak !== 1 ? "s" : ""}
               </span>
               {stats.longestStreakMonth && (
-                <div className="-top-0.5 relative ml-1.5 font-normal text-slate-500 text-xs">
+                <div className="relative -top-0.5 ml-1.5 text-xs font-normal text-slate-500">
                   · {stats.longestStreakMonth}
                 </div>
               )}
@@ -268,18 +253,18 @@ export default function ActivityHeatmap({ theme }) {
           </div>
 
           <div>
-            <div className="flex items-center gap-1.5 mb-1 text-slate-500 dark:text-slate-400 text-xs">
+            <div className="mb-1 flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400">
               <CalendarIcon />
               Most active day
             </div>
-            <div className="font-pixel font-bold text-slate-800 dark:text-slate-100 text-base">
+            <div className="font-pixel text-base font-bold text-slate-800 dark:text-slate-100">
               {stats.mostActiveDay}
             </div>
           </div>
         </div>
 
         {/* Right Column: Heatmap */}
-        <div className="flex justify-center items-center p-4 pt-6 min-w-0">
+        <div className="flex min-w-0 items-center justify-center p-4 pt-6">
           <ReactECharts
             option={option}
             style={{ height: 200, width: "100%", margin: "0 auto" }}
