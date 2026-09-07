@@ -35,7 +35,7 @@ func NewJobService() *JobService {
 				description TEXT,
 				notes TEXT
 				);
-				
+
 				CREATE TABLE IF NOT EXISTS stages (
 				id INTEGER PRIMARY KEY AUTOINCREMENT,
 				job_id INTEGER,
@@ -43,7 +43,7 @@ func NewJobService() *JobService {
 				last_updated DATETIME DEFAULT CURRENT_TIMESTAMP,
 				FOREIGN KEY (job_id) REFERENCES jobs(id) ON DELETE CASCADE
 				);
-				
+
 				CREATE TABLE IF NOT EXISTS available_stages (
 				id INTEGER PRIMARY KEY AUTOINCREMENT,
 				name TEXT NOT NULL UNIQUE COLLATE NOCASE
@@ -160,31 +160,69 @@ func (js *JobService) WipeDatabase() error {
 	return tx.Commit()
 }
 
-func (js *JobService) GetJobs() ([]Job, error) {
-	query := `SELECT jobs.id, jobs.company, jobs.role, jobs.location, jobs.link, jobs.description, jobs.notes, 
+func (js *JobService) GetJobs(search string, stageSort string, dateSort string) ([]Job, error) {
+	query := `SELECT jobs.id, jobs.company, jobs.role, jobs.location, jobs.link, jobs.description, jobs.notes,
 				coalesce(
 					(
 						SELECT group_concat(stage, ',')
 						FROM (
-							SELECT stage 
-							FROM stages 
-							WHERE job_id = jobs.id 
+							SELECT stage
+							FROM stages
+							WHERE job_id = jobs.id
 							ORDER BY id ASC
 						)
-					), 
+					),
 					''
 				),
 				coalesce(
 					(
-						SELECT date(last_updated) 
-						FROM stages 
-						WHERE job_id = jobs.id 
+						SELECT date(last_updated)
+						FROM stages
+						WHERE job_id = jobs.id
 						ORDER BY id DESC LIMIT 1
-					), 
-					date('now')) as last_updated_date
+					),
+					date('now')) as last_updated_date,
+				coalesce(
+					(
+						SELECT stage
+						FROM stages
+						WHERE job_id = jobs.id
+						ORDER BY id DESC LIMIT 1
+					),
+					'') as current_stage
 				FROM jobs`
 
-	rows, err := js.Database.Query(query)
+	var args []interface{}
+
+	if search != "" {
+		query += ` WHERE jobs.company LIKE ? OR jobs.role LIKE ?`
+		searchParam := "%" + search + "%"
+		args = append(args, searchParam, searchParam)
+	}
+
+	var orderClauses []string
+
+	switch stageSort {
+	case "asc":
+		orderClauses = append(orderClauses, `current_stage ASC`)
+	case "desc":
+		orderClauses = append(orderClauses, `current_stage DESC`)
+	}
+
+	switch dateSort {
+	case "asc":
+		orderClauses = append(orderClauses, `last_updated_date ASC`)
+	case "desc":
+		orderClauses = append(orderClauses, `last_updated_date DESC`)
+	}
+
+	if len(orderClauses) > 0 {
+		query += ` ORDER BY ` + strings.Join(orderClauses, ", ") + `, jobs.id DESC`
+	} else {
+		query += ` ORDER BY last_updated_date DESC, jobs.id DESC`
+	}
+
+	rows, err := js.Database.Query(query, args...)
 	if err != nil {
 		log.Printf("failed to get all jobs: %v", err)
 		return nil, err
@@ -196,8 +234,9 @@ func (js *JobService) GetJobs() ([]Job, error) {
 	for rows.Next() {
 		var currentJob Job
 		var stagesString string
+		var dummyStage string
 
-		if err := rows.Scan(&currentJob.ID, &currentJob.Company, &currentJob.Role, &currentJob.Location, &currentJob.Link, &currentJob.Description, &currentJob.Notes, &stagesString, &currentJob.CreatedAt); err != nil {
+		if err := rows.Scan(&currentJob.ID, &currentJob.Company, &currentJob.Role, &currentJob.Location, &currentJob.Link, &currentJob.Description, &currentJob.Notes, &stagesString, &currentJob.CreatedAt, &dummyStage); err != nil {
 			log.Printf("failed to scan job: %v", err)
 			return nil, err
 		}
@@ -257,9 +296,9 @@ func (js *JobService) AddJobStage(jobId int64, stage string) error {
 }
 
 func (js *JobService) RemoveJobStageAt(jobId int64, index int) error {
-	query := `SELECT id 
-				FROM stages 
-				WHERE job_id = ? 
+	query := `SELECT id
+				FROM stages
+				WHERE job_id = ?
 				ORDER BY id ASC`
 
 	rows, err := js.Database.Query(query, jobId)

@@ -79,10 +79,13 @@ export function GetHeatmapData() {
 }
 
 /**
+ * @param {string} search
+ * @param {string} stageSort
+ * @param {string} dateSort
  * @returns {$CancellablePromise<$models.Job[]>}
  */
-export function GetJobs() {
-    return $Call.ByID(2795355898).then(/** @type {($result: any) => any} */(($result) => {
+export function GetJobs(search, stageSort, dateSort) {
+    return $Call.ByID(2795355898, search, stageSort, dateSort).then(/** @type {($result: any) => any} */(($result) => {
         return $$createType7($result);
     }));
 }

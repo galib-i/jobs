@@ -1,4 +1,3 @@
-import { useState, useMemo } from "react";
 import JobListItem from "../components/job/JobItem";
 import { SplitButton, TriangleButton } from "../components/ui/Button";
 import { SearchIcon } from "../components/ui/Icon";
@@ -16,36 +15,15 @@ export default function JobsPage({
   onDeleteJob,
   onAddStage,
   onRemoveStage,
+  searchQuery,
+  setSearchQuery,
+  stageSort,
+  setStageSort,
+  dateSort,
+  setDateSort,
 }) {
-  const [searchQuery, setSearchQuery] = useState("");
   const inactive = viewMode === "inactive";
-  const filteredJobs = useMemo(() => {
-    return jobs.filter((job) => {
-      if (inactive && job.isActive) return false;
-      if (!inactive && !job.isActive) return false;
-
-      if (searchQuery.trim()) {
-        const q = searchQuery.toLowerCase();
-        const searchableFields = [
-          job.company,
-          job.role,
-          job.location,
-          job.link,
-          job.description,
-          job.notes,
-          job.lastStage,
-        ];
-
-        const match = searchableFields.some((field) => (field || "").toLowerCase().includes(q));
-
-        if (!match) return false;
-      }
-      return true;
-    });
-  }, [jobs, inactive, searchQuery]);
-
-  const [stageSort, setStageSort] = useState("none"); // none, asc, desc
-  const [dateSort, setDateSort] = useState("desc"); // asc, desc
+  const displayJobs = jobs.filter((job) => (inactive ? !job.isActive : job.isActive));
 
   const toggleStageSort = () => {
     if (stageSort === "none") setStageSort("asc");
@@ -56,26 +34,6 @@ export default function JobsPage({
   const toggleDateSort = () => {
     setDateSort((prev) => (prev === "desc" ? "asc" : "desc"));
   };
-
-  const sortedJobs = useMemo(() => {
-    return [...filteredJobs].sort((a, b) => {
-      const dateDiff = b.id - a.id; // job IDs are sequential, newest first
-      const dateComparison = dateSort === "asc" ? -dateDiff : dateDiff;
-
-      if (stageSort !== "none") {
-        const stageA = a.lastStage || "";
-        const stageB = b.lastStage || "";
-        const stageComparison = stageA.localeCompare(stageB);
-
-        if (stageComparison !== 0) {
-          return stageSort === "asc" ? stageComparison : -stageComparison;
-        }
-      }
-
-      // Fallback date sort
-      return dateComparison;
-    });
-  }, [filteredJobs, dateSort, stageSort]);
 
   return (
     <div>
@@ -90,7 +48,7 @@ export default function JobsPage({
             size="sm"
           />
           <div className="flex items-center pt-1 font-bold tracking-wider text-slate-500 uppercase">
-            <span className="inline-block w-6 text-right tabular-nums">{filteredJobs.length}</span>
+            <span className="inline-block w-6 text-right tabular-nums">{displayJobs.length}</span>
             <span className="mx-2">/</span>
             <span className="inline-block w-6 text-left tabular-nums">{jobs.length}</span>
           </div>
@@ -167,18 +125,23 @@ export default function JobsPage({
               </>
             );
           })()}
-          {sortedJobs.map((job, idx) => (
+          {displayJobs.map((job, idx) => (
             <JobListItem
               key={job.id}
               job={job}
-              isLast={idx === sortedJobs.length - 1}
               availableStages={availableStages}
-              onUpdate={onUpdateJob}
-              onDelete={onDeleteJob}
+              onUpdateJob={onUpdateJob}
+              onDeleteJob={onDeleteJob}
               onAddStage={onAddStage}
               onRemoveStage={onRemoveStage}
+              isLast={idx === displayJobs.length - 1}
             />
           ))}
+          {displayJobs.length === 0 && (
+            <div className="col-span-full py-12 text-center text-slate-400">
+              <p>No jobs found.</p>
+            </div>
+          )}
         </div>
       </div>
     </div>

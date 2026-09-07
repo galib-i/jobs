@@ -48,7 +48,7 @@ type LinkKey struct {
 }
 
 func (js *JobService) GetSankeyData() (*SankeyData, error) {
-	jobs, err := js.GetJobs()
+	jobs, err := js.GetJobs("", "none", "desc")
 	if err != nil {
 		return nil, err
 	}
@@ -66,7 +66,7 @@ func (js *JobService) GetSankeyData() (*SankeyData, error) {
 		}
 
 		for i, stage := range job.Stages {
-			// Diagram should show step-by-step and not looping back - an index is added to treat each as a unique node
+			// Diagram should show steps, an index is added to treat each as a unique node
 			current := NodeKey{Name: stage, Index: i}
 			nodeCount[current]++
 
@@ -123,10 +123,10 @@ func (js *JobService) GetTimelineData(groupBy string) (*TimelineData, error) {
 		dateExpr = `date(last_updated, 'weekday 0', '-6 days')` // Gets the Monday of the current week
 	}
 
-	query := `SELECT ` + dateExpr + ` as date_group, count(*) 
-			  FROM stages 
+	query := `SELECT ` + dateExpr + ` as date_group, count(*)
+			  FROM stages
 			  ` + filterExpr + `
-			  GROUP BY date_group 
+			  GROUP BY date_group
 			  ORDER BY date_group ASC`
 
 	rows, err := js.Database.Query(query)
@@ -147,6 +147,10 @@ func (js *JobService) GetTimelineData(groupBy string) (*TimelineData, error) {
 
 		dates = append(dates, dateStr)
 		counts = append(counts, count)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, err
 	}
 
 	return &TimelineData{Dates: dates, Counts: counts}, nil
@@ -287,7 +291,7 @@ func (js *JobService) GetHeatmapData() (*HeatmapResult, error) {
 		for dayIndex := 0; dayIndex < 7; dayIndex++ {
 			dStr := currDate.Format("2006-01-02")
 			count := countMap[dStr]
-			heatmapData = append(heatmapData, []interface{}{weekIndex, dayIndex, count, dStr})
+			heatmapData = append(heatmapData, []any{weekIndex, dayIndex, count, dStr})
 			currDate = currDate.AddDate(0, 0, 1)
 		}
 		weekIndex++

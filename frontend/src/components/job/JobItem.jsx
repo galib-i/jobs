@@ -11,8 +11,8 @@ import JobStageSelector from "./JobStageSelector";
 export default function JobListItem({
   job,
   availableStages,
-  onUpdate,
-  onDelete,
+  onUpdateJob,
+  onDeleteJob,
   onAddStage,
   onRemoveStage,
 }) {
@@ -21,21 +21,17 @@ export default function JobListItem({
   const [isDeleteConfirmationOpen, setisDeleteConfirmationOpen] = useState(false);
   const [isEditingNotes, setIsEditingNotes] = useState(false);
 
-  const lastStage = job.lastStage || "";
-  const lastStageCount = job.stages ? job.stages.filter((s) => s === lastStage).length : 0;
-  const displayLastStage = lastStageCount > 1 ? `${lastStage} (${lastStageCount})` : lastStage;
+  const displayLastStage =
+    job.stageHistory && job.stageHistory.length > 0
+      ? job.stageHistory[job.stageHistory.length - 1].count > 1
+        ? `${job.lastStage} (${job.stageHistory[job.stageHistory.length - 1].count})`
+        : job.lastStage
+      : "None";
 
   const bgColour = job.lastStageColour || "var(--color-yellow-500)";
   const textColour = job.lastStageTextColour || "var(--color-slate-800)";
 
-  const stageCounts = {};
-  const formattedStages = (job.stages || []).map((stage) => {
-    stageCounts[stage] = (stageCounts[stage] || 0) + 1;
-    return {
-      raw: stage,
-      display: stageCounts[stage] > 1 ? `${stage} (${stageCounts[stage]})` : stage,
-    };
-  });
+  const formattedStages = job.formattedStages || [];
 
   const innerBorder = isDeleteConfirmationOpen
     ? "border-l border-red-300 dark:border-red-800/50"
@@ -53,7 +49,7 @@ export default function JobListItem({
         <div className="flex items-center overflow-hidden px-4 py-2 pl-6">
           <EditableInput
             initialValue={job.company}
-            onSave={(newValue) => onUpdate({ ...job, company: newValue })}
+            onSave={(newValue) => onUpdateJob({ ...job, company: newValue })}
             className="block w-full truncate"
           />
         </div>
@@ -75,12 +71,12 @@ export default function JobListItem({
               <InfoIcon />
             </Button>
           </div>
-          <JobRoleEditor job={job} onUpdate={onUpdate} />
+          <JobRoleEditor job={job} onUpdate={onUpdateJob} />
         </div>
         <div className={`flex items-center overflow-hidden px-4 py-2 ${innerBorder}`}>
           <EditableInput
             initialValue={job.location}
-            onSave={(newValue) => onUpdate({ ...job, location: newValue })}
+            onSave={(newValue) => onUpdateJob({ ...job, location: newValue })}
             className="block w-full truncate"
           />
         </div>
@@ -149,7 +145,7 @@ export default function JobListItem({
         >
           <EditableInput
             initialValue={job.notes}
-            onSave={(newValue) => onUpdate({ ...job, notes: newValue })}
+            onSave={(newValue) => onUpdateJob({ ...job, notes: newValue })}
             className="max-h-7 w-full overflow-hidden wrap-break-word whitespace-pre-wrap transition-[max-height] duration-1000 ease-[cubic-bezier(0.85,0,0.15,1)] group-hover/notes:max-h-96"
             editing={isEditingNotes}
             onEditingChange={setIsEditingNotes}
@@ -174,7 +170,7 @@ export default function JobListItem({
           </span>
           <EditableInput
             initialValue={job.description}
-            onSave={(newValue) => onUpdate({ ...job, description: newValue })}
+            onSave={(newValue) => onUpdateJob({ ...job, description: newValue })}
             className="w-full flex-1 wrap-break-word whitespace-pre-wrap"
           />
         </div>
@@ -196,7 +192,7 @@ export default function JobListItem({
             }}
             onSave={(newValue) => {
               if (newValue.trim()) {
-                onUpdate({ ...job, description: newValue.trim() });
+                onUpdateJob({ ...job, description: newValue.trim() });
                 setShowDescription(true);
               }
               setIsAddingDescription(false);
@@ -210,8 +206,8 @@ export default function JobListItem({
         isOpen={isDeleteConfirmationOpen}
         onClose={() => setisDeleteConfirmationOpen(false)}
         onConfirm={() => {
+          onDeleteJob(job.id);
           setisDeleteConfirmationOpen(false);
-          onDelete(job.id);
         }}
       />
     </>

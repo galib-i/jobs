@@ -55,6 +55,41 @@ export class ActivityStats {
     }
 }
 
+export class FormattedStage {
+    /**
+     * Creates a new FormattedStage instance.
+     * @param {Partial<FormattedStage>} [$$source = {}] - The source object to create the FormattedStage.
+     */
+    constructor($$source = {}) {
+        if (!("raw" in $$source)) {
+            /**
+             * @member
+             * @type {string}
+             */
+            this["raw"] = "";
+        }
+        if (!("display" in $$source)) {
+            /**
+             * @member
+             * @type {string}
+             */
+            this["display"] = "";
+        }
+
+        Object.assign(this, $$source);
+    }
+
+    /**
+     * Creates a new FormattedStage instance from a string or object.
+     * @param {any} [$$source = {}]
+     * @returns {FormattedStage}
+     */
+    static createFrom($$source = {}) {
+        let $$parsedSource = typeof $$source === 'string' ? JSON.parse($$source) : $$source;
+        return new FormattedStage(/** @type {Partial<FormattedStage>} */($$parsedSource));
+    }
+}
+
 export class HeatmapResult {
     /**
      * Creates a new HeatmapResult instance.
@@ -160,6 +195,20 @@ export class Job {
              */
             this["stages"] = [];
         }
+        if (!("stageHistory" in $$source)) {
+            /**
+             * @member
+             * @type {StageCount[]}
+             */
+            this["stageHistory"] = [];
+        }
+        if (!("formattedStages" in $$source)) {
+            /**
+             * @member
+             * @type {FormattedStage[]}
+             */
+            this["formattedStages"] = [];
+        }
         if (!("createdAt" in $$source)) {
             /**
              * @member
@@ -214,9 +263,17 @@ export class Job {
      */
     static createFrom($$source = {}) {
         const $$createField7_0 = $$createType2;
+        const $$createField8_0 = $$createType4;
+        const $$createField9_0 = $$createType6;
         let $$parsedSource = typeof $$source === 'string' ? JSON.parse($$source) : $$source;
         if ("stages" in $$parsedSource) {
             $$parsedSource["stages"] = $$createField7_0($$parsedSource["stages"]);
+        }
+        if ("stageHistory" in $$parsedSource) {
+            $$parsedSource["stageHistory"] = $$createField8_0($$parsedSource["stageHistory"]);
+        }
+        if ("formattedStages" in $$parsedSource) {
+            $$parsedSource["formattedStages"] = $$createField9_0($$parsedSource["formattedStages"]);
         }
         return new Job(/** @type {Partial<Job>} */($$parsedSource));
     }
@@ -252,8 +309,8 @@ export class SankeyData {
      * @returns {SankeyData}
      */
     static createFrom($$source = {}) {
-        const $$createField0_0 = $$createType4;
-        const $$createField1_0 = $$createType6;
+        const $$createField0_0 = $$createType8;
+        const $$createField1_0 = $$createType10;
         let $$parsedSource = typeof $$source === 'string' ? JSON.parse($$source) : $$source;
         if ("nodes" in $$parsedSource) {
             $$parsedSource["nodes"] = $$createField0_0($$parsedSource["nodes"]);
@@ -363,6 +420,41 @@ export class SankeyNode {
     }
 }
 
+export class StageCount {
+    /**
+     * Creates a new StageCount instance.
+     * @param {Partial<StageCount>} [$$source = {}] - The source object to create the StageCount.
+     */
+    constructor($$source = {}) {
+        if (!("name" in $$source)) {
+            /**
+             * @member
+             * @type {string}
+             */
+            this["name"] = "";
+        }
+        if (!("count" in $$source)) {
+            /**
+             * @member
+             * @type {number}
+             */
+            this["count"] = 0;
+        }
+
+        Object.assign(this, $$source);
+    }
+
+    /**
+     * Creates a new StageCount instance from a string or object.
+     * @param {any} [$$source = {}]
+     * @returns {StageCount}
+     */
+    static createFrom($$source = {}) {
+        let $$parsedSource = typeof $$source === 'string' ? JSON.parse($$source) : $$source;
+        return new StageCount(/** @type {Partial<StageCount>} */($$parsedSource));
+    }
+}
+
 export class StageMetadata {
     /**
      * Creates a new StageMetadata instance.
@@ -443,7 +535,7 @@ export class TimelineData {
      */
     static createFrom($$source = {}) {
         const $$createField0_0 = $$createType2;
-        const $$createField1_0 = $$createType7;
+        const $$createField1_0 = $$createType11;
         let $$parsedSource = typeof $$source === 'string' ? JSON.parse($$source) : $$source;
         if ("dates" in $$parsedSource) {
             $$parsedSource["dates"] = $$createField0_0($$parsedSource["dates"]);
@@ -459,8 +551,12 @@ export class TimelineData {
 const $$createType0 = $Create.Array($Create.Any);
 const $$createType1 = $Create.Array($$createType0);
 const $$createType2 = $Create.Array($Create.Any);
-const $$createType3 = SankeyNode.createFrom;
+const $$createType3 = StageCount.createFrom;
 const $$createType4 = $Create.Array($$createType3);
-const $$createType5 = SankeyLink.createFrom;
+const $$createType5 = FormattedStage.createFrom;
 const $$createType6 = $Create.Array($$createType5);
-const $$createType7 = $Create.Array($Create.Any);
+const $$createType7 = SankeyNode.createFrom;
+const $$createType8 = $Create.Array($$createType7);
+const $$createType9 = SankeyLink.createFrom;
+const $$createType10 = $Create.Array($$createType9);
+const $$createType11 = $Create.Array($Create.Any);

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"strings"
 	"time"
 )
@@ -47,16 +48,28 @@ func isLastStage(stage string) bool {
 
 var DefaultAvailableStages = []string{"Interview", "Offer", "Rejected", "Withdrawn"}
 
+type StageCount struct {
+	Name  string `json:"name"`
+	Count int    `json:"count"`
+}
+
+type FormattedStage struct {
+	Raw     string `json:"raw"`
+	Display string `json:"display"`
+}
+
 type Job struct {
-	ID          int64    `json:"id"`
-	Company     string   `json:"company"`
-	Role        string   `json:"role"`
-	Location    string   `json:"location"`
-	Link        string   `json:"link"`
-	Description string   `json:"description"`
-	Notes       string   `json:"notes"`
-	Stages      []string `json:"stages"`
-	CreatedAt   string   `json:"createdAt"`
+	ID              int64            `json:"id"`
+	Company         string           `json:"company"`
+	Role            string           `json:"role"`
+	Location        string           `json:"location"`
+	Link            string           `json:"link"`
+	Description     string           `json:"description"`
+	Notes           string           `json:"notes"`
+	Stages          []string         `json:"stages"`
+	StageHistory    []StageCount     `json:"stageHistory"`
+	FormattedStages []FormattedStage `json:"formattedStages"`
+	CreatedAt       string           `json:"createdAt"`
 
 	// Not stored in database
 	LastStage           string `json:"lastStage"`
@@ -87,6 +100,9 @@ func (js *JobService) GetAvailableStages() []StageMetadata {
 			stages = append(stages, name)
 		}
 	}
+	if err := rows.Err(); err != nil {
+		return []StageMetadata{}
+	}
 
 	meta := make([]StageMetadata, 0, len(stages))
 	for _, s := range stages {
@@ -105,6 +121,35 @@ func (j *Job) computeFields() {
 	if len(j.Stages) > 0 {
 		j.LastStage = j.Stages[len(j.Stages)-1]
 	}
+
+	// Calculate StageHistory
+	counts := make(map[string]int)
+	var history []StageCount
+	var formatted []FormattedStage
+
+	for _, stage := range j.Stages {
+		if counts[stage] == 0 {
+			history = append(history, StageCount{Name: stage, Count: 0})
+		}
+		counts[stage]++
+
+		display := stage
+		if counts[stage] > 1 {
+			display = fmt.Sprintf("%s (%d)", stage, counts[stage])
+		}
+
+		formatted = append(formatted, FormattedStage{
+			Raw:     stage,
+			Display: display,
+		})
+	}
+
+	// Update the counts in the ordered history slice
+	for i, h := range history {
+		history[i].Count = counts[h.Name]
+	}
+	j.StageHistory = history
+	j.FormattedStages = formatted
 
 	j.LastStageColour = getStageColour(j.LastStage)
 	j.LastStageTextColour = getStageTextColour(j.LastStageColour)

@@ -13,18 +13,18 @@ import {
   RemoveJobStageAt,
 } from "../../bindings/jobs/jobservice";
 
-export function useJobs() {
+export function useJobs(searchQuery = "", stageSort = "none", dateSort = "desc") {
   const [jobs, setJobs] = useState([]);
   const [availableStages, setAvailableStages] = useState([]);
 
   const loadJobs = useCallback(async () => {
     try {
-      const data = await GetJobs();
+      const data = await GetJobs(searchQuery, stageSort, dateSort);
       setJobs(data || []);
     } catch (err) {
       console.error(err);
     }
-  }, []);
+  }, [searchQuery, stageSort, dateSort]);
 
   const loadStages = useCallback(async () => {
     try {

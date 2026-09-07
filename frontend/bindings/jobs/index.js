@@ -9,11 +9,13 @@ export {
 
 export {
     ActivityStats,
+    FormattedStage,
     HeatmapResult,
     Job,
     SankeyData,
     SankeyLink,
     SankeyNode,
+    StageCount,
     StageMetadata,
     TimelineData
 } from "./models.js";
