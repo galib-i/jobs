@@ -7,422 +7,460 @@
 import { Create as $Create } from "@wailsio/runtime";
 
 export class ActivityStats {
-  /**
-   * Creates a new ActivityStats instance.
-   * @param {Partial<ActivityStats>} [$$source = {}] - The source object to create the ActivityStats.
-   */
-  constructor($$source = {}) {
-    if (!("currentStreak" in $$source)) {
-      /**
-       * @member
-       * @type {number}
-       */
-      this["currentStreak"] = 0;
-    }
-    if (!("longestStreak" in $$source)) {
-      /**
-       * @member
-       * @type {number}
-       */
-      this["longestStreak"] = 0;
-    }
-    if (!("longestStreakMonth" in $$source)) {
-      /**
-       * @member
-       * @type {string}
-       */
-      this["longestStreakMonth"] = "";
-    }
-    if (!("mostActiveDay" in $$source)) {
-      /**
-       * @member
-       * @type {string}
-       */
-      this["mostActiveDay"] = "";
+    /**
+     * Creates a new ActivityStats instance.
+     * @param {Partial<ActivityStats>} [$$source = {}] - The source object to create the ActivityStats.
+     */
+    constructor($$source = {}) {
+        if (!("currentStreak" in $$source)) {
+            /**
+             * @member
+             * @type {number}
+             */
+            this["currentStreak"] = 0;
+        }
+        if (!("longestStreak" in $$source)) {
+            /**
+             * @member
+             * @type {number}
+             */
+            this["longestStreak"] = 0;
+        }
+        if (!("longestStreakMonth" in $$source)) {
+            /**
+             * @member
+             * @type {string}
+             */
+            this["longestStreakMonth"] = "";
+        }
+        if (!("mostActiveDay" in $$source)) {
+            /**
+             * @member
+             * @type {string}
+             */
+            this["mostActiveDay"] = "";
+        }
+
+        Object.assign(this, $$source);
     }
 
-    Object.assign(this, $$source);
-  }
+    /**
+     * Creates a new ActivityStats instance from a string or object.
+     * @param {any} [$$source = {}]
+     * @returns {ActivityStats}
+     */
+    static createFrom($$source = {}) {
+        let $$parsedSource = typeof $$source === 'string' ? JSON.parse($$source) : $$source;
+        return new ActivityStats(/** @type {Partial<ActivityStats>} */($$parsedSource));
+    }
+}
 
-  /**
-   * Creates a new ActivityStats instance from a string or object.
-   * @param {any} [$$source = {}]
-   * @returns {ActivityStats}
-   */
-  static createFrom($$source = {}) {
-    let $$parsedSource = typeof $$source === "string" ? JSON.parse($$source) : $$source;
-    return new ActivityStats(/** @type {Partial<ActivityStats>} */ ($$parsedSource));
-  }
+export class HeatmapResult {
+    /**
+     * Creates a new HeatmapResult instance.
+     * @param {Partial<HeatmapResult>} [$$source = {}] - The source object to create the HeatmapResult.
+     */
+    constructor($$source = {}) {
+        if (!("heatmapData" in $$source)) {
+            /**
+             * @member
+             * @type {any[][]}
+             */
+            this["heatmapData"] = [];
+        }
+        if (!("weeks" in $$source)) {
+            /**
+             * @member
+             * @type {string[]}
+             */
+            this["weeks"] = [];
+        }
+
+        Object.assign(this, $$source);
+    }
+
+    /**
+     * Creates a new HeatmapResult instance from a string or object.
+     * @param {any} [$$source = {}]
+     * @returns {HeatmapResult}
+     */
+    static createFrom($$source = {}) {
+        const $$createField0_0 = $$createType1;
+        const $$createField1_0 = $$createType2;
+        let $$parsedSource = typeof $$source === 'string' ? JSON.parse($$source) : $$source;
+        if ("heatmapData" in $$parsedSource) {
+            $$parsedSource["heatmapData"] = $$createField0_0($$parsedSource["heatmapData"]);
+        }
+        if ("weeks" in $$parsedSource) {
+            $$parsedSource["weeks"] = $$createField1_0($$parsedSource["weeks"]);
+        }
+        return new HeatmapResult(/** @type {Partial<HeatmapResult>} */($$parsedSource));
+    }
 }
 
 export class Job {
-  /**
-   * Creates a new Job instance.
-   * @param {Partial<Job>} [$$source = {}] - The source object to create the Job.
-   */
-  constructor($$source = {}) {
-    if (!("id" in $$source)) {
-      /**
-       * @member
-       * @type {number}
-       */
-      this["id"] = 0;
-    }
-    if (!("company" in $$source)) {
-      /**
-       * @member
-       * @type {string}
-       */
-      this["company"] = "";
-    }
-    if (!("role" in $$source)) {
-      /**
-       * @member
-       * @type {string}
-       */
-      this["role"] = "";
-    }
-    if (!("location" in $$source)) {
-      /**
-       * @member
-       * @type {string}
-       */
-      this["location"] = "";
-    }
-    if (!("link" in $$source)) {
-      /**
-       * @member
-       * @type {string}
-       */
-      this["link"] = "";
-    }
-    if (!("description" in $$source)) {
-      /**
-       * @member
-       * @type {string}
-       */
-      this["description"] = "";
-    }
-    if (!("notes" in $$source)) {
-      /**
-       * @member
-       * @type {string}
-       */
-      this["notes"] = "";
-    }
-    if (!("stages" in $$source)) {
-      /**
-       * @member
-       * @type {string[]}
-       */
-      this["stages"] = [];
-    }
-    if (!("createdAt" in $$source)) {
-      /**
-       * @member
-       * @type {string}
-       */
-      this["createdAt"] = "";
-    }
-    if (!("lastStage" in $$source)) {
-      /**
-       * Not stored in database
-       * @member
-       * @type {string}
-       */
-      this["lastStage"] = "";
-    }
-    if (!("lastStageColour" in $$source)) {
-      /**
-       * @member
-       * @type {string}
-       */
-      this["lastStageColour"] = "";
-    }
-    if (!("lastStageTextColour" in $$source)) {
-      /**
-       * @member
-       * @type {string}
-       */
-      this["lastStageTextColour"] = "";
-    }
-    if (!("stageHistory" in $$source)) {
-      /**
-       * @member
-       * @type {string}
-       */
-      this["stageHistory"] = "";
-    }
-    if (!("formattedDate" in $$source)) {
-      /**
-       * @member
-       * @type {string}
-       */
-      this["formattedDate"] = "";
-    }
-    if (!("isActive" in $$source)) {
-      /**
-       * @member
-       * @type {boolean}
-       */
-      this["isActive"] = false;
+    /**
+     * Creates a new Job instance.
+     * @param {Partial<Job>} [$$source = {}] - The source object to create the Job.
+     */
+    constructor($$source = {}) {
+        if (!("id" in $$source)) {
+            /**
+             * @member
+             * @type {number}
+             */
+            this["id"] = 0;
+        }
+        if (!("company" in $$source)) {
+            /**
+             * @member
+             * @type {string}
+             */
+            this["company"] = "";
+        }
+        if (!("role" in $$source)) {
+            /**
+             * @member
+             * @type {string}
+             */
+            this["role"] = "";
+        }
+        if (!("location" in $$source)) {
+            /**
+             * @member
+             * @type {string}
+             */
+            this["location"] = "";
+        }
+        if (!("link" in $$source)) {
+            /**
+             * @member
+             * @type {string}
+             */
+            this["link"] = "";
+        }
+        if (!("description" in $$source)) {
+            /**
+             * @member
+             * @type {string}
+             */
+            this["description"] = "";
+        }
+        if (!("notes" in $$source)) {
+            /**
+             * @member
+             * @type {string}
+             */
+            this["notes"] = "";
+        }
+        if (!("stages" in $$source)) {
+            /**
+             * @member
+             * @type {string[]}
+             */
+            this["stages"] = [];
+        }
+        if (!("createdAt" in $$source)) {
+            /**
+             * @member
+             * @type {string}
+             */
+            this["createdAt"] = "";
+        }
+        if (!("lastStage" in $$source)) {
+            /**
+             * Not stored in database
+             * @member
+             * @type {string}
+             */
+            this["lastStage"] = "";
+        }
+        if (!("lastStageColour" in $$source)) {
+            /**
+             * @member
+             * @type {string}
+             */
+            this["lastStageColour"] = "";
+        }
+        if (!("lastStageTextColour" in $$source)) {
+            /**
+             * @member
+             * @type {string}
+             */
+            this["lastStageTextColour"] = "";
+        }
+        if (!("formattedDate" in $$source)) {
+            /**
+             * @member
+             * @type {string}
+             */
+            this["formattedDate"] = "";
+        }
+        if (!("isActive" in $$source)) {
+            /**
+             * @member
+             * @type {boolean}
+             */
+            this["isActive"] = false;
+        }
+
+        Object.assign(this, $$source);
     }
 
-    Object.assign(this, $$source);
-  }
-
-  /**
-   * Creates a new Job instance from a string or object.
-   * @param {any} [$$source = {}]
-   * @returns {Job}
-   */
-  static createFrom($$source = {}) {
-    const $$createField7_0 = $$createType0;
-    let $$parsedSource = typeof $$source === "string" ? JSON.parse($$source) : $$source;
-    if ("stages" in $$parsedSource) {
-      $$parsedSource["stages"] = $$createField7_0($$parsedSource["stages"]);
+    /**
+     * Creates a new Job instance from a string or object.
+     * @param {any} [$$source = {}]
+     * @returns {Job}
+     */
+    static createFrom($$source = {}) {
+        const $$createField7_0 = $$createType2;
+        let $$parsedSource = typeof $$source === 'string' ? JSON.parse($$source) : $$source;
+        if ("stages" in $$parsedSource) {
+            $$parsedSource["stages"] = $$createField7_0($$parsedSource["stages"]);
+        }
+        return new Job(/** @type {Partial<Job>} */($$parsedSource));
     }
-    return new Job(/** @type {Partial<Job>} */ ($$parsedSource));
-  }
 }
 
 export class SankeyData {
-  /**
-   * Creates a new SankeyData instance.
-   * @param {Partial<SankeyData>} [$$source = {}] - The source object to create the SankeyData.
-   */
-  constructor($$source = {}) {
-    if (!("nodes" in $$source)) {
-      /**
-       * @member
-       * @type {SankeyNode[]}
-       */
-      this["nodes"] = [];
-    }
-    if (!("links" in $$source)) {
-      /**
-       * @member
-       * @type {SankeyLink[]}
-       */
-      this["links"] = [];
+    /**
+     * Creates a new SankeyData instance.
+     * @param {Partial<SankeyData>} [$$source = {}] - The source object to create the SankeyData.
+     */
+    constructor($$source = {}) {
+        if (!("nodes" in $$source)) {
+            /**
+             * @member
+             * @type {SankeyNode[]}
+             */
+            this["nodes"] = [];
+        }
+        if (!("links" in $$source)) {
+            /**
+             * @member
+             * @type {SankeyLink[]}
+             */
+            this["links"] = [];
+        }
+
+        Object.assign(this, $$source);
     }
 
-    Object.assign(this, $$source);
-  }
-
-  /**
-   * Creates a new SankeyData instance from a string or object.
-   * @param {any} [$$source = {}]
-   * @returns {SankeyData}
-   */
-  static createFrom($$source = {}) {
-    const $$createField0_0 = $$createType2;
-    const $$createField1_0 = $$createType4;
-    let $$parsedSource = typeof $$source === "string" ? JSON.parse($$source) : $$source;
-    if ("nodes" in $$parsedSource) {
-      $$parsedSource["nodes"] = $$createField0_0($$parsedSource["nodes"]);
+    /**
+     * Creates a new SankeyData instance from a string or object.
+     * @param {any} [$$source = {}]
+     * @returns {SankeyData}
+     */
+    static createFrom($$source = {}) {
+        const $$createField0_0 = $$createType4;
+        const $$createField1_0 = $$createType6;
+        let $$parsedSource = typeof $$source === 'string' ? JSON.parse($$source) : $$source;
+        if ("nodes" in $$parsedSource) {
+            $$parsedSource["nodes"] = $$createField0_0($$parsedSource["nodes"]);
+        }
+        if ("links" in $$parsedSource) {
+            $$parsedSource["links"] = $$createField1_0($$parsedSource["links"]);
+        }
+        return new SankeyData(/** @type {Partial<SankeyData>} */($$parsedSource));
     }
-    if ("links" in $$parsedSource) {
-      $$parsedSource["links"] = $$createField1_0($$parsedSource["links"]);
-    }
-    return new SankeyData(/** @type {Partial<SankeyData>} */ ($$parsedSource));
-  }
 }
 
 export class SankeyLink {
-  /**
-   * Creates a new SankeyLink instance.
-   * @param {Partial<SankeyLink>} [$$source = {}] - The source object to create the SankeyLink.
-   */
-  constructor($$source = {}) {
-    if (!("source" in $$source)) {
-      /**
-       * @member
-       * @type {string}
-       */
-      this["source"] = "";
-    }
-    if (!("target" in $$source)) {
-      /**
-       * @member
-       * @type {string}
-       */
-      this["target"] = "";
-    }
-    if (!("value" in $$source)) {
-      /**
-       * @member
-       * @type {number}
-       */
-      this["value"] = 0;
+    /**
+     * Creates a new SankeyLink instance.
+     * @param {Partial<SankeyLink>} [$$source = {}] - The source object to create the SankeyLink.
+     */
+    constructor($$source = {}) {
+        if (!("source" in $$source)) {
+            /**
+             * @member
+             * @type {string}
+             */
+            this["source"] = "";
+        }
+        if (!("target" in $$source)) {
+            /**
+             * @member
+             * @type {string}
+             */
+            this["target"] = "";
+        }
+        if (!("value" in $$source)) {
+            /**
+             * @member
+             * @type {number}
+             */
+            this["value"] = 0;
+        }
+
+        Object.assign(this, $$source);
     }
 
-    Object.assign(this, $$source);
-  }
-
-  /**
-   * Creates a new SankeyLink instance from a string or object.
-   * @param {any} [$$source = {}]
-   * @returns {SankeyLink}
-   */
-  static createFrom($$source = {}) {
-    let $$parsedSource = typeof $$source === "string" ? JSON.parse($$source) : $$source;
-    return new SankeyLink(/** @type {Partial<SankeyLink>} */ ($$parsedSource));
-  }
+    /**
+     * Creates a new SankeyLink instance from a string or object.
+     * @param {any} [$$source = {}]
+     * @returns {SankeyLink}
+     */
+    static createFrom($$source = {}) {
+        let $$parsedSource = typeof $$source === 'string' ? JSON.parse($$source) : $$source;
+        return new SankeyLink(/** @type {Partial<SankeyLink>} */($$parsedSource));
+    }
 }
 
 export class SankeyNode {
-  /**
-   * Creates a new SankeyNode instance.
-   * @param {Partial<SankeyNode>} [$$source = {}] - The source object to create the SankeyNode.
-   */
-  constructor($$source = {}) {
-    if (!("name" in $$source)) {
-      /**
-       * @member
-       * @type {string}
-       */
-      this["name"] = "";
-    }
-    if (!("cleanName" in $$source)) {
-      /**
-       * @member
-       * @type {string}
-       */
-      this["cleanName"] = "";
-    }
-    if (!("colour" in $$source)) {
-      /**
-       * @member
-       * @type {string}
-       */
-      this["colour"] = "";
-    }
-    if (!("textColour" in $$source)) {
-      /**
-       * @member
-       * @type {string}
-       */
-      this["textColour"] = "";
-    }
-    if (!("value" in $$source)) {
-      /**
-       * @member
-       * @type {number}
-       */
-      this["value"] = 0;
+    /**
+     * Creates a new SankeyNode instance.
+     * @param {Partial<SankeyNode>} [$$source = {}] - The source object to create the SankeyNode.
+     */
+    constructor($$source = {}) {
+        if (!("name" in $$source)) {
+            /**
+             * @member
+             * @type {string}
+             */
+            this["name"] = "";
+        }
+        if (!("cleanName" in $$source)) {
+            /**
+             * @member
+             * @type {string}
+             */
+            this["cleanName"] = "";
+        }
+        if (!("colour" in $$source)) {
+            /**
+             * @member
+             * @type {string}
+             */
+            this["colour"] = "";
+        }
+        if (!("textColour" in $$source)) {
+            /**
+             * @member
+             * @type {string}
+             */
+            this["textColour"] = "";
+        }
+        if (!("value" in $$source)) {
+            /**
+             * @member
+             * @type {number}
+             */
+            this["value"] = 0;
+        }
+
+        Object.assign(this, $$source);
     }
 
-    Object.assign(this, $$source);
-  }
-
-  /**
-   * Creates a new SankeyNode instance from a string or object.
-   * @param {any} [$$source = {}]
-   * @returns {SankeyNode}
-   */
-  static createFrom($$source = {}) {
-    let $$parsedSource = typeof $$source === "string" ? JSON.parse($$source) : $$source;
-    return new SankeyNode(/** @type {Partial<SankeyNode>} */ ($$parsedSource));
-  }
+    /**
+     * Creates a new SankeyNode instance from a string or object.
+     * @param {any} [$$source = {}]
+     * @returns {SankeyNode}
+     */
+    static createFrom($$source = {}) {
+        let $$parsedSource = typeof $$source === 'string' ? JSON.parse($$source) : $$source;
+        return new SankeyNode(/** @type {Partial<SankeyNode>} */($$parsedSource));
+    }
 }
 
 export class StageMetadata {
-  /**
-   * Creates a new StageMetadata instance.
-   * @param {Partial<StageMetadata>} [$$source = {}] - The source object to create the StageMetadata.
-   */
-  constructor($$source = {}) {
-    if (!("name" in $$source)) {
-      /**
-       * @member
-       * @type {string}
-       */
-      this["name"] = "";
-    }
-    if (!("colour" in $$source)) {
-      /**
-       * @member
-       * @type {string}
-       */
-      this["colour"] = "";
-    }
-    if (!("textColour" in $$source)) {
-      /**
-       * @member
-       * @type {string}
-       */
-      this["textColour"] = "";
-    }
-    if (!("isLast" in $$source)) {
-      /**
-       * @member
-       * @type {boolean}
-       */
-      this["isLast"] = false;
+    /**
+     * Creates a new StageMetadata instance.
+     * @param {Partial<StageMetadata>} [$$source = {}] - The source object to create the StageMetadata.
+     */
+    constructor($$source = {}) {
+        if (!("name" in $$source)) {
+            /**
+             * @member
+             * @type {string}
+             */
+            this["name"] = "";
+        }
+        if (!("colour" in $$source)) {
+            /**
+             * @member
+             * @type {string}
+             */
+            this["colour"] = "";
+        }
+        if (!("textColour" in $$source)) {
+            /**
+             * @member
+             * @type {string}
+             */
+            this["textColour"] = "";
+        }
+        if (!("isLast" in $$source)) {
+            /**
+             * @member
+             * @type {boolean}
+             */
+            this["isLast"] = false;
+        }
+
+        Object.assign(this, $$source);
     }
 
-    Object.assign(this, $$source);
-  }
-
-  /**
-   * Creates a new StageMetadata instance from a string or object.
-   * @param {any} [$$source = {}]
-   * @returns {StageMetadata}
-   */
-  static createFrom($$source = {}) {
-    let $$parsedSource = typeof $$source === "string" ? JSON.parse($$source) : $$source;
-    return new StageMetadata(/** @type {Partial<StageMetadata>} */ ($$parsedSource));
-  }
+    /**
+     * Creates a new StageMetadata instance from a string or object.
+     * @param {any} [$$source = {}]
+     * @returns {StageMetadata}
+     */
+    static createFrom($$source = {}) {
+        let $$parsedSource = typeof $$source === 'string' ? JSON.parse($$source) : $$source;
+        return new StageMetadata(/** @type {Partial<StageMetadata>} */($$parsedSource));
+    }
 }
 
 export class TimelineData {
-  /**
-   * Creates a new TimelineData instance.
-   * @param {Partial<TimelineData>} [$$source = {}] - The source object to create the TimelineData.
-   */
-  constructor($$source = {}) {
-    if (!("dates" in $$source)) {
-      /**
-       * @member
-       * @type {string[]}
-       */
-      this["dates"] = [];
-    }
-    if (!("counts" in $$source)) {
-      /**
-       * @member
-       * @type {number[]}
-       */
-      this["counts"] = [];
+    /**
+     * Creates a new TimelineData instance.
+     * @param {Partial<TimelineData>} [$$source = {}] - The source object to create the TimelineData.
+     */
+    constructor($$source = {}) {
+        if (!("dates" in $$source)) {
+            /**
+             * @member
+             * @type {string[]}
+             */
+            this["dates"] = [];
+        }
+        if (!("counts" in $$source)) {
+            /**
+             * @member
+             * @type {number[]}
+             */
+            this["counts"] = [];
+        }
+
+        Object.assign(this, $$source);
     }
 
-    Object.assign(this, $$source);
-  }
-
-  /**
-   * Creates a new TimelineData instance from a string or object.
-   * @param {any} [$$source = {}]
-   * @returns {TimelineData}
-   */
-  static createFrom($$source = {}) {
-    const $$createField0_0 = $$createType0;
-    const $$createField1_0 = $$createType5;
-    let $$parsedSource = typeof $$source === "string" ? JSON.parse($$source) : $$source;
-    if ("dates" in $$parsedSource) {
-      $$parsedSource["dates"] = $$createField0_0($$parsedSource["dates"]);
+    /**
+     * Creates a new TimelineData instance from a string or object.
+     * @param {any} [$$source = {}]
+     * @returns {TimelineData}
+     */
+    static createFrom($$source = {}) {
+        const $$createField0_0 = $$createType2;
+        const $$createField1_0 = $$createType7;
+        let $$parsedSource = typeof $$source === 'string' ? JSON.parse($$source) : $$source;
+        if ("dates" in $$parsedSource) {
+            $$parsedSource["dates"] = $$createField0_0($$parsedSource["dates"]);
+        }
+        if ("counts" in $$parsedSource) {
+            $$parsedSource["counts"] = $$createField1_0($$parsedSource["counts"]);
+        }
+        return new TimelineData(/** @type {Partial<TimelineData>} */($$parsedSource));
     }
-    if ("counts" in $$parsedSource) {
-      $$parsedSource["counts"] = $$createField1_0($$parsedSource["counts"]);
-    }
-    return new TimelineData(/** @type {Partial<TimelineData>} */ ($$parsedSource));
-  }
 }
 
 // Private type creation functions
 const $$createType0 = $Create.Array($Create.Any);
-const $$createType1 = SankeyNode.createFrom;
-const $$createType2 = $Create.Array($$createType1);
-const $$createType3 = SankeyLink.createFrom;
+const $$createType1 = $Create.Array($$createType0);
+const $$createType2 = $Create.Array($Create.Any);
+const $$createType3 = SankeyNode.createFrom;
 const $$createType4 = $Create.Array($$createType3);
-const $$createType5 = $Create.Array($Create.Any);
+const $$createType5 = SankeyLink.createFrom;
+const $$createType6 = $Create.Array($$createType5);
+const $$createType7 = $Create.Array($Create.Any);

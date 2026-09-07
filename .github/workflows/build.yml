@@ -31,16 +31,11 @@ jobs:
         with:
           bun-version: latest
 
-      - name: Cache Go build + Wails CLI
+      - name: Cache Wails CLI
         uses: actions/cache@v4
         with:
-          path: |
-            ~/go/pkg/mod
-            ~/.cache/go-build
-            ~/go/bin
-          key: ${{ runner.os }}-go-${{ hashFiles('go.sum') }}-${{ env.WAILS_VERSION }}
-          restore-keys: |
-            ${{ runner.os }}-go-
+          path: ~/go/bin
+          key: ${{ runner.os }}-wails-${{ env.WAILS_VERSION }}
 
       - name: Cache bun install
         uses: actions/cache@v4
@@ -107,7 +102,7 @@ jobs:
         uses: softprops/action-gh-release@v3
         with:
           tag_name: latest
-          name: "Latest Automatic Build"
+          name: "Latest Automatic Release"
           prerelease: false
           make_latest: true
           body: |

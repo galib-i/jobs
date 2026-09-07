@@ -242,3 +242,56 @@ func (js *JobService) GetActivityStats() (*ActivityStats, error) {
 		MostActiveDay:      dayNames[maxDay],
 	}, nil
 }
+
+type HeatmapResult struct {
+	HeatmapData [][]interface{} `json:"heatmapData"`
+	Weeks       []string        `json:"weeks"`
+}
+
+func (js *JobService) GetHeatmapData() (*HeatmapResult, error) {
+	timeline, err := js.GetTimelineData("day")
+	if err != nil {
+		return nil, err
+	}
+
+	if timeline == nil || len(timeline.Dates) == 0 {
+		return nil, nil
+	}
+
+	firstDateStr := timeline.Dates[0]
+	lastDateStr := timeline.Dates[len(timeline.Dates)-1]
+
+	firstDate, _ := time.Parse("2006-01-02", firstDateStr)
+	lastDate, _ := time.Parse("2006-01-02", lastDateStr)
+
+	// Pad 13 weeks backward, aligned to Sunday
+	currDate := firstDate.AddDate(0, 0, -(13 * 7))
+	currDate = currDate.AddDate(0, 0, -int(currDate.Weekday()))
+
+	// Pad 13 weeks forward, aligned to Saturday
+	endDate := lastDate.AddDate(0, 0, (13 * 7))
+	endDate = endDate.AddDate(0, 0, int(time.Saturday-endDate.Weekday()))
+
+	countMap := make(map[string]int)
+	for i, d := range timeline.Dates {
+		countMap[d] = timeline.Counts[i]
+	}
+
+	var weeks []string
+	var heatmapData [][]interface{}
+
+	weekIndex := 0
+	for currDate.Before(endDate) || currDate.Equal(endDate) {
+		weeks = append(weeks, currDate.Format("2006-01-02"))
+
+		for dayIndex := 0; dayIndex < 7; dayIndex++ {
+			dStr := currDate.Format("2006-01-02")
+			count := countMap[dStr]
+			heatmapData = append(heatmapData, []interface{}{weekIndex, dayIndex, count, dStr})
+			currDate = currDate.AddDate(0, 0, 1)
+		}
+		weekIndex++
+	}
+
+	return &HeatmapResult{HeatmapData: heatmapData, Weeks: weeks}, nil
+}

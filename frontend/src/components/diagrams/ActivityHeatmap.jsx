@@ -1,6 +1,6 @@
 import ReactECharts from "echarts-for-react";
 import { useEffect, useState, useMemo } from "react";
-import { GetTimelineData, GetActivityStats } from "../../../bindings/jobs/jobservice";
+import { GetHeatmapData, GetActivityStats } from "../../../bindings/jobs/jobservice";
 import { ClockIcon, FlameIcon, CalendarIcon } from "../ui/Icon";
 
 function parseDate(str) {
@@ -8,59 +8,21 @@ function parseDate(str) {
   return new Date(y, m - 1, d);
 }
 
-function formatDate(d) {
-  const y = d.getFullYear();
-  const m = String(d.getMonth() + 1).padStart(2, "0");
-  const day = String(d.getDate()).padStart(2, "0");
-
-  return `${y}-${m}-${day}`;
-}
-
 export default function ActivityHeatmap({ theme }) {
   const [timelineData, setTimelineData] = useState(null);
   const [stats, setStats] = useState(null);
 
   useEffect(() => {
-    GetTimelineData("day").then(setTimelineData).catch(console.error);
+    GetHeatmapData().then(setTimelineData).catch(console.error);
     GetActivityStats().then(setStats).catch(console.error);
   }, []);
 
   const option = useMemo(() => {
-    if (!timelineData || !timelineData.dates || timelineData.dates.length === 0) {
+    if (!timelineData || !timelineData.weeks || timelineData.weeks.length === 0) {
       return null;
     }
 
-    const { dates, counts } = timelineData;
-
-    const countMap = {};
-    dates.forEach((date, i) => {
-      countMap[date] = counts[i];
-    });
-
-    const firstDateStr = dates[0];
-    const lastDateStr = dates[dates.length - 1];
-
-    let currDate = parseDate(firstDateStr);
-    const endDate = parseDate(lastDateStr);
-    currDate.setDate(currDate.getDate() - currDate.getDay());
-    endDate.setDate(endDate.getDate() + (6 - endDate.getDay()));
-
-    const weeks = [];
-    const heatmapData = [];
-
-    let weekIndex = 0;
-    while (currDate <= endDate) {
-      const wDateStr = formatDate(currDate);
-      weeks.push(wDateStr);
-
-      for (let dayIndex = 0; dayIndex < 7; dayIndex++) {
-        const dStr = formatDate(currDate);
-        const count = countMap[dStr] || 0;
-        heatmapData.push([weekIndex, dayIndex, count, dStr]);
-        currDate.setDate(currDate.getDate() + 1);
-      }
-      weekIndex++;
-    }
+    const { weeks, heatmapData } = timelineData;
 
     const maxSpan = 26;
     const dataLen = weeks.length;
@@ -88,7 +50,7 @@ export default function ActivityHeatmap({ theme }) {
       visualMap: {
         dimension: 2,
         min: 0,
-        max: Math.max(7, Math.max(...counts)),
+        max: Math.max(7, Math.max(...heatmapData.map((d) => d[2]))),
         type: "piecewise",
         show: true,
         orient: "horizontal",

@@ -113,45 +113,60 @@ export default function JobsPage({
               : "border-blue-500 selection:bg-blue-500"
           }`}
         >
-          <div
-            className={`font-pixel col-span-full grid grid-cols-subgrid rounded-t-[14px] border-b-2 font-bold tracking-wider text-white select-none last:rounded-b-[14px] last:border-b-0 ${
-              inactive
-                ? "divide-x divide-gray-500 border-gray-500 bg-gray-600"
-                : "divide-x divide-blue-500 border-blue-500 bg-blue-600"
-            }`}
-            draggable={false}
-            style={{ WebkitUserDrag: "none" }}
-          >
-            <div className="flex items-center px-4 py-4 pl-6 whitespace-nowrap">Company</div>
-            <div className="flex items-center px-4 py-4 whitespace-nowrap">Role</div>
-            <div className="flex items-center px-4 py-4 whitespace-nowrap">Location</div>
-            <div className="flex items-center justify-between px-4 py-4 whitespace-nowrap">
-              <span>Stage</span>
-              <div
-                className={`ml-2 transition-opacity duration-200 ${
-                  stageSort !== "none" ? "opacity-100" : "opacity-30"
-                }`}
-              >
-                <TriangleButton
-                  theme="white"
-                  pointUp={stageSort === "asc"}
-                  onClick={toggleStageSort}
-                />
-              </div>
-            </div>
-            <div className="flex items-center justify-between px-4 py-4 whitespace-nowrap">
-              <span>Date</span>
-              <div className="ml-2 opacity-100 transition-opacity duration-200">
-                <TriangleButton
-                  theme="white"
-                  pointUp={dateSort === "asc"}
-                  onClick={toggleDateSort}
-                />
-              </div>
-            </div>
-            <div className="flex items-center px-4 py-4 whitespace-nowrap">Notes</div>
-            <div className="hidden items-center border-l-0 px-4 py-4 pr-6 lg:flex"></div>
-          </div>
+          {(() => {
+            const headerBorder = inactive ? "border-l border-gray-500" : "border-l border-blue-500";
+            return (
+              <>
+                <div
+                  className={`font-pixel col-span-full grid grid-cols-subgrid rounded-t-[14px] border-b-2 font-bold tracking-wider text-white select-none last:rounded-b-[14px] last:border-b-0 ${
+                    inactive ? "border-gray-500 bg-gray-600" : "border-blue-500 bg-blue-600"
+                  }`}
+                  draggable={false}
+                  style={{ WebkitUserDrag: "none" }}
+                >
+                  <div className="flex items-center px-4 py-4 pl-6 whitespace-nowrap">Company</div>
+                  <div className={`flex items-center px-4 py-4 whitespace-nowrap ${headerBorder}`}>
+                    Role
+                  </div>
+                  <div className={`flex items-center px-4 py-4 whitespace-nowrap ${headerBorder}`}>
+                    Location
+                  </div>
+                  <div
+                    className={`flex items-center justify-between px-4 py-4 whitespace-nowrap ${headerBorder}`}
+                  >
+                    <span>Stage</span>
+                    <div
+                      className={`ml-2 transition-opacity duration-200 ${
+                        stageSort !== "none" ? "opacity-100" : "opacity-30"
+                      }`}
+                    >
+                      <TriangleButton
+                        theme="white"
+                        pointUp={stageSort === "asc"}
+                        onClick={toggleStageSort}
+                      />
+                    </div>
+                  </div>
+                  <div
+                    className={`flex items-center justify-between px-4 py-4 whitespace-nowrap ${headerBorder}`}
+                  >
+                    <span>Date</span>
+                    <div className="ml-2 opacity-100 transition-opacity duration-200">
+                      <TriangleButton
+                        theme="white"
+                        pointUp={dateSort === "asc"}
+                        onClick={toggleDateSort}
+                      />
+                    </div>
+                  </div>
+                  <div className={`flex items-center px-4 py-4 whitespace-nowrap ${headerBorder}`}>
+                    Notes
+                  </div>
+                  <div className="hidden items-center border-l-0 px-4 py-4 pr-6 lg:flex"></div>
+                </div>
+              </>
+            );
+          })()}
           {sortedJobs.map((job, idx) => (
             <JobListItem
               key={job.id}

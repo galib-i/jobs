@@ -37,13 +37,17 @@ export default function JobListItem({
     };
   });
 
+  const innerBorder = isDeleteConfirmationOpen
+    ? "border-l border-red-300 dark:border-red-800/50"
+    : "border-l border-slate-300 dark:border-slate-600/50";
+
   return (
     <>
       <div
-        className={`col-span-full grid grid-cols-subgrid divide-x border-b-2 text-sm tracking-wide text-slate-800 last:rounded-b-[14px] last:border-b-0 dark:text-slate-200 ${
+        className={`col-span-full grid grid-cols-subgrid border-b-2 text-sm tracking-wide text-slate-800 transition-colors duration-200 last:rounded-b-[14px] last:border-b-0 dark:text-slate-200 ${
           isDeleteConfirmationOpen
-            ? "divide-red-300 border-red-300 bg-red-100 dark:divide-red-800/50 dark:border-red-800 dark:bg-red-900/60"
-            : "divide-slate-300 border-slate-300 bg-white hover:bg-slate-50 dark:divide-slate-600/50 dark:border-slate-700 dark:bg-slate-800 dark:hover:bg-slate-700"
+            ? "border-red-300 bg-red-100 dark:border-red-800 dark:bg-red-900/60"
+            : "border-slate-300 bg-white hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:hover:bg-slate-700"
         }`}
       >
         <div className="flex items-center overflow-hidden px-4 py-2 pl-6">
@@ -54,7 +58,7 @@ export default function JobListItem({
           />
         </div>
 
-        <div className="flex items-center truncate px-4 py-2">
+        <div className={`flex items-center truncate px-4 py-2 ${innerBorder}`}>
           <div className="mt-1 mr-2 shrink-0">
             <Button
               theme={job.description ? "yellow" : "gray"}
@@ -73,14 +77,14 @@ export default function JobListItem({
           </div>
           <JobRoleEditor job={job} onUpdate={onUpdate} />
         </div>
-        <div className="flex items-center overflow-hidden px-4 py-2">
+        <div className={`flex items-center overflow-hidden px-4 py-2 ${innerBorder}`}>
           <EditableInput
             initialValue={job.location}
             onSave={(newValue) => onUpdate({ ...job, location: newValue })}
             className="block w-full truncate"
           />
         </div>
-        <div className="relative flex min-w-0 items-center px-4 py-2">
+        <div className={`relative flex min-w-0 items-center px-4 py-2 ${innerBorder}`}>
           <Tooltip
             content={
               <div className="flex items-center gap-2">
@@ -136,11 +140,11 @@ export default function JobListItem({
           </Tooltip>
           <JobStageSelector job={job} availableStages={availableStages} onAddStage={onAddStage} />
         </div>
-        <div className="flex items-center justify-center truncate px-4 py-2">
+        <div className={`flex items-center justify-center truncate px-4 py-2 ${innerBorder}`}>
           {job.formattedDate}
         </div>
         <div
-          className="group/notes flex min-w-0 cursor-text items-center px-4 py-2"
+          className={`group/notes flex min-w-0 cursor-text items-center px-4 py-2 ${innerBorder}`}
           onDoubleClick={() => setIsEditingNotes(true)}
         >
           <EditableInput
