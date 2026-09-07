@@ -139,7 +139,7 @@ export default function JobsPage({
           ))}
           {displayJobs.length === 0 && (
             <div className="col-span-full py-12 text-center text-slate-400">
-              <p>No jobs found.</p>
+              <p className="font-pixel text-lg">No jobs found.</p>
             </div>
           )}
         </div>

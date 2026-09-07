@@ -6,7 +6,9 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"os/exec"
 	"path/filepath"
+	"runtime"
 	"strings"
 
 	_ "modernc.org/sqlite"
@@ -17,7 +19,18 @@ type JobService struct {
 }
 
 func NewJobService() *JobService {
-	db, err := sql.Open("sqlite", "jobs.db?_pragma=foreign_keys(1)")
+	configDir, err := os.UserConfigDir()
+	if err != nil {
+		log.Fatalf("failed to get user config directory: %v", err)
+	}
+
+	appDir := filepath.Join(configDir, "JobsApp")
+	if err := os.MkdirAll(appDir, 0755); err != nil {
+		log.Fatalf("failed to create app data directory: %v", err)
+	}
+
+	dbPath := filepath.Join(appDir, "jobs.db")
+	db, err := sql.Open("sqlite", dbPath+"?_pragma=foreign_keys(1)")
 
 	if err != nil {
 		log.Fatalf("failed to open database: %v", err)
@@ -363,4 +376,23 @@ func (js *JobService) ExportSankeyImage(base64Data string) (string, error) {
 	}
 
 	return filename, nil
+}
+
+func (js *JobService) OpenDataFolder() error {
+	configDir, err := os.UserConfigDir()
+	if err != nil {
+		return err
+	}
+	appDir := filepath.Join(configDir, "JobsApp")
+
+	var cmd *exec.Cmd
+	switch runtime.GOOS {
+	case "windows":
+		cmd = exec.Command("explorer", appDir)
+	case "darwin":
+		cmd = exec.Command("open", appDir)
+	default:
+		cmd = exec.Command("xdg-open", appDir)
+	}
+	return cmd.Start()
 }

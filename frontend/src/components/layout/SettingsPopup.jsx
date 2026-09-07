@@ -3,6 +3,7 @@ import { createPortal } from "react-dom";
 import { Button } from "../ui/Button";
 import { TextBox } from "../ui/TextBox";
 import Confirm from "../ui/DeleteConfirmationPopup";
+import { OpenDataFolder } from "../../../bindings/jobs/jobservice.js";
 
 export default function SettingsPopup({
   availableStages,
@@ -94,6 +95,17 @@ export default function SettingsPopup({
             </Button>
           </form>
           <div className="border-t border-slate-300 pt-4 dark:border-slate-700">
+            <h3 className="font-pixel mb-2 text-xs font-bold tracking-wider text-slate-500 uppercase dark:text-slate-400">
+              Data
+            </h3>
+            <Button
+              theme="blue"
+              className="mb-4 w-full text-center"
+              onClick={() => OpenDataFolder()}
+            >
+              OPEN DATA FOLDER
+            </Button>
+
             <h3 className="font-pixel mb-2 text-xs font-bold tracking-wider text-red-400 uppercase">
               Reset
             </h3>

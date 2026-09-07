@@ -43,3 +43,9 @@ cd ..
 
 2. Use `wails3 dev` to start the application with live-reloading.
 3. Use `wails3 task build` or `wails3 build` to create [binaries](https://v3.wails.io/guides/build/building/).
+
+## Data Storage
+
+All data is stored locally in a database (`jobs.db`) within the application data directory.
+
+Locate this file via **Settings** > **Open Data Folder**.

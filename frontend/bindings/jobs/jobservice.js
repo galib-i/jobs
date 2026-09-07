@@ -110,6 +110,13 @@ export function GetTimelineData(groupBy) {
 }
 
 /**
+ * @returns {$CancellablePromise<void>}
+ */
+export function OpenDataFolder() {
+    return $Call.ByID(3013759918);
+}
+
+/**
  * @param {number} jobId
  * @param {number} index
  * @returns {$CancellablePromise<void>}
