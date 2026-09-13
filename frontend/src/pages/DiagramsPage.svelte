@@ -16,7 +16,7 @@
   </div>
 {:else}
   <div class="flex flex-col items-center gap-6">
-    <div class="flex w-full flex-col items-center justify-center gap-6 xl:flex-row xl:items-start">
+    <div class="flex w-full flex-col items-center justify-center gap-6 2xl:flex-row 2xl:items-start">
       <ActivityHeatmap {theme} />
       <TimeDiagram {theme} />
     </div>

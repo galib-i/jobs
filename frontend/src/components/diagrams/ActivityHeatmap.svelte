@@ -30,7 +30,7 @@
     if (!timelineData?.weeks?.length) return null;
 
     const { weeks, heatmapData } = timelineData;
-    const maxSpan = 26;
+    const maxSpan = 30;
     const dataLen = weeks.length;
     const startPercent = dataLen > maxSpan ? 100 - (maxSpan / dataLen) * 100 : 0;
 
@@ -52,8 +52,6 @@
       },
       visualMap: {
         dimension: 2,
-        min: 0,
-        max: Math.max(7, Math.max(...heatmapData.map((d) => d[2]))),
         type: "piecewise",
         show: true,
         orient: "horizontal",
@@ -76,7 +74,7 @@
           { min: 1, max: 2, color: "#0e4429" },
           { min: 3, max: 4, color: "#006d32" },
           { min: 5, max: 6, color: "#26a641" },
-          { min: 7, color: "#39d353" },
+          { min: 7, max: 9999, color: "#39d353" },
         ],
       },
       grid: { top: 0, right: 0, bottom: 50, left: 0 },
@@ -127,28 +125,14 @@
       },
       dataZoom: [
         {
-          type: "slider",
-          show: true,
+          type: "inside",
           xAxisIndex: [0],
           start: startPercent,
           end: 100,
           maxValueSpan: maxSpan,
-          bottom: 0,
-          height: 8,
-          showDataShadow: false,
-          showDetail: false,
-          borderColor: theme === "dark" ? "#1e293b" : "#e2e8f0",
-          backgroundColor: theme === "dark" ? "#0f172a" : "#f1f5f9",
-          fillerColor: "#3b82f6",
-          handleSize: 0,
-          brushSelect: false,
-        },
-        {
-          type: "inside",
-          xAxisIndex: [0],
           zoomOnMouseWheel: false,
-          moveOnMouseWheel: true,
-          moveOnMouseMove: true,
+          moveOnMouseWheel: false,
+          moveOnMouseMove: false,
         },
       ],
       series: [
@@ -156,9 +140,9 @@
           type: "heatmap",
           data: heatmapData,
           itemStyle: {
-            borderRadius: 4,
+            borderRadius: 6,
             borderColor: theme === "dark" ? "#0f172a" : "#f1f5f9",
-            borderWidth: 2,
+            borderWidth: 4,
           },
         },
       ],

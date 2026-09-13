@@ -143,6 +143,8 @@
 
     if (!chart) {
       chart = echarts.init(chartEl, null, { renderer: "svg" });
+      const ro = new ResizeObserver(() => chart?.resize());
+      ro.observe(chartEl);
     }
     chart.setOption(option, true);
   });
@@ -157,7 +159,7 @@
   {#if !sankeyData?.nodes?.length}
     <p class="font-pixel mt-8 mb-4 text-center text-slate-500 dark:text-slate-400">No data</p>
   {:else}
-    <div class="mx-auto flex w-212.5 shrink-0 flex-col xl:w-324.75">
+    <div class="mx-auto flex w-full max-w-212.5 flex-col 2xl:max-w-324.75">
       <div class="relative overflow-hidden rounded-2xl border-2 border-blue-500 bg-slate-100 dark:bg-slate-900">
         <!-- Header -->
         <div class="font-pixel flex items-center justify-between border-b-2 border-blue-500 bg-blue-600 font-bold tracking-wider text-white select-none">

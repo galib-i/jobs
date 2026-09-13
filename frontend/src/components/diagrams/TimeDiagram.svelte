@@ -37,8 +37,28 @@
       textStyle: { fontFamily: "Inter, sans-serif" },
       tooltip: {
         show: true,
+        position: "top",
         appendToBody: true,
         padding: [4, 8],
+        formatter: (p) => {
+          const count = p.value;
+          const name = p.name;
+          const parts = name.split("-");
+          let dateStr = name;
+          let preposition = "on";
+          
+          if (groupBy === "day" && parts.length === 3) {
+            dateStr = `${parts[2]}-${parts[1]}`;
+          } else if (groupBy === "month" && parts.length === 2) {
+            dateStr = `${parts[1]}-${parts[0]}`;
+            preposition = "in";
+          } else if (groupBy === "week") {
+            dateStr = `week ${parts[1]} of ${parts[0]}`;
+            preposition = "in";
+          }
+          
+          return `${count} activit${count === 1 ? "y" : "ies"} ${preposition} ${dateStr}`;
+        },
         backgroundColor: isDark ? "rgba(15, 23, 42, 0.9)" : "rgba(255, 255, 255, 0.9)",
         borderColor: isDark ? "#334155" : "#cbd5e1",
         textStyle: { color: isDark ? "#f8fafc" : "#1e293b", fontSize: 12 },
@@ -121,6 +141,8 @@
 
     if (!chart) {
       chart = echarts.init(chartEl, null, { renderer: "svg" });
+      const ro = new ResizeObserver(() => chart?.resize());
+      ro.observe(chartEl);
     }
     chart.setOption(option, true);
   });
@@ -129,7 +151,7 @@
 </script>
 
 {#if timelineData?.dates?.length}
-  <div class="flex w-212.5 shrink-0 flex-col xl:w-106.25">
+  <div class="flex w-full max-w-212.5 flex-col 2xl:max-w-106.25">
     <div class="relative overflow-hidden rounded-2xl border-2 border-blue-500 bg-slate-100 contain-content dark:bg-slate-900">
       <!-- Header -->
       <div class="font-pixel flex items-center justify-between border-b-2 border-blue-500 bg-blue-600 font-bold tracking-wider text-white select-none">
