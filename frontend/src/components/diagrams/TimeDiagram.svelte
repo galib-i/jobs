@@ -46,7 +46,7 @@
       dataZoom: [
         {
           type: "slider",
-          show: true,
+          show: dataLen > maxSpan,
           xAxisIndex: [0],
           start: startPercent,
           end: 100,
