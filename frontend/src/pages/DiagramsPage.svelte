@@ -1,0 +1,25 @@
+<script>
+  import ActivityHeatmap from "../components/diagrams/ActivityHeatmap.svelte";
+  import TimeDiagram from "../components/diagrams/TimeDiagram.svelte";
+  import SankeyDiagram from "../components/diagrams/SankeyDiagram.svelte";
+
+  let { theme } = $props();
+
+  let isReady = $state(false);
+
+  setTimeout(() => (isReady = true), 150);
+</script>
+
+{#if !isReady}
+  <div class="font-pixel mt-32 flex animate-pulse items-center justify-center text-sm text-slate-500 dark:text-slate-400">
+    LOADING STATISTICS...
+  </div>
+{:else}
+  <div class="flex flex-col items-center gap-6">
+    <div class="flex w-full flex-col items-center justify-center gap-6 xl:flex-row xl:items-start">
+      <ActivityHeatmap {theme} />
+      <TimeDiagram {theme} />
+    </div>
+    <SankeyDiagram {theme} />
+  </div>
+{/if}

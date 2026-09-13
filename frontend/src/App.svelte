@@ -2,6 +2,7 @@
   import { jobStore } from "./lib/jobs.svelte.js";
   import Navbar from "./components/layout/Navbar.svelte";
   import JobsPage from "./pages/JobsPage.svelte";
+  import DiagramsPage from "./pages/DiagramsPage.svelte";
 
   let page = $state("jobs");
   let viewMode = $state("active");
@@ -36,9 +37,7 @@
   />
 
   {#if page === "diagrams"}
-    <div class="mt-8 text-center text-slate-500 font-pixel">
-      Diagrams page has not been ported yet.
-    </div>
+    <DiagramsPage {theme} />
   {/if}
 
   {#if page === "jobs"}
