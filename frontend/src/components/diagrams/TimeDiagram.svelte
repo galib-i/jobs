@@ -34,6 +34,7 @@
     const startPercent = dataLen > maxSpan ? 100 - (maxSpan / dataLen) * 100 : 0;
 
     return {
+      textStyle: { fontFamily: "Inter, sans-serif" },
       tooltip: {
         show: true,
         appendToBody: true,

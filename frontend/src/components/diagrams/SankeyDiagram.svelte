@@ -11,7 +11,8 @@
   let sankeyData = $state(null);
   let isLoading = $state(true);
   let showSuccess = $state(false);
-  let savedPath = $state("");
+  let popupTitle = $state("");
+  let popupMessage = $state("");
   let chartEl = $state();
   let chart;
 
@@ -49,6 +50,7 @@
     });
 
     return {
+      textStyle: { fontFamily: "Inter, sans-serif" },
       tooltip: { show: false },
       series: [
         {
@@ -76,9 +78,9 @@
     };
   }
 
-  function handleExport() {
+  async function generateBase64Image() {
     const option = buildOption();
-    if (!option) return;
+    if (!option) return null;
 
     const tempDiv = document.createElement("div");
     Object.assign(tempDiv.style, {
@@ -92,20 +94,46 @@
     const tempInstance = echarts.init(tempDiv, null, { renderer: "canvas" });
     try {
       tempInstance.setOption({ ...option, animation: false });
-      const base64Data = tempInstance.getDataURL({
+      return tempInstance.getDataURL({
         type: "png",
         pixelRatio: 2,
         backgroundColor: theme === "dark" ? "#0f172a" : "#f1f5f9",
       });
-      ExportSankeyImage(base64Data)
-        .then((path) => {
-          savedPath = path;
-          showSuccess = true;
-        })
-        .catch(console.error);
     } finally {
       tempInstance.dispose();
       document.body.removeChild(tempDiv);
+    }
+  }
+
+  async function handleExport() {
+    const base64Data = await generateBase64Image();
+    if (!base64Data) return;
+
+    try {
+      const path = await ExportSankeyImage(base64Data);
+      popupTitle = "Diagram Saved!";
+      popupMessage = path;
+      showSuccess = true;
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  async function handleCopy() {
+    const base64Data = await generateBase64Image();
+    if (!base64Data) return;
+
+    try {
+      const res = await fetch(base64Data);
+      const blob = await res.blob();
+      await navigator.clipboard.write([
+        new ClipboardItem({ "image/png": blob })
+      ]);
+      popupTitle = "Copied to Clipboard!";
+      popupMessage = "";
+      showSuccess = true;
+    } catch (err) {
+      console.error("Failed to copy image: ", err);
     }
   }
 
@@ -134,7 +162,10 @@
         <!-- Header -->
         <div class="font-pixel flex items-center justify-between border-b-2 border-blue-500 bg-blue-600 font-bold tracking-wider text-white select-none">
           <div class="px-4 py-3 pl-6 whitespace-nowrap">Progress</div>
-          <div class="flex items-center pr-4">
+          <div class="flex items-center gap-2 pr-4">
+            <Button theme="yellow" isIcon size="sm" onclick={handleCopy}>
+              <Icon name="copy" class="h-3.5 w-3.5" />
+            </Button>
             <Button theme="green" isIcon size="sm" onclick={handleExport}>
               <Icon name="download" class="h-3.5 w-3.5" />
             </Button>
@@ -151,8 +182,8 @@
     <SuccessPopup
       isOpen={showSuccess}
       onclose={() => (showSuccess = false)}
-      title="Diagram Saved!"
-      message={savedPath}
+      title={popupTitle}
+      message={popupMessage}
     />
   {/if}
 {/if}
