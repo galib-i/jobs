@@ -1,5 +1,10 @@
 <script>
-  import * as echarts from "echarts";
+  import * as echarts from "echarts/core";
+  import { HeatmapChart } from "echarts/charts";
+  import { TooltipComponent, VisualMapComponent, GridComponent, DataZoomComponent } from "echarts/components";
+  import { SVGRenderer } from "echarts/renderers";
+
+  echarts.use([HeatmapChart, TooltipComponent, VisualMapComponent, GridComponent, DataZoomComponent, SVGRenderer]);
   import Icon from "../ui/Icon.svelte";
   import { GetHeatmapData, GetActivityStats } from "../../../bindings/jobs/jobservice";
   import { onDestroy } from "svelte";

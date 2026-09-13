@@ -21,18 +21,12 @@ func main() {
 		Assets: application.AssetOptions{
 			Handler: application.AssetFileServerFS(assets),
 		},
-		Mac: application.MacOptions{
-			ApplicationShouldTerminateAfterLastWindowClosed: true,
-		},
+
 	})
 
 	app.Window.NewWithOptions(application.WebviewWindowOptions{
 		Title: "Job Application Tracker",
-		Mac: application.MacWindow{
-			InvisibleTitleBarHeight: 50,
-			Backdrop:                application.MacBackdropTranslucent,
-			TitleBar:                application.MacTitleBarHiddenInset,
-		},
+
 		BackgroundColour: application.NewRGB(27, 38, 54),
 		URL:              "/",
 		MinWidth:         935,

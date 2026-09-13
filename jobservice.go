@@ -389,8 +389,6 @@ func (js *JobService) OpenDataFolder() error {
 	switch runtime.GOOS {
 	case "windows":
 		cmd = exec.Command("explorer", appDir)
-	case "darwin":
-		cmd = exec.Command("open", appDir)
 	default:
 		cmd = exec.Command("xdg-open", appDir)
 	}

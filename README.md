@@ -22,7 +22,7 @@ A local Wails v3 desktop application for tracking job applications and visualisi
 
 Download the latest pre-compiled version for your operating system.
 
-1. Download the file for your OS (Windows, macOS, or Linux) from the [Releases page](../../releases/latest).
+1. Download the file for your OS (Windows or Linux) from the [Releases page](../../releases/latest).
 2. Extract the file and run the application.
 
 ### Development

@@ -7,7 +7,9 @@
     onEditingChange,
   } = $props();
 
+  // svelte-ignore state_referenced_locally
   let isEditing = $state(editing);
+  // svelte-ignore state_referenced_locally
   let value = $state(initialValue);
   let textareaRef = $state();
 
@@ -50,6 +52,7 @@
 </script>
 
 {#if isEditing}
+  <!-- svelte-ignore a11y_autofocus -->
   <textarea
     bind:this={textareaRef}
     bind:value

@@ -13,17 +13,17 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  WAILS_VERSION: v3.0.0-beta.15
+  WAILS_VERSION: v3.0.0-beta.21
 jobs:
   build:
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [ubuntu-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-go@v6
+      - uses: actions/setup-go@v7
         with:
           go-version-file: "go.mod"
 
@@ -32,13 +32,13 @@ jobs:
           bun-version: latest
 
       - name: Cache Wails CLI
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: ~/go/bin
           key: ${{ runner.os }}-wails-${{ env.WAILS_VERSION }}
 
       - name: Cache bun install
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: ~/.bun/install/cache
           key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lock') }}
@@ -62,28 +62,18 @@ jobs:
         shell: bash
         run: |
           wails3 task build
-          if [ "${{ runner.os }}" = "macOS" ]; then
-            wails3 task package
-          fi
-
-      - name: Prepare for macOS
-        if: runner.os == 'macOS'
-        run: |
-          cd bin
-          zip -r jobs-mac.zip jobs.app
 
       - name: Prepare for Linux
         if: runner.os == 'Linux'
         run: mv bin/jobs bin/jobs-linux
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: build-${{ matrix.os }}
           path: |
             bin/jobs.exe
             bin/jobs-linux
-            bin/jobs-mac.zip
           if-no-files-found: ignore
           retention-days: 1
 
@@ -93,7 +83,7 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           path: bin
           merge-multiple: true
@@ -105,9 +95,9 @@ jobs:
           name: "Latest Automatic Release"
           prerelease: false
           make_latest: true
+          generate_release_notes: true
           body: |
             Latest update commit: ${{ github.sha }}
           files: |
             bin/jobs.exe
             bin/jobs-linux
-            bin/jobs-mac.zip

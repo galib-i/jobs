@@ -1,5 +1,10 @@
 <script>
-  import * as echarts from "echarts";
+  import * as echarts from "echarts/core";
+  import { BarChart } from "echarts/charts";
+  import { TooltipComponent, GridComponent, DataZoomComponent } from "echarts/components";
+  import { SVGRenderer } from "echarts/renderers";
+
+  echarts.use([BarChart, TooltipComponent, GridComponent, DataZoomComponent, SVGRenderer]);
   import Button from "../ui/Button.svelte";
   import { GetTimelineData } from "../../../bindings/jobs/jobservice";
   import { onDestroy } from "svelte";

@@ -1,5 +1,10 @@
 <script>
-  import * as echarts from "echarts";
+  import * as echarts from "echarts/core";
+  import { SankeyChart } from "echarts/charts";
+  import { TooltipComponent } from "echarts/components";
+  import { CanvasRenderer, SVGRenderer } from "echarts/renderers";
+
+  echarts.use([SankeyChart, TooltipComponent, CanvasRenderer, SVGRenderer]);
   import Button from "../ui/Button.svelte";
   import Icon from "../ui/Icon.svelte";
   import SuccessPopup from "../ui/SuccessPopup.svelte";

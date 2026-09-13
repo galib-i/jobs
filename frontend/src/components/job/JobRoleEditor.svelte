@@ -46,6 +46,7 @@
     onblur={onBlur}
     onkeydown={onKeyDown}
   >
+    <!-- svelte-ignore a11y_autofocus -->
     <input
       autofocus
       type="text"
