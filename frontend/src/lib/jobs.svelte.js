@@ -20,6 +20,9 @@ export class JobStore {
   stageSort = $state("none");
   dateSort = $state("desc");
 
+  editingRowId = $state(null);
+  expandedRowIds = $state(new Set());
+
   constructor() {
     this.loadJobs();
     this.loadStages();

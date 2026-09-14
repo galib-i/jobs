@@ -17,6 +17,12 @@
 				icon: BriefcaseIcon,
 				isActive: true,
 			},
+			{
+				title: "Statistics",
+				url: "#",
+				icon: PieChartIcon,
+				isActive: false,
+			},
 		],
 	};
 </script>

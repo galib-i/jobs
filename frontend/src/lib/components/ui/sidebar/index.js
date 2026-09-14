@@ -4,6 +4,7 @@ import GroupAction from "./sidebar-group-action.svelte";
 import GroupContent from "./sidebar-group-content.svelte";
 import GroupLabel from "./sidebar-group-label.svelte";
 import Group from "./sidebar-group.svelte";
+import Header from "./sidebar-header.svelte";
 import Input from "./sidebar-input.svelte";
 import Inset from "./sidebar-inset.svelte";
 import MenuAction from "./sidebar-menu-action.svelte";
@@ -29,6 +30,7 @@ export {
   GroupAction,
   GroupContent,
   GroupLabel,
+  Header,
   Input,
   Inset,
   Menu,
@@ -52,6 +54,7 @@ export {
   GroupAction as SidebarGroupAction,
   GroupContent as SidebarGroupContent,
   GroupLabel as SidebarGroupLabel,
+  Header as SidebarHeader,
   Input as SidebarInput,
   Inset as SidebarInset,
   Menu as SidebarMenu,

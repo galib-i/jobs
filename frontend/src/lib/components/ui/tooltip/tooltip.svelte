@@ -1,7 +1,7 @@
-<script lang="ts" generics="T = never">
+<script>
 	import { Tooltip as TooltipPrimitive } from "bits-ui";
 
-	let { open = $bindable(false), ...restProps }: TooltipPrimitive.RootProps<T> = $props();
+	let { open = $bindable(false), ...restProps } = $props();
 </script>
 
 <TooltipPrimitive.Root bind:open {...restProps} />

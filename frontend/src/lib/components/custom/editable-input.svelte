@@ -60,7 +60,7 @@
     onblur={handleSave}
     onkeydown={handleKeyDown}
     rows="1"
-    class="w-full resize-none overflow-hidden rounded border border-slate-300 bg-white p-1 font-[inherit] text-[length:inherit] text-slate-800 outline-none dark:border-slate-600 dark:bg-slate-800 dark:text-slate-200 {className}"
+    class="w-full resize-none overflow-hidden rounded-md border border-transparent bg-transparent p-1 focus-visible:border-input focus-visible:bg-background focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring text-foreground {className}"
   ></textarea>
 {:else}
   <!-- svelte-ignore a11y_no_static_element_interactions -->

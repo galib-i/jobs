@@ -87,7 +87,7 @@ type StageMetadata struct {
 }
 
 func (js *JobService) GetAvailableStages() []StageMetadata {
-	rows, err := js.Database.Query(`SELECT name FROM available_stages ORDER BY id ASC`)
+	rows, err := js.Database.Query(`SELECT name FROM available_stages ORDER BY LOWER(name) ASC`)
 	if err != nil {
 		return []StageMetadata{} // Return empty list on error
 	}

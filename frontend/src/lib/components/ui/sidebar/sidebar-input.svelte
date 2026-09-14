@@ -1,14 +1,12 @@
-<script lang="ts">
+<script>
 	import { Input } from "$lib/components/ui/input/index.js";
 	import { cn } from "$lib/utils.js";
-	import type { ComponentProps } from "svelte";
-
 	let {
 		ref = $bindable(null),
 		value = $bindable(""),
 		class: className,
 		...restProps
-	}: ComponentProps<typeof Input> = $props();
+	} = $props();
 </script>
 
 <Input
