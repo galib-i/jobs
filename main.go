@@ -13,7 +13,7 @@ var assets embed.FS
 
 func main() {
 	app := application.New(application.Options{
-		Name:        "job-application-tracker",
+		Name:        "Jahb",
 		Description: "Track your job applications.",
 		Services: []application.Service{
 			application.NewService(NewJobService()),
@@ -21,11 +21,10 @@ func main() {
 		Assets: application.AssetOptions{
 			Handler: application.AssetFileServerFS(assets),
 		},
-
 	})
 
 	app.Window.NewWithOptions(application.WebviewWindowOptions{
-		Title: "Job Application Tracker",
+		Title: "Jahb",
 
 		BackgroundColour: application.NewRGB(27, 38, 54),
 		URL:              "/",
