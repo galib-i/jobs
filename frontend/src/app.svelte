@@ -1,8 +1,8 @@
 <script>
   import { jobStore } from "./lib/jobs.svelte.js";
-  import Navbar from "$lib/components/layout/navbar.svelte";
   import JobsPage from "$lib/components/jobs-dashboard.svelte";
   import DiagramsPage from "$lib/components/stats-summary.svelte";
+  import SettingsPage from "$lib/components/settings-page.svelte";
 
   // Import the sidebar layout installed from shadcn-svelte
   import SidebarLayout from "$lib/components/layout/sidebar-layout.svelte";
@@ -28,7 +28,20 @@
   });
 </script>
 
-<SidebarLayout>
+<SidebarLayout bind:page>
+  {#if page === "settings"}
+    <SettingsPage
+      availableStages={jobStore.availableStages}
+      onAddStage={(stage) => jobStore.addStage(null, stage)}
+      onDeleteStage={(stage) => {
+        // Find index of stage to delete
+        const index = jobStore.availableStages.findIndex(s => s.name === stage);
+        if (index !== -1) jobStore.removeStage(null, index);
+      }}
+      onResetStages={() => jobStore.resetStages()}
+      onWipeDatabase={() => jobStore.wipeDatabase()}
+    />
+  {:else}
     <DiagramsPage {theme} />
     <JobsPage
       jobs={jobStore.jobs}
@@ -43,6 +56,7 @@
       bind:stageSort={jobStore.stageSort}
       bind:dateSort={jobStore.dateSort}
     />
+  {/if}
 </SidebarLayout>
 
 <!--

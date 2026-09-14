@@ -2,7 +2,7 @@
 	import * as Sidebar from "$lib/components/ui/sidebar/index.js";
 	import AppSidebar from "$lib/components/app-sidebar.svelte";
 
-	let { children } = $props();
+	let { children, page = $bindable() } = $props();
 
 </script>
 
@@ -10,5 +10,5 @@
 	<Sidebar.Inset class="h-full overflow-y-auto" style="overflow-y: overlay;">
 	    {@render children()}
 	</Sidebar.Inset>
-	<AppSidebar />
+	<AppSidebar bind:page />
 </Sidebar.Provider>

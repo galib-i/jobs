@@ -17,12 +17,6 @@
 				icon: BriefcaseIcon,
 				isActive: true,
 			},
-			{
-				title: "Statistics",
-				url: "#",
-				icon: PieChartIcon,
-				isActive: false,
-			},
 		],
 	};
 </script>
@@ -34,17 +28,19 @@
 	import type { ComponentProps } from"svelte";
 	import { Window } from "@wailsio/runtime";
 
-	let { ref = $bindable(null), ...restProps }: ComponentProps<typeof Sidebar.Root> = $props();
+	let { ref = $bindable(null), page = $bindable(), ...restProps }: ComponentProps<typeof Sidebar.Root> & { page?: string } = $props();
 
-	let activeItem = $state(data.navMain[0]);
 	const sidebar = useSidebar();
 	
 	$effect(() => {
-		Window.SetTitle(`${activeItem.title} — Jahb`);
+		let title = "Jobs";
+		if (page === "diagrams") title = "Statistics";
+		if (page === "settings") title = "Settings";
+		Window.SetTitle(`${title} — Jahb`);
 	});
 </script>
 
-<Sidebar.Root bind:ref collapsible="none" class="sticky top-0 h-svh !w-[calc(var(--sidebar-width-icon)_+_1px)] border-s" {...restProps}>
+<Sidebar.Root bind:ref collapsible="none" class="sticky top-0 h-svh w-[calc(var(--sidebar-width-icon)+1px)]! border-s" {...restProps}>
 	<Sidebar.Content>
 		<Sidebar.Group class="px-0">
 			<Sidebar.GroupContent class="px-0">
@@ -56,10 +52,10 @@
 									hidden: false,
 								}}
 								onclick={() => {
-									activeItem = item;
+									page = item.title === "Statistics" ? "diagrams" : "jobs";
 									sidebar.setOpen(true);
 								}}
-								isActive={activeItem.title === item.title}
+								isActive={page === (item.title === "Statistics" ? "diagrams" : "jobs")}
 								class="h-7 w-7 p-0 mx-auto flex items-center justify-center">
 								{#snippet tooltipContent()}
 									{item.title}
@@ -83,7 +79,7 @@
 				</Sidebar.MenuButton>
 			</Sidebar.MenuItem>
 			<Sidebar.MenuItem>
-				<Sidebar.MenuButton tooltipContentProps={{ hidden: false }} class="h-7 w-7 p-0 mx-auto flex items-center justify-center">
+				<Sidebar.MenuButton tooltipContentProps={{ hidden: false }} class="h-7 w-7 p-0 mx-auto flex items-center justify-center" onclick={() => page = "settings"} isActive={page === "settings"}>
 					{#snippet tooltipContent()}
 						Settings
 					{/snippet}
