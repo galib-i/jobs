@@ -5,14 +5,13 @@
   import { SVGRenderer } from "echarts/renderers";
 
   echarts.use([HeatmapChart, TooltipComponent, VisualMapComponent, GridComponent, DataZoomComponent, SVGRenderer]);
-  import Icon from "$lib/components/custom/icon.svelte";
-  import { GetHeatmapData, GetActivityStats } from "../../../../bindings/jobs/jobservice";
+  import * as Card from "$lib/components/ui/card/index.js";
+  import { GetHeatmapData } from "../../../../bindings/jobs/jobservice";
   import { onDestroy } from "svelte";
 
-  let { theme } = $props();
+  let { theme = "dark" } = $props();
 
   let timelineData = $state(null);
-  let stats = $state(null);
   let chartEl = $state();
   let chart;
 
@@ -23,7 +22,7 @@
 
   async function load() {
     try {
-      [timelineData, stats] = await Promise.all([GetHeatmapData(), GetActivityStats()]);
+      timelineData = await GetHeatmapData();
     } catch (err) {
       console.error(err);
     }
@@ -58,10 +57,10 @@
       visualMap: {
         dimension: 2,
         type: "piecewise",
-        show: true,
+        show: false,
         orient: "horizontal",
         right: -8,
-        bottom: 15,
+        bottom: 0,
         itemWidth: 12,
         itemHeight: 12,
         itemSymbol: "roundRect",
@@ -75,14 +74,14 @@
           fontWeight: "bold",
         },
         pieces: [
-          { value: 0, color: theme === "dark" ? "#1e293b" : "#e2e8f0" },
+          { value: 0, color: theme === "dark" ? "#27272a" : "#e4e4e7" },
           { min: 1, max: 2, color: "#0e4429" },
           { min: 3, max: 4, color: "#006d32" },
           { min: 5, max: 6, color: "#26a641" },
           { min: 7, max: 9999, color: "#39d353" },
         ],
       },
-      grid: { top: 0, right: 0, bottom: 50, left: 0 },
+      grid: { top: 0, right: 0, bottom: 0, left: 0 },
       xAxis: {
         show: true,
         type: "category",
@@ -93,19 +92,17 @@
         axisTick: { show: false },
         axisLabel: {
           color: theme === "dark" ? "#94a3b8" : "#64748b",
-          fontWeight: "bold",
+          fontSize: 12,
           interval: 0,
           formatter: (value) => {
             const absIndex = weeks.indexOf(value);
             if (absIndex === 0) {
-              return parseDate(value)
-                .toLocaleDateString("en-US", { month: "short" })
-                .toUpperCase();
+              return parseDate(value).toLocaleDateString("en-US", { month: "short" });
             }
             const curr = parseDate(value);
             const prev = parseDate(weeks[absIndex - 1]);
             if (curr.getMonth() !== prev.getMonth()) {
-              return curr.toLocaleDateString("en-US", { month: "short" }).toUpperCase();
+              return curr.toLocaleDateString("en-US", { month: "short" });
             }
             return "";
           },
@@ -121,9 +118,9 @@
         axisTick: { show: false },
         axisLabel: {
           color: theme === "dark" ? "#94a3b8" : "#64748b",
-          fontWeight: "bold",
+          fontSize: 12,
           formatter: (value) => {
-            if (value === "Mon" || value === "Wed" || value === "Fri") return value.toUpperCase();
+            if (value === "Mon" || value === "Wed" || value === "Fri") return value;
             return "";
           },
         },
@@ -146,7 +143,7 @@
           data: heatmapData,
           itemStyle: {
             borderRadius: 6,
-            borderColor: theme === "dark" ? "#0f172a" : "#f1f5f9",
+            borderColor: "var(--card)",
             borderWidth: 4,
           },
         },
@@ -168,58 +165,13 @@
   onDestroy(() => chart?.dispose());
 </script>
 
-{#if timelineData?.weeks?.length && stats}
-  <div class="flex w-212.5 shrink-0 flex-col">
-    <div class="relative grid grid-cols-[200px_1fr] overflow-hidden rounded-2xl border-2 border-blue-500 bg-slate-100 contain-content dark:bg-slate-900">
-      <!-- Header -->
-      <div class="font-pixel col-span-full border-b-2 border-blue-500 bg-blue-600 font-bold tracking-wider text-white select-none">
-        <div class="flex items-center px-4 py-3 pl-6 whitespace-nowrap">Activity</div>
-      </div>
-
-      <!-- Left: Stats -->
-      <div class="flex flex-col justify-between gap-4 border-r border-slate-300 p-6 dark:border-slate-700">
-        <div>
-          <div class="mb-1 flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400">
-            <Icon name="clock" class="h-3.5 w-3.5" />
-            Current streak
-          </div>
-          <div class="font-pixel text-base font-bold text-slate-800 dark:text-slate-100">
-            {stats.currentStreak} day{stats.currentStreak !== 1 ? "s" : ""}
-          </div>
-        </div>
-
-        <div>
-          <div class="mb-1 flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400">
-            <Icon name="flame" class="h-3.5 w-3.5" />
-            Longest streak
-          </div>
-          <div class="flex items-baseline text-base font-bold whitespace-nowrap text-slate-800 dark:text-slate-100">
-            <span class="font-pixel">
-              {stats.longestStreak} day{stats.longestStreak !== 1 ? "s" : ""}
-            </span>
-            {#if stats.longestStreakMonth}
-              <div class="relative -top-0.5 ml-1.5 text-xs font-normal text-slate-500">
-                · {stats.longestStreakMonth}
-              </div>
-            {/if}
-          </div>
-        </div>
-
-        <div>
-          <div class="mb-1 flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400">
-            <Icon name="calendar" class="h-3.5 w-3.5" />
-            Most active day
-          </div>
-          <div class="font-pixel text-base font-bold text-slate-800 dark:text-slate-100">
-            {stats.mostActiveDay}
-          </div>
-        </div>
-      </div>
-
-      <!-- Right: Heatmap -->
-      <div class="flex min-w-0 items-center justify-center p-4 pt-6">
-        <div bind:this={chartEl} style="height: 200px; width: 100%; margin: 0 auto;"></div>
-      </div>
-    </div>
-  </div>
+{#if timelineData?.weeks?.length}
+  <Card.Root class="w-full max-w-2xl min-w-0">
+    <Card.Header>
+      <Card.Title>Activity</Card.Title>
+    </Card.Header>
+    <Card.Content class="p-4 pt-0 sm:px-6 sm:pt-0 pb-0 sm:pb-0">
+      <div bind:this={chartEl} style="height: 150px; width: 100%; margin: 0 auto;"></div>
+    </Card.Content>
+  </Card.Root>
 {/if}

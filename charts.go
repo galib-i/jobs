@@ -33,8 +33,10 @@ type TimelineData struct {
 type ActivityStats struct {
 	CurrentStreak      int    `json:"currentStreak"`
 	LongestStreak      int    `json:"longestStreak"`
-	LongestStreakMonth string `json:"longestStreakMonth"`
+	LongestStreakDate  string `json:"longestStreakDate"`
 	MostActiveDay      string `json:"mostActiveDay"`
+	MostActivityCount  int    `json:"mostActivityCount"`
+	MostActivityDate   string `json:"mostActivityDate"`
 }
 
 type NodeKey struct {
@@ -166,10 +168,18 @@ func (js *JobService) GetActivityStats() (*ActivityStats, error) {
 		return &ActivityStats{}, nil
 	}
 
-	// Build date -> count map
+	// Build date -> count map and find most activity record
 	countMap := make(map[string]int)
+	mostActivityCount := 0
+	mostActivityDate := ""
+	
 	for i, date := range timeline.Dates {
-		countMap[date] = timeline.Counts[i]
+		count := timeline.Counts[i]
+		countMap[date] = count
+		if count > mostActivityCount {
+			mostActivityCount = count
+			mostActivityDate = date
+		}
 	}
 
 	// Current streak: consecutive days ending at today (or yesterday)
@@ -194,13 +204,13 @@ func (js *JobService) GetActivityStats() (*ActivityStats, error) {
 
 	// Longest streak
 	longestStreak := 0
-	longestStreakMonth := ""
+	longestStreakDate := ""
 
 	if len(timeline.Dates) > 0 {
 		tempStreak := 1
-		tempStart, _ := time.Parse("2006-01-02", timeline.Dates[0])
+		tempEndDateStr := timeline.Dates[0]
 		longestStreak = 1
-		longestStreakMonth = tempStart.Month().String()
+		longestStreakDate = tempEndDateStr
 
 		for i := 1; i < len(timeline.Dates); i++ {
 			curr, _ := time.Parse("2006-01-02", timeline.Dates[i])
@@ -211,12 +221,12 @@ func (js *JobService) GetActivityStats() (*ActivityStats, error) {
 				tempStreak++
 			} else {
 				tempStreak = 1
-				tempStart = curr
 			}
+			tempEndDateStr = timeline.Dates[i]
 
 			if tempStreak > longestStreak {
 				longestStreak = tempStreak
-				longestStreakMonth = tempStart.Month().String()
+				longestStreakDate = tempEndDateStr
 			}
 		}
 	}
@@ -242,8 +252,10 @@ func (js *JobService) GetActivityStats() (*ActivityStats, error) {
 	return &ActivityStats{
 		CurrentStreak:      currentStreak,
 		LongestStreak:      longestStreak,
-		LongestStreakMonth: longestStreakMonth,
+		LongestStreakDate:  longestStreakDate,
 		MostActiveDay:      dayNames[maxDay],
+		MostActivityCount:  mostActivityCount,
+		MostActivityDate:   mostActivityDate,
 	}, nil
 }
 

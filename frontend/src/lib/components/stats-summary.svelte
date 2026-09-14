@@ -1,6 +1,4 @@
 <script>
-  import ActivityHeatmap from "$lib/components/diagrams/activity-heatmap.svelte";
-  import TimeDiagram from "$lib/components/diagrams/time-diagram.svelte";
   import SankeyDiagram from "$lib/components/diagrams/sankey-diagram.svelte";
 
   let { theme } = $props();
@@ -15,11 +13,7 @@
     LOADING STATISTICS...
   </div>
 {:else}
-  <div class="flex flex-col items-center gap-6">
-    <div class="flex w-full flex-col items-center justify-center gap-6 2xl:flex-row 2xl:items-start">
-      <ActivityHeatmap {theme} />
-      <TimeDiagram {theme} />
-    </div>
+  <div class="flex flex-col items-center gap-6 w-full">
     <SankeyDiagram {theme} />
   </div>
 {/if}

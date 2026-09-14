@@ -26,12 +26,12 @@ export class ActivityStats {
              */
             this["longestStreak"] = 0;
         }
-        if (!("longestStreakMonth" in $$source)) {
+        if (!("longestStreakDate" in $$source)) {
             /**
              * @member
              * @type {string}
              */
-            this["longestStreakMonth"] = "";
+            this["longestStreakDate"] = "";
         }
         if (!("mostActiveDay" in $$source)) {
             /**
@@ -39,6 +39,20 @@ export class ActivityStats {
              * @type {string}
              */
             this["mostActiveDay"] = "";
+        }
+        if (!("mostActivityCount" in $$source)) {
+            /**
+             * @member
+             * @type {number}
+             */
+            this["mostActivityCount"] = 0;
+        }
+        if (!("mostActivityDate" in $$source)) {
+            /**
+             * @member
+             * @type {string}
+             */
+            this["mostActivityDate"] = "";
         }
 
         Object.assign(this, $$source);

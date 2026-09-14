@@ -12,6 +12,7 @@ import (
 var assets embed.FS
 
 func main() {
+
 	app := application.New(application.Options{
 		Name:        "Jahb",
 		Description: "Track your job applications.",
