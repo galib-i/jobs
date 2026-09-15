@@ -10,17 +10,19 @@
 
   let { row } = $props();
 
+  let selectValue = $state("");
+
   function handleStageChange(newStage) {
+    if (!newStage) return;
     jobStore.addStage(row.original.id, newStage);
+    setTimeout(() => {
+      selectValue = "";
+    }, 0);
   }
 </script>
 
 <div class="flex items-center gap-2">
-  <Select.Root
-    type="single"
-    value={row.original.lastStage || "Applied"}
-    onValueChange={handleStageChange}
-  >
+  <Select.Root type="single" bind:value={selectValue} onValueChange={handleStageChange}>
     <Select.Trigger class="h-8 w-[140px]">
       <div class="text-muted-foreground flex items-center gap-2">
         {#if row.original.lastStageColour}
@@ -54,8 +56,8 @@
         <InfoCircleIcon size={16} />
       </div>
     </Tooltip.Trigger>
-    <Tooltip.Content>
-      <div class="flex items-center gap-2 text-xs">
+    <Tooltip.Content class="max-w-none">
+      <div class="flex items-center gap-2 text-xs whitespace-nowrap">
         {#if row.original.formattedStages && row.original.formattedStages.length > 0}
           {#each row.original.formattedStages as stageObj, index}
             <div class="group/stage flex items-center gap-1">

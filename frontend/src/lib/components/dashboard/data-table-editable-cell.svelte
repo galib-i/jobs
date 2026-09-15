@@ -35,5 +35,5 @@
     onkeydown={handleKeydown}
   />
 {:else}
-  <span>{row.original[field]}</span>
+  <span class="block truncate" title={row.original[field]}>{row.original[field]}</span>
 {/if}

@@ -1,6 +1,6 @@
 <script>
   import { jobStore } from "./lib/jobs.svelte.js";
-  import SettingsPage from "$lib/components/settings-page.svelte";
+  import SettingsDialog from "$lib/components/settings-dialog.svelte";
 
   import SidebarLayout from "$lib/components/layout/sidebar-layout.svelte";
   import DashboardPage from "$lib/components/dashboard/dashboard-page.svelte";
@@ -26,19 +26,16 @@
 </script>
 
 <SidebarLayout bind:page>
-  {#if page === "settings"}
-    <SettingsPage
-      availableStages={jobStore.availableStages}
-      onAddStage={(stage) => jobStore.addStage(null, stage)}
-      onDeleteStage={(stage) => {
-        // Find index of stage to delete
-        const index = jobStore.availableStages.findIndex((s) => s.name === stage);
-        if (index !== -1) jobStore.removeStage(null, index);
-      }}
-      onResetStages={() => jobStore.resetStages()}
-      onWipeDatabase={() => jobStore.wipeDatabase()}
-    />
-  {:else}
-    <DashboardPage />
-  {/if}
+  <DashboardPage />
+  <SettingsDialog
+    open={page === "settings"}
+    onOpenChange={(v) => {
+      if (!v) page = "jobs";
+    }}
+    availableStages={jobStore.availableStages}
+    onAddStage={(stage) => jobStore.addAvailableStage(stage)}
+    onDeleteStage={(stage) => jobStore.deleteAvailableStage(stage)}
+    onResetStages={() => jobStore.resetAvailableStages()}
+    onWipeDatabase={() => jobStore.wipeDatabase()}
+  />
 </SidebarLayout>

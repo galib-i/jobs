@@ -3,7 +3,11 @@
 
   let { row } = $props();
 
-  let notesValue = $state(row.original.notes || "");
+  let notesValue = $state("");
+
+  $effect(() => {
+    notesValue = row.original.notes || "";
+  });
 
   function handleBlur() {
     if (row.original.notes !== notesValue) {

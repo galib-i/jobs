@@ -45,11 +45,12 @@
       href={row.original.link}
       target="_blank"
       rel="noopener noreferrer"
-      class="text-primary font-medium transition-colors hover:underline"
+      class="text-primary block truncate font-medium transition-colors hover:underline"
+      title={row.original.role}
     >
       {row.original.role}
     </a>
   {:else}
-    <span class="font-medium">{row.original.role}</span>
+    <span class="block truncate font-medium" title={row.original.role}>{row.original.role}</span>
   {/if}
 {/if}

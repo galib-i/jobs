@@ -13,7 +13,7 @@ var stageColourRules = []struct {
 	{"application", "#64748b"},
 	{"interview", "#eab308"},
 	{"offer", "#22c55e"},
-	{"rejected", "#ef4444"},
+	{"rejection", "#ef4444"},
 	{"withdrawn", "#94a3b8"},
 }
 
@@ -43,10 +43,10 @@ func getStageTextColour(bgColour string) string {
 }
 
 func isLastStage(stage string) bool {
-	return strings.EqualFold(stage, "rejected") || strings.EqualFold(stage, "withdrawn") || strings.EqualFold(stage, "offer")
+	return strings.EqualFold(stage, "rejection") || strings.EqualFold(stage, "withdrawn") || strings.EqualFold(stage, "offer")
 }
 
-var DefaultAvailableStages = []string{"Interview", "Offer", "Rejected", "Withdrawn"}
+var DefaultAvailableStages = []string{"Interview", "Offer", "Rejection", "Withdrawn"}
 
 type StageCount struct {
 	Name  string `json:"name"`

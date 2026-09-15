@@ -1,4 +1,5 @@
 <script>
+  import { untrack } from "svelte";
   import ChevronDownIcon from "@tabler/icons-svelte/icons/chevron-down";
   import LayoutColumnsIcon from "@tabler/icons-svelte/icons/layout-columns";
   import SearchIcon from "@tabler/icons-svelte/icons/search";
