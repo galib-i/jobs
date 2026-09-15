@@ -75,7 +75,7 @@
   <div
     bind:this={ref}
     class={cn(
-      "border-border/50 bg-background grid min-w-32 items-start gap-1.5 rounded-lg border px-2.5 py-1.5 text-xs shadow-xl",
+      "bg-popover text-popover-foreground border-border grid min-w-32 items-start gap-1.5 rounded-md border px-2.5 py-1.5 text-xs shadow-md",
       className,
     )}
     {...restProps}

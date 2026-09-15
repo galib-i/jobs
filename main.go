@@ -27,7 +27,7 @@ func main() {
 	app.Window.NewWithOptions(application.WebviewWindowOptions{
 		Title: "Jahb",
 
-		BackgroundColour: application.NewRGB(27, 38, 54),
+		BackgroundColour: application.NewRGB(9, 9, 11),
 		URL:              "/",
 		MinWidth:         935,
 		MinHeight:        400,

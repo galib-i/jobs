@@ -59,9 +59,16 @@
           const [_y, m, d] = date.split("-");
           return `${count} activit${count === 1 ? "y" : "ies"} on ${d}-${m}`;
         },
-        backgroundColor: theme === "dark" ? "rgba(15, 23, 42, 0.9)" : "rgba(255, 255, 255, 0.9)",
-        borderColor: theme === "dark" ? "#334155" : "#cbd5e1",
-        textStyle: { color: theme === "dark" ? "#f8fafc" : "#1e293b", fontSize: 12 },
+        backgroundColor: theme === "dark" ? "#09090b" : "#ffffff",
+        borderColor: theme === "dark" ? "#27272a" : "#e4e4e7",
+        borderRadius: 6,
+        textStyle: {
+          color: theme === "dark" ? "#fafafa" : "#09090b",
+          fontSize: 12,
+          fontWeight: 500,
+        },
+        extraCssText:
+          "box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);",
       },
       visualMap: {
         dimension: 2,

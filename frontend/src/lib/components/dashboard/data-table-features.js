@@ -20,5 +20,5 @@ export const features = tableFeatures({
   rowPaginationFeature,
   filteredRowModel: createFilteredRowModel(),
   sortedRowModel: createSortedRowModel(),
-  paginationRowModel: createPaginatedRowModel(),
+  paginatedRowModel: createPaginatedRowModel(),
 });

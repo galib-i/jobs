@@ -142,6 +142,11 @@
     onSortingChange: setSorting,
     onPaginationChange: setPagination,
   });
+
+  $effect(() => {
+    void view;
+    untrack(() => table.setPageIndex(0));
+  });
 </script>
 
 <Tabs.Root bind:value={view} class="w-full flex-col justify-start gap-6">
