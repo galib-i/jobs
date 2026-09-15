@@ -4,7 +4,6 @@
   import { Input } from "$lib/components/ui/input/index.js";
   import { Button } from "$lib/components/ui/button/index.js";
   import { Separator } from "$lib/components/ui/separator/index.js";
-  import { OpenDataFolder } from "../../../bindings/jobs/jobservice.js";
   import XIcon from "@tabler/icons-svelte/icons/x";
 
   let {
@@ -112,18 +111,6 @@
         </div>
 
         <div class="space-y-6">
-          <div class="space-y-2">
-            <h4 class="text-sm font-medium">Local Data</h4>
-            <p class="text-muted-foreground text-sm">
-              Open the folder where your SQLite database and config files are stored.
-            </p>
-            <Button variant="outline" class="w-full" onclick={() => OpenDataFolder()}>
-              Open Data Folder
-            </Button>
-          </div>
-
-          <Separator />
-
           <div class="space-y-2">
             <h4 class="text-destructive text-sm font-medium">Danger Zone</h4>
             <p class="text-muted-foreground text-sm">

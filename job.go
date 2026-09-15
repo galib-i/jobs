@@ -53,23 +53,29 @@ type StageCount struct {
 	Count int    `json:"count"`
 }
 
+type StageEntry struct {
+	Stage       string    `json:"stage" bson:"stage"`
+	LastUpdated time.Time `json:"lastUpdated" bson:"last_updated"`
+}
+
 type FormattedStage struct {
 	Raw     string `json:"raw"`
 	Display string `json:"display"`
 }
 
 type Job struct {
-	ID              int64            `json:"id"`
-	Company         string           `json:"company"`
-	Role            string           `json:"role"`
-	Location        string           `json:"location"`
-	Link            string           `json:"link"`
-	Description     string           `json:"description"`
-	Notes           string           `json:"notes"`
-	Stages          []string         `json:"stages"`
-	StageHistory    []StageCount     `json:"stageHistory"`
-	FormattedStages []FormattedStage `json:"formattedStages"`
-	CreatedAt       string           `json:"createdAt"`
+	ID              string           `json:"id" bson:"_id,omitempty"`
+	Company         string           `json:"company" bson:"company"`
+	Role            string           `json:"role" bson:"role"`
+	Location        string           `json:"location" bson:"location"`
+	Link            string           `json:"link" bson:"link"`
+	Description     string           `json:"description" bson:"description"`
+	Notes           string           `json:"notes" bson:"notes"`
+	Stages          []StageEntry     `json:"-" bson:"stages"`
+	StagesList      []string         `json:"stages" bson:"-"`
+	StageHistory    []StageCount     `json:"stageHistory" bson:"-"`
+	FormattedStages []FormattedStage `json:"formattedStages" bson:"-"`
+	CreatedAt       string           `json:"createdAt" bson:"created_at"`
 
 	// Not stored in database
 	LastStage           string `json:"lastStage"`
@@ -86,40 +92,9 @@ type StageMetadata struct {
 	IsLast     bool   `json:"isLast"`
 }
 
-func (js *JobService) GetAvailableStages() []StageMetadata {
-	rows, err := js.Database.Query(`SELECT name FROM available_stages ORDER BY LOWER(name) ASC`)
-	if err != nil {
-		return []StageMetadata{} // Return empty list on error
-	}
-	defer rows.Close()
-
-	var stages []string
-	for rows.Next() {
-		var name string
-		if err := rows.Scan(&name); err == nil {
-			stages = append(stages, name)
-		}
-	}
-	if err := rows.Err(); err != nil {
-		return []StageMetadata{}
-	}
-
-	meta := make([]StageMetadata, 0, len(stages))
-	for _, s := range stages {
-		bg := getStageColour(s)
-		meta = append(meta, StageMetadata{
-			Name:       s,
-			Colour:     bg,
-			TextColour: getStageTextColour(bg),
-			IsLast:     isLastStage(s),
-		})
-	}
-	return meta
-}
-
 func (j *Job) computeFields() {
-	if len(j.Stages) > 0 {
-		j.LastStage = j.Stages[len(j.Stages)-1]
+	if len(j.StagesList) > 0 {
+		j.LastStage = j.StagesList[len(j.StagesList)-1]
 	}
 
 	// Calculate StageHistory
@@ -127,17 +102,15 @@ func (j *Job) computeFields() {
 	var history []StageCount
 	var formatted []FormattedStage
 
-	for _, stage := range j.Stages {
+	for _, stage := range j.StagesList {
 		if counts[stage] == 0 {
 			history = append(history, StageCount{Name: stage, Count: 0})
 		}
 		counts[stage]++
-
 		display := stage
 		if counts[stage] > 1 {
 			display = fmt.Sprintf("%s (%d)", stage, counts[stage])
 		}
-
 		formatted = append(formatted, FormattedStage{
 			Raw:     stage,
 			Display: display,

@@ -7,7 +7,7 @@
   echarts.use([SankeyChart, TooltipComponent, CanvasRenderer, SVGRenderer]);
   import { Button } from "$lib/components/ui/button/index.js";
   import * as Card from "$lib/components/ui/card/index.js";
-  import SuccessPopup from "$lib/components/success-popup.svelte";
+  import SuccessPopup from "$lib/components/dialogs/success-popup.svelte";
   import { GetSankeyData, ExportSankeyImage } from "../../../../bindings/jobs/jobservice";
   import { onDestroy } from "svelte";
 

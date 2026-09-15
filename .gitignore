@@ -33,7 +33,7 @@ go.work
 go.work.sum
 
 # Environment
-.env
+*.env
 .env.local
 .env.*.local
 

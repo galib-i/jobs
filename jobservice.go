@@ -1,91 +1,73 @@
 package main
 
 import (
-	"database/sql"
+	"context"
 	"encoding/base64"
 	"fmt"
 	"log"
 	"os"
-	"os/exec"
 	"path/filepath"
-	"runtime"
+	"sort"
 	"strings"
+	"time"
 
-	_ "modernc.org/sqlite"
+	"github.com/joho/godotenv"
+	"go.mongodb.org/mongo-driver/v2/bson"
+	"go.mongodb.org/mongo-driver/v2/mongo"
+	"go.mongodb.org/mongo-driver/v2/mongo/options"
 )
 
 type JobService struct {
-	Database *sql.DB
+	Client  *mongo.Client
+	JobsCol *mongo.Collection
+	Stages  *mongo.Collection
 }
 
 func NewJobService() *JobService {
-	configDir, err := os.UserConfigDir()
+	if err := godotenv.Load(); err != nil {
+		log.Println("Failed to find a .env file")
+	}
+
+	uri := os.Getenv("MONGODB_URI")
+	if uri == "" {
+		log.Fatal("MONGODB_URI is not set")
+	}
+
+	client, err := mongo.Connect(options.Client().ApplyURI(uri))
 	if err != nil {
-		log.Fatalf("failed to get user config directory: %v", err)
+		log.Fatalf("failed to connect to MongoDB: %v", err)
 	}
 
-	appDir := filepath.Join(configDir, "JobsApp")
-	if err := os.MkdirAll(appDir, 0755); err != nil {
-		log.Fatalf("failed to create app data directory: %v", err)
+	if err := client.Ping(context.TODO(), nil); err != nil {
+		log.Fatalf("failed to ping MongoDB: %v", err)
 	}
 
-	dbPath := filepath.Join(appDir, "jobs.db")
-	db, err := sql.Open("sqlite", dbPath+"?_pragma=foreign_keys(1)")
+	db := client.Database("applications")
+	jobsCol := db.Collection("jobs")
+	stagesCol := db.Collection("stages")
 
-	if err != nil {
-		log.Fatalf("failed to open database: %v", err)
-	}
-
-	db.SetMaxOpenConns(1)
-	db.SetMaxIdleConns(1)
-
-	query := `CREATE TABLE IF NOT EXISTS jobs (
-				id INTEGER PRIMARY KEY AUTOINCREMENT,
-				company TEXT NOT NULL,
-				role TEXT NOT NULL,
-				location TEXT NOT NULL,
-				link TEXT,
-				description TEXT,
-				notes TEXT
-				);
-
-				CREATE TABLE IF NOT EXISTS stages (
-				id INTEGER PRIMARY KEY AUTOINCREMENT,
-				job_id INTEGER,
-				stage TEXT NOT NULL,
-				last_updated DATETIME DEFAULT CURRENT_TIMESTAMP,
-				FOREIGN KEY (job_id) REFERENCES jobs(id) ON DELETE CASCADE
-				);
-
-				CREATE TABLE IF NOT EXISTS available_stages (
-				id INTEGER PRIMARY KEY AUTOINCREMENT,
-				name TEXT NOT NULL UNIQUE COLLATE NOCASE
-				);
-
-				CREATE INDEX IF NOT EXISTS idx_stages_job_id ON stages(job_id);`
-
-	if _, err := db.Exec(query); err != nil {
-		log.Fatalf("failed to create tables: %v", err)
-	}
-
-	var count int
-	err = db.QueryRow(`SELECT count(*) FROM available_stages`).Scan(&count)
-	if err == nil && count == 0 {
+	count, _ := stagesCol.CountDocuments(context.TODO(), bson.M{})
+	if count == 0 {
 		for _, stage := range DefaultAvailableStages {
-			db.Exec(`INSERT INTO available_stages (name) VALUES (?)`, stage)
+			stagesCol.InsertOne(context.TODO(), bson.M{"name": stage})
 		}
 	}
 
-	return &JobService{Database: db}
+	return &JobService{
+		Client:  client,
+		JobsCol: jobsCol,
+		Stages:  stagesCol,
+	}
+
 }
 
 func (js *JobService) AddAvailableStage(name string) error {
-	query := `INSERT INTO available_stages (name) VALUES (?)`
-	_, err := js.Database.Exec(query, strings.TrimSpace(name))
+	_, err := js.Stages.InsertOne(context.TODO(), bson.M{"name": strings.TrimSpace(name)})
 	if err != nil {
 		log.Printf("failed to add available stage %s: %v", name, err)
 		return err
 	}
+
 	return nil
 }
 
@@ -93,260 +75,171 @@ func (js *JobService) DeleteAvailableStage(name string) error {
 	if isLastStage(name) {
 		return fmt.Errorf("cannot delete reserved stage: %s", name)
 	}
-	query := `DELETE FROM available_stages WHERE name = ?`
-	_, err := js.Database.Exec(query, name)
+	_, err := js.Stages.DeleteOne(context.TODO(), bson.M{"name": name})
 	if err != nil {
 		log.Printf("failed to delete available stage %s: %v", name, err)
 		return err
 	}
+
 	return nil
 }
 
 func (js *JobService) ResetAvailableStages() error {
-	tx, err := js.Database.Begin()
-	if err != nil {
-		return err
-	}
-	defer tx.Rollback()
-
-	if _, err := tx.Exec(`DELETE FROM available_stages`); err != nil {
+	if _, err := js.Stages.DeleteMany(context.TODO(), bson.M{}); err != nil {
 		log.Printf("failed to clear available stages: %v", err)
 		return err
 	}
 
 	for _, stage := range DefaultAvailableStages {
-		if _, err := tx.Exec(`INSERT INTO available_stages (name) VALUES (?)`, stage); err != nil {
+		if _, err := js.Stages.InsertOne(context.TODO(), bson.M{"name": stage}); err != nil {
 			log.Printf("failed to insert default stage %s: %v", stage, err)
 			return err
 		}
 	}
 
-	return tx.Commit()
+	return nil
 }
 
-func (js *JobService) SaveJob(j Job) (int64, error) {
-	tx, err := js.Database.Begin()
+func (js *JobService) SaveJob(j Job) (string, error) {
+	j.Stages = []StageEntry{
+		{Stage: "Application", LastUpdated: time.Now()},
+	}
+	j.CreatedAt = time.Now().Format(time.DateOnly)
+
+	res, err := js.JobsCol.InsertOne(context.TODO(), j)
 	if err != nil {
-		return 0, err
-	}
-	defer tx.Rollback()
-
-	jobQuery := `INSERT INTO jobs (company, role, location, link, description, notes) VALUES (?, ?, ?, ?, ?, ?)`
-	result, err := tx.Exec(jobQuery, j.Company, j.Role, j.Location, j.Link, j.Description, j.Notes)
-	if err != nil {
-		log.Printf("failed to save job (%s, %s...): %v", j.Company, j.Role, err)
-		return 0, err
+		return "", err
 	}
 
-	jobID, err := result.LastInsertId()
-	if err != nil {
-		return 0, err
-	}
+	return res.InsertedID.(bson.ObjectID).Hex(), nil
+}
 
-	stageQuery := `INSERT INTO stages (job_id, stage) VALUES (?, 'Application')`
-	if _, err := tx.Exec(stageQuery, jobID); err != nil {
-		log.Printf("failed to insert initial stage for job %d: %v", jobID, err)
-		return 0, err
-	}
+func (js *JobService) DeleteJob(id string) error {
+	objID, _ := bson.ObjectIDFromHex(id)
+	_, err := js.JobsCol.DeleteOne(context.TODO(), bson.M{"_id": objID})
 
-	if err := tx.Commit(); err != nil {
-		return 0, err
-	}
+	return err
+}
 
-	return jobID, nil
+func (js *JobService) UpdateJob(j Job) error {
+	objID, _ := bson.ObjectIDFromHex(j.ID)
+	update := bson.M{
+		"$set": bson.M{
+			"company": j.Company, "role": j.Role, "location": j.Location,
+			"link": j.Link, "description": j.Description, "notes": j.Notes,
+		},
+	}
+	_, err := js.JobsCol.UpdateOne(context.TODO(), bson.M{"_id": objID}, update)
+
+	return err
 }
 
 func (js *JobService) WipeDatabase() error {
-	tx, err := js.Database.Begin()
+	_, err := js.JobsCol.DeleteMany(context.TODO(), bson.M{})
 	if err != nil {
-		return err
-	}
-	defer tx.Rollback()
-
-	if _, err := tx.Exec(`DELETE FROM jobs`); err != nil {
 		log.Printf("failed to clear jobs: %v", err)
 		return err
 	}
 
-	if _, err := tx.Exec(`DELETE FROM sqlite_sequence WHERE name='jobs'`); err != nil {
-		log.Printf("failed to reset jobs sequence: %v", err)
-	}
-
-	return tx.Commit()
+	return nil
 }
 
 func (js *JobService) GetJobs(search string, stageSort string, dateSort string) ([]Job, error) {
-	query := `SELECT jobs.id, jobs.company, jobs.role, jobs.location, jobs.link, jobs.description, jobs.notes,
-				coalesce(
-					(
-						SELECT group_concat(stage, ',')
-						FROM (
-							SELECT stage
-							FROM stages
-							WHERE job_id = jobs.id
-							ORDER BY id ASC
-						)
-					),
-					''
-				),
-				coalesce(
-					(
-						SELECT date(last_updated)
-						FROM stages
-						WHERE job_id = jobs.id
-						ORDER BY id DESC LIMIT 1
-					),
-					date('now')) as last_updated_date,
-				coalesce(
-					(
-						SELECT stage
-						FROM stages
-						WHERE job_id = jobs.id
-						ORDER BY id DESC LIMIT 1
-					),
-					'') as current_stage
-				FROM jobs`
+	filter := bson.M{}
 
-	var args []interface{}
-
+	// Case-insensitive search
 	if search != "" {
-		query += ` WHERE jobs.company LIKE ? OR jobs.role LIKE ?`
-		searchParam := "%" + search + "%"
-		args = append(args, searchParam, searchParam)
+		regex := bson.Regex{Pattern: search, Options: "i"}
+		filter = bson.M{
+			"$or": []bson.M{
+				{"company": regex},
+				{"role": regex},
+			},
+		}
 	}
 
-	var orderClauses []string
-
-	switch stageSort {
-	case "asc":
-		orderClauses = append(orderClauses, `current_stage ASC`)
-	case "desc":
-		orderClauses = append(orderClauses, `current_stage DESC`)
-	}
-
-	switch dateSort {
-	case "asc":
-		orderClauses = append(orderClauses, `last_updated_date ASC`)
-	case "desc":
-		orderClauses = append(orderClauses, `last_updated_date DESC`)
-	}
-
-	if len(orderClauses) > 0 {
-		query += ` ORDER BY ` + strings.Join(orderClauses, ", ") + `, jobs.id DESC`
-	} else {
-		query += ` ORDER BY last_updated_date DESC, jobs.id DESC`
-	}
-
-	rows, err := js.Database.Query(query, args...)
+	// Fetch all matching jobs
+	cursor, err := js.JobsCol.Find(context.TODO(), filter)
 	if err != nil {
-		log.Printf("failed to get all jobs: %v", err)
+		log.Printf("failed to find jobs: %v", err)
 		return nil, err
 	}
-	defer rows.Close()
+	defer cursor.Close(context.TODO())
 
 	var jobs []Job
-
-	for rows.Next() {
-		var currentJob Job
-		var stagesString string
-		var dummyStage string
-
-		if err := rows.Scan(&currentJob.ID, &currentJob.Company, &currentJob.Role, &currentJob.Location, &currentJob.Link, &currentJob.Description, &currentJob.Notes, &stagesString, &currentJob.CreatedAt, &dummyStage); err != nil {
-			log.Printf("failed to scan job: %v", err)
-			return nil, err
-		}
-
-		if stagesString != "" {
-			currentJob.Stages = strings.Split(stagesString, ",")
-		} else {
-			currentJob.Stages = []string{}
-		}
-		currentJob.computeFields()
-		jobs = append(jobs, currentJob)
-	}
-
-	if err := rows.Err(); err != nil {
-		log.Printf("failed to read rows: %v", err)
+	if err = cursor.All(context.TODO(), &jobs); err != nil {
 		return nil, err
 	}
+
+	// Compute frontend fields
+	for i := range jobs {
+		var stageStrings []string
+		for _, s := range jobs[i].Stages {
+			stageStrings = append(stageStrings, s.Stage)
+		}
+		jobs[i].StagesList = stageStrings
+		jobs[i].computeFields()
+	}
+
+	sort.Slice(jobs, func(i, j int) bool {
+		// Sort by stage
+		if stageSort == "asc" && jobs[i].LastStage != jobs[j].LastStage {
+			return jobs[i].LastStage < jobs[j].LastStage
+		} else if stageSort == "desc" && jobs[i].LastStage != jobs[j].LastStage {
+			return jobs[i].LastStage > jobs[j].LastStage
+		}
+
+		// Sort by date
+		dateI, dateJ := jobs[i].CreatedAt, jobs[j].CreatedAt
+		if len(jobs[i].Stages) > 0 {
+			dateI = jobs[i].Stages[len(jobs[i].Stages)-1].LastUpdated.Format(time.RFC3339)
+		}
+		if len(jobs[j].Stages) > 0 {
+			dateJ = jobs[j].Stages[len(jobs[j].Stages)-1].LastUpdated.Format(time.RFC3339)
+		}
+
+		if dateSort == "asc" {
+			return dateI < dateJ
+		}
+		return dateI > dateJ // Default to descending
+	})
 
 	return jobs, nil
 }
 
-func (js *JobService) DeleteJob(id int64) error {
-	query := `DELETE FROM jobs
-				WHERE id = ?`
+func (js *JobService) AddJobStage(jobId string, stage string) error {
+	objID, _ := bson.ObjectIDFromHex(jobId)
 
-	if _, err := js.Database.Exec(query, id); err != nil {
-		log.Printf("failed to delete job (id: %v): %v", id, err)
-		return err
+	newEntry := StageEntry{
+		Stage:       stage,
+		LastUpdated: time.Now(),
 	}
 
-	return nil
+	update := bson.M{"$push": bson.M{"stages": newEntry}}
+
+	_, err := js.JobsCol.UpdateOne(context.TODO(), bson.M{"_id": objID}, update)
+
+	return err
 }
 
-func (js *JobService) UpdateJob(j Job) error {
-	query := `UPDATE jobs
-				SET company = ?, role = ?, location = ?, link = ?, description = ?, notes = ?
-				WHERE id = ?`
+func (js *JobService) RemoveJobStageAt(jobId string, index int) error {
+	objID, _ := bson.ObjectIDFromHex(jobId)
 
-	if _, err := js.Database.Exec(query, j.Company, j.Role, j.Location, j.Link, j.Description, j.Notes, j.ID); err != nil {
-		log.Printf("failed to edit job (id: %v): %v", j.ID, err)
+	var job Job
+	if err := js.JobsCol.FindOne(context.TODO(), bson.M{"_id": objID}).Decode(&job); err != nil {
 		return err
 	}
 
-	return nil
-}
-
-func (js *JobService) AddJobStage(jobId int64, stage string) error {
-	query := `INSERT INTO stages (job_id, stage)
-				VALUES (?, ?)`
-
-	if _, err := js.Database.Exec(query, jobId, stage); err != nil {
-		log.Printf("failed to add stage to job (id: %v): %v", jobId, err)
-		return err
-	}
-
-	return nil
-}
-
-func (js *JobService) RemoveJobStageAt(jobId int64, index int) error {
-	query := `SELECT id
-				FROM stages
-				WHERE job_id = ?
-				ORDER BY id ASC`
-
-	rows, err := js.Database.Query(query, jobId)
-	if err != nil {
-		return err
-	}
-	defer rows.Close()
-
-	var ids []int64
-	for rows.Next() {
-		var id int64
-		if err := rows.Scan(&id); err == nil {
-			ids = append(ids, id)
-		}
-	}
-
-	if err := rows.Err(); err != nil {
-		return err
-	}
-
-	if index < 0 || index >= len(ids) {
+	if index < 0 || index >= len(job.Stages) {
 		return fmt.Errorf("stage index out of bounds")
 	}
 
-	targetId := ids[index]
+	job.Stages = append(job.Stages[:index], job.Stages[index+1:]...)
 
-	_, err = js.Database.Exec(`DELETE FROM stages WHERE id = ?`, targetId)
-	if err != nil {
-		log.Printf("failed to remove stage at index %d for job %d: %v", index, jobId, err)
-		return err
-	}
+	update := bson.M{"$set": bson.M{"stages": job.Stages}}
+	_, err := js.JobsCol.UpdateOne(context.TODO(), bson.M{"_id": objID}, update)
 
-	return nil
+	return err
 }
 
 func (js *JobService) ExportSankeyImage(base64Data string) (string, error) {
@@ -380,19 +273,42 @@ func (js *JobService) ExportSankeyImage(base64Data string) (string, error) {
 	return filename, nil
 }
 
-func (js *JobService) OpenDataFolder() error {
-	configDir, err := os.UserConfigDir()
+func (js *JobService) GetAvailableStages() []StageMetadata {
+	// Fetch all documents in the Stages collection
+	cursor, err := js.Stages.Find(context.TODO(), bson.M{})
 	if err != nil {
-		return err
+		return []StageMetadata{}
 	}
-	appDir := filepath.Join(configDir, "JobsApp")
+	defer cursor.Close(context.TODO())
 
-	var cmd *exec.Cmd
-	switch runtime.GOOS {
-	case "windows":
-		cmd = exec.Command("explorer", appDir)
-	default:
-		cmd = exec.Command("xdg-open", appDir)
+	// Decode into a temporary struct just to grab the name
+	var stageDocs []struct {
+		Name string `bson:"name"`
 	}
-	return cmd.Start()
+	if err = cursor.All(context.TODO(), &stageDocs); err != nil {
+		return []StageMetadata{}
+	}
+
+	// Extract just the string names
+	var stages []string
+	for _, doc := range stageDocs {
+		stages = append(stages, doc.Name)
+	}
+
+	sort.Slice(stages, func(i, j int) bool {
+		return strings.ToLower(stages[i]) < strings.ToLower(stages[j])
+	})
+
+	meta := make([]StageMetadata, 0, len(stages))
+	for _, s := range stages {
+		bg := getStageColour(s)
+		meta = append(meta, StageMetadata{
+			Name:       s,
+			Colour:     bg,
+			TextColour: getStageTextColour(bg),
+			IsLast:     isLastStage(s),
+		})
+	}
+
+	return meta
 }

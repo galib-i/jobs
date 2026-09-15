@@ -179,7 +179,7 @@
       <Card.Title>Activity</Card.Title>
     </Card.Header>
     <Card.Content class="p-4 pt-0 pb-0 sm:px-6 sm:pt-0 sm:pb-0">
-      <div bind:this={chartEl} style="height: 150px; width: 100%; margin: 0 auto;"></div>
+      <div bind:this={chartEl} style="height: 148px; width: 100%; margin: 0 auto;"></div>
     </Card.Content>
   </Card.Root>
 {/if}

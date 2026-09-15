@@ -1,6 +1,7 @@
 package main
 
 import (
+	"sort"
 	"strconv"
 	"strings"
 	"time"
@@ -67,13 +68,13 @@ func (js *JobService) GetSankeyData() (*SankeyData, error) {
 			continue
 		}
 
-		for i, stage := range job.Stages {
+		for i, stage := range job.StagesList {
 			// Diagram should show steps, an index is added to treat each as a unique node
 			current := NodeKey{Name: stage, Index: i}
 			nodeCount[current]++
 
 			if i < len(job.Stages)-1 {
-				next := NodeKey{Name: job.Stages[i+1], Index: i + 1}
+				next := NodeKey{Name: job.StagesList[i+1], Index: i + 1}
 				linkKey := LinkKey{Source: current, Target: next}
 				linkMap[linkKey]++
 			}
@@ -110,52 +111,63 @@ func (js *JobService) GetSankeyData() (*SankeyData, error) {
 }
 
 func (js *JobService) GetTimelineData(groupBy string) (*TimelineData, error) {
-	dateExpr := `date(last_updated)`
-	filterExpr := `WHERE last_updated IS NOT NULL`
-
-	if strings.HasSuffix(groupBy, "_apps") {
-		filterExpr += ` AND stage = 'Application'`
-		groupBy = strings.TrimSuffix(groupBy, "_apps")
-	}
-
-	switch groupBy {
-	case "month":
-		dateExpr = `strftime('%Y-%m', last_updated)`
-	case "week":
-		dateExpr = `date(last_updated, 'weekday 0', '-6 days')` // Gets the Monday of the current week
-	}
-
-	query := `SELECT ` + dateExpr + ` as date_group, count(*)
-			  FROM stages
-			  ` + filterExpr + `
-			  GROUP BY date_group
-			  ORDER BY date_group ASC`
-
-	rows, err := js.Database.Query(query)
+	jobs, err := js.GetJobs("", "none", "desc")
 	if err != nil {
 		return nil, err
 	}
-	defer rows.Close()
 
-	var dates []string
-	var counts []int
+	// If filtering by applications
+	isAppsOnly := strings.HasSuffix(groupBy, "_apps")
+	if isAppsOnly {
+		groupBy = strings.TrimSuffix(groupBy, "_apps")
+	}
 
-	for rows.Next() {
-		var dateStr string
-		var count int
-		if err := rows.Scan(&dateStr, &count); err != nil {
-			return nil, err
+	// Group the dates in Go
+	counts := make(map[string]int)
+
+	for _, job := range jobs {
+		for _, stage := range job.Stages {
+			if stage.LastUpdated.IsZero() {
+				continue
+			}
+			if isAppsOnly && stage.Stage != "Application" {
+				continue
+			}
+
+			var dateKey string
+			t := stage.LastUpdated
+
+			switch groupBy {
+			case "month":
+				dateKey = t.Format("2006-01")
+			case "week":
+				// Find the Monday of the week
+				offset := int(time.Monday - t.Weekday())
+				if offset > 0 {
+					offset = -6
+				}
+				monday := t.AddDate(0, 0, offset)
+				dateKey = monday.Format("2006-01-02")
+			default:
+				dateKey = t.Format("2006-01-02")
+			}
+			counts[dateKey]++
 		}
-
-		dates = append(dates, dateStr)
-		counts = append(counts, count)
 	}
 
-	if err := rows.Err(); err != nil {
-		return nil, err
+	// Sort chronologically
+	var dates []string
+	for k := range counts {
+		dates = append(dates, k)
+	}
+	sort.Strings(dates)
+
+	var finalCounts []int
+	for _, d := range dates {
+		finalCounts = append(finalCounts, counts[d])
 	}
 
-	return &TimelineData{Dates: dates, Counts: counts}, nil
+	return &TimelineData{Dates: dates, Counts: finalCounts}, nil
 }
 
 func (js *JobService) GetActivityStats() (*ActivityStats, error) {

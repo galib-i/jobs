@@ -19,7 +19,7 @@ export function AddAvailableStage(name) {
 }
 
 /**
- * @param {number} jobId
+ * @param {string} jobId
  * @param {string} stage
  * @returns {$CancellablePromise<void>}
  */
@@ -36,7 +36,7 @@ export function DeleteAvailableStage(name) {
 }
 
 /**
- * @param {number} id
+ * @param {string} id
  * @returns {$CancellablePromise<void>}
  */
 export function DeleteJob(id) {
@@ -110,14 +110,7 @@ export function GetTimelineData(groupBy) {
 }
 
 /**
- * @returns {$CancellablePromise<void>}
- */
-export function OpenDataFolder() {
-    return $Call.ByID(3013759918);
-}
-
-/**
- * @param {number} jobId
+ * @param {string} jobId
  * @param {number} index
  * @returns {$CancellablePromise<void>}
  */
@@ -134,7 +127,7 @@ export function ResetAvailableStages() {
 
 /**
  * @param {$models.Job} j
- * @returns {$CancellablePromise<number>}
+ * @returns {$CancellablePromise<string>}
  */
 export function SaveJob(j) {
     return $Call.ByID(3923482130, j);

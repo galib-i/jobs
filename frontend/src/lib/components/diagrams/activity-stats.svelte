@@ -73,7 +73,7 @@
           Most active day
         </div>
         <div class="text-foreground mt-1 ml-5 text-xs leading-none font-bold">
-          {stats.mostActiveDay}
+          {stats.mostActiveDay || "-"}
         </div>
       </Card.Content>
     </Card.Root>

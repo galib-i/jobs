@@ -156,9 +156,9 @@ export class Job {
         if (!("id" in $$source)) {
             /**
              * @member
-             * @type {number}
+             * @type {string}
              */
-            this["id"] = 0;
+            this["id"] = "";
         }
         if (!("company" in $$source)) {
             /**
