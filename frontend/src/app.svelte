@@ -1,7 +1,6 @@
 <script>
   import { jobStore } from "./lib/jobs.svelte.js";
   import SettingsDialog from "$lib/components/dialogs/settings-dialog.svelte";
-
   import SidebarLayout from "$lib/components/layout/sidebar-layout.svelte";
   import DashboardPage from "$lib/components/dashboard/dashboard-page.svelte";
 

@@ -166,7 +166,7 @@
 
 {#if !isLoading}
   {#if !sankeyData?.nodes?.length}
-    <p class="font-pixel mt-8 mb-4 text-center text-slate-500 dark:text-slate-400">No data</p>
+    <p class="text-muted-foreground mt-8 mb-4 text-center text-sm">No data available</p>
   {:else}
     <div class="flex w-full flex-col">
       <div
