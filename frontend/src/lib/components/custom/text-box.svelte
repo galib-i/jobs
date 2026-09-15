@@ -34,7 +34,7 @@
     <div
       class="pointer-events-none absolute top-1/2 left-3 z-10 -translate-y-1/2 text-slate-400 dark:text-slate-400/50"
     >
-      <Icon name={icon} class="w-4 h-4" />
+      <Icon name={icon} class="h-4 w-4" />
     </div>
   {/if}
   <input
@@ -44,7 +44,9 @@
     {oninput}
     {placeholder}
     style="text-shadow: none;"
-    class="relative h-9 w-full {icon ? 'pr-4 pl-9' : 'px-4'} py-1 font-sans text-sm font-normal tracking-wide transition-all duration-150 ease-out focus:outline-none placeholder:font-pixel {rounded} {border} {colours.top}"
+    class="relative h-9 w-full {icon
+      ? 'pr-4 pl-9'
+      : 'px-4'} placeholder:font-pixel py-1 font-sans text-sm font-normal tracking-wide transition-all duration-150 ease-out focus:outline-none {rounded} {border} {colours.top}"
     {...rest}
   />
 </div>

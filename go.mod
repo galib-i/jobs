@@ -4,7 +4,7 @@ go 1.26.0
 
 require (
 	github.com/wailsapp/wails/v3 v3.0.0-beta.22
-	modernc.org/sqlite v1.58.0
+	modernc.org/sqlite v1.59.0
 )
 
 require (

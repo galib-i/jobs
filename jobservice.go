@@ -60,7 +60,9 @@ func NewJobService() *JobService {
 				CREATE TABLE IF NOT EXISTS available_stages (
 				id INTEGER PRIMARY KEY AUTOINCREMENT,
 				name TEXT NOT NULL UNIQUE COLLATE NOCASE
-				)`
+				);
+
+				CREATE INDEX IF NOT EXISTS idx_stages_job_id ON stages(job_id);`
 
 	if _, err := db.Exec(query); err != nil {
 		log.Fatalf("failed to create tables: %v", err)

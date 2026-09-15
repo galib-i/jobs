@@ -60,15 +60,12 @@
     onblur={handleSave}
     onkeydown={handleKeyDown}
     rows="1"
-    class="w-full resize-none overflow-hidden rounded-md border border-transparent bg-transparent p-1 focus-visible:border-input focus-visible:bg-background focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring text-foreground {className}"
+    class="focus-visible:border-input focus-visible:bg-background focus-visible:ring-ring text-foreground w-full resize-none overflow-hidden rounded-md border border-transparent bg-transparent p-1 focus-visible:ring-1 focus-visible:outline-none {className}"
   ></textarea>
 {:else}
   <!-- svelte-ignore a11y_no_static_element_interactions -->
   <!-- svelte-ignore a11y_click_events_have_key_events -->
-  <span
-    ondblclick={() => updateEditing(true)}
-    class="border border-transparent p-1 {className}"
-  >
+  <span ondblclick={() => updateEditing(true)} class="border border-transparent p-1 {className}">
     {value}
   </span>
 {/if}

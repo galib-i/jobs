@@ -5,11 +5,19 @@
   import { CanvasRenderer, SVGRenderer } from "echarts/renderers";
 
   echarts.use([SankeyChart, TooltipComponent, CanvasRenderer, SVGRenderer]);
-  import Button from "$lib/components/custom/button.svelte";
+  import { Button } from "$lib/components/ui/button/index.js";
+  import * as Card from "$lib/components/ui/card/index.js";
   import Icon from "$lib/components/custom/icon.svelte";
   import SuccessPopup from "$lib/components/custom/success-popup.svelte";
   import { GetSankeyData, ExportSankeyImage } from "../../../../bindings/jobs/jobservice";
   import { onDestroy } from "svelte";
+
+  export function copy() {
+    return handleCopy();
+  }
+  export function download() {
+    return handleExport();
+  }
 
   let { theme } = $props();
 
@@ -75,8 +83,7 @@
           label: {
             position: "right",
             textBorderWidth: 0,
-            formatter: ({ data, value }) =>
-              `{nameBlock|${data.cleanName}} {valBlock|${value}}`,
+            formatter: ({ data, value }) => `{nameBlock|${data.cleanName}} {valBlock|${value}}`,
           },
         },
       ],
@@ -131,9 +138,7 @@
     try {
       const res = await fetch(base64Data);
       const blob = await res.blob();
-      await navigator.clipboard.write([
-        new ClipboardItem({ "image/png": blob })
-      ]);
+      await navigator.clipboard.write([new ClipboardItem({ "image/png": blob })]);
       popupTitle = "Copied to Clipboard!";
       popupMessage = "";
       showSuccess = true;
@@ -147,15 +152,15 @@
     if (!chartEl || !option) return;
 
     if (!chart) {
-      chart = echarts.init(chartEl, null, { renderer: "svg" });
+      chart = echarts.init(chartEl, null, {
+        renderer: "svg",
+        devicePixelRatio: window.devicePixelRatio,
+      });
       const ro = new ResizeObserver(() => chart?.resize());
       ro.observe(chartEl);
     }
     chart.setOption(option, true);
   });
-
-  let nodeCount = $derived(sankeyData?.nodes?.length ?? 0);
-  let chartHeight = $derived(Math.max(120, nodeCount * 40));
 
   onDestroy(() => chart?.dispose());
 </script>
@@ -164,26 +169,14 @@
   {#if !sankeyData?.nodes?.length}
     <p class="font-pixel mt-8 mb-4 text-center text-slate-500 dark:text-slate-400">No data</p>
   {:else}
-    <div class="mx-auto flex w-full max-w-212.5 flex-col 2xl:max-w-324.75">
-      <div class="relative overflow-hidden rounded-2xl border-2 border-blue-500 bg-slate-100 dark:bg-slate-900">
-        <!-- Header -->
-        <div class="font-pixel flex items-center justify-between border-b-2 border-blue-500 bg-blue-600 font-bold tracking-wider text-white select-none">
-          <div class="px-4 py-3 pl-6 whitespace-nowrap">Progress</div>
-          <div class="flex items-center gap-2 pr-4">
-            <Button theme="yellow" isIcon size="sm" onclick={handleCopy}>
-              <Icon name="copy" class="h-3.5 w-3.5" />
-            </Button>
-            <Button theme="green" isIcon size="sm" onclick={handleExport}>
-              <Icon name="download" class="h-3.5 w-3.5" />
-            </Button>
-          </div>
-        </div>
-
-        <!-- Chart -->
-        <div class="flex min-w-0 items-center justify-center p-4 pt-6">
-          <div bind:this={chartEl} style="height: {chartHeight}px; width: 100%;"></div>
-        </div>
-      </div>
+    <div class="flex w-full flex-col">
+      <div
+        bind:this={chartEl}
+        style="height: {Math.max(
+          500,
+          (sankeyData?.nodes?.length || 0) * 45,
+        )}px; min-width: 1000px; width: 100%;"
+      ></div>
     </div>
 
     <SuccessPopup

@@ -12,5 +12,3 @@ export const schema = z.object({
   notes: z.string().optional(),
   link: z.string().optional(),
 });
-
-export type Schema = z.infer<typeof schema>;

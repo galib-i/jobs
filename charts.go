@@ -31,12 +31,12 @@ type TimelineData struct {
 }
 
 type ActivityStats struct {
-	CurrentStreak      int    `json:"currentStreak"`
-	LongestStreak      int    `json:"longestStreak"`
-	LongestStreakDate  string `json:"longestStreakDate"`
-	MostActiveDay      string `json:"mostActiveDay"`
-	MostActivityCount  int    `json:"mostActivityCount"`
-	MostActivityDate   string `json:"mostActivityDate"`
+	CurrentStreak     int    `json:"currentStreak"`
+	LongestStreak     int    `json:"longestStreak"`
+	LongestStreakDate string `json:"longestStreakDate"`
+	MostActiveDay     string `json:"mostActiveDay"`
+	MostActivityCount int    `json:"mostActivityCount"`
+	MostActivityDate  string `json:"mostActivityDate"`
 }
 
 type NodeKey struct {
@@ -172,7 +172,7 @@ func (js *JobService) GetActivityStats() (*ActivityStats, error) {
 	countMap := make(map[string]int)
 	mostActivityCount := 0
 	mostActivityDate := ""
-	
+
 	for i, date := range timeline.Dates {
 		count := timeline.Counts[i]
 		countMap[date] = count
@@ -250,12 +250,12 @@ func (js *JobService) GetActivityStats() (*ActivityStats, error) {
 	}
 
 	return &ActivityStats{
-		CurrentStreak:      currentStreak,
-		LongestStreak:      longestStreak,
-		LongestStreakDate:  longestStreakDate,
-		MostActiveDay:      dayNames[maxDay],
-		MostActivityCount:  mostActivityCount,
-		MostActivityDate:   mostActivityDate,
+		CurrentStreak:     currentStreak,
+		LongestStreak:     longestStreak,
+		LongestStreakDate: longestStreakDate,
+		MostActiveDay:     dayNames[maxDay],
+		MostActivityCount: mostActivityCount,
+		MostActivityDate:  mostActivityDate,
 	}, nil
 }
 
@@ -270,23 +270,23 @@ func (js *JobService) GetHeatmapData() (*HeatmapResult, error) {
 		return nil, err
 	}
 
-	if timeline == nil || len(timeline.Dates) == 0 {
-		return nil, nil
-	}
-
-	lastDateStr := timeline.Dates[len(timeline.Dates)-1]
-
-	lastDate, _ := time.Parse("2006-01-02", lastDateStr)
-
-	// End at the Saturday of the last activity week
-	endDate := lastDate.AddDate(0, 0, int(time.Saturday-lastDate.Weekday()))
-	// Start exactly 52 weeks before the end date (aligned to Sunday)
-	currDate := endDate.AddDate(0, 0, -(52*7)+1)
-
 	countMap := make(map[string]int)
-	for i, d := range timeline.Dates {
-		countMap[d] = timeline.Counts[i]
+	if timeline != nil {
+		for i, d := range timeline.Dates {
+			countMap[d] = timeline.Counts[i]
+		}
 	}
+
+	now := time.Now()
+	year := now.Year()
+
+	firstOfYear := time.Date(year, time.January, 1, 0, 0, 0, 0, time.UTC)
+	lastOfYear := time.Date(year, time.December, 31, 0, 0, 0, 0, time.UTC)
+
+	// End at the Saturday of the week containing Dec 31st
+	endDate := lastOfYear.AddDate(0, 0, int(time.Saturday-lastOfYear.Weekday()))
+	// Start at the Sunday of the week containing Jan 1st
+	currDate := firstOfYear.AddDate(0, 0, -int(firstOfYear.Weekday()))
 
 	var weeks []string
 	var heatmapData [][]any

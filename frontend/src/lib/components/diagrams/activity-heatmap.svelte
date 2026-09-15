@@ -1,10 +1,22 @@
 <script>
   import * as echarts from "echarts/core";
   import { HeatmapChart } from "echarts/charts";
-  import { TooltipComponent, VisualMapComponent, GridComponent, DataZoomComponent } from "echarts/components";
+  import {
+    TooltipComponent,
+    VisualMapComponent,
+    GridComponent,
+    DataZoomComponent,
+  } from "echarts/components";
   import { SVGRenderer } from "echarts/renderers";
 
-  echarts.use([HeatmapChart, TooltipComponent, VisualMapComponent, GridComponent, DataZoomComponent, SVGRenderer]);
+  echarts.use([
+    HeatmapChart,
+    TooltipComponent,
+    VisualMapComponent,
+    GridComponent,
+    DataZoomComponent,
+    SVGRenderer,
+  ]);
   import * as Card from "$lib/components/ui/card/index.js";
   import { GetHeatmapData } from "../../../../bindings/jobs/jobservice";
   import { onDestroy } from "svelte";
@@ -33,10 +45,7 @@
   function buildOption() {
     if (!timelineData?.weeks?.length) return null;
 
-    const { weeks, heatmapData } = timelineData;
-    const maxSpan = 30;
-    const dataLen = weeks.length;
-    const startPercent = dataLen > maxSpan ? 100 - (maxSpan / dataLen) * 100 : 0;
+    let { weeks, heatmapData } = timelineData;
 
     return {
       textStyle: { fontFamily: "Inter, sans-serif" },
@@ -97,7 +106,8 @@
           formatter: (value) => {
             const absIndex = weeks.indexOf(value);
             if (absIndex === 0) {
-              return parseDate(value).toLocaleDateString("en-US", { month: "short" });
+              const m = parseDate(value).toLocaleDateString("en-US", { month: "short" });
+              return m === "Dec" ? "" : m;
             }
             const curr = parseDate(value);
             const prev = parseDate(weeks[absIndex - 1]);
@@ -125,18 +135,6 @@
           },
         },
       },
-      dataZoom: [
-        {
-          type: "inside",
-          xAxisIndex: [0],
-          start: startPercent,
-          end: 100,
-          maxValueSpan: maxSpan,
-          zoomOnMouseWheel: false,
-          moveOnMouseWheel: false,
-          moveOnMouseMove: false,
-        },
-      ],
       series: [
         {
           type: "heatmap",
@@ -160,17 +158,20 @@
       chart = echarts.init(chartEl, null, { renderer: "svg" });
     }
     chart.setOption(option, true);
+    chart.resize();
   });
 
   onDestroy(() => chart?.dispose());
 </script>
 
+<svelte:window onresize={() => chart?.resize()} />
+
 {#if timelineData?.weeks?.length}
-  <Card.Root class="w-full max-w-2xl min-w-0">
+  <Card.Root class="w-full max-w-5xl min-w-0">
     <Card.Header>
       <Card.Title>Activity</Card.Title>
     </Card.Header>
-    <Card.Content class="p-4 pt-0 sm:px-6 sm:pt-0 pb-0 sm:pb-0">
+    <Card.Content class="p-4 pt-0 pb-0 sm:px-6 sm:pt-0 sm:pb-0">
       <div bind:this={chartEl} style="height: 150px; width: 100%; margin: 0 auto;"></div>
     </Card.Content>
   </Card.Root>

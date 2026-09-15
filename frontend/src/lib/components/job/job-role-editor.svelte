@@ -41,11 +41,7 @@
 
 {#if isEditingRoleLink}
   <!-- svelte-ignore a11y_no_static_element_interactions -->
-  <div
-    class="flex w-full min-w-0 flex-col gap-1"
-    onblur={onBlur}
-    onkeydown={onKeyDown}
-  >
+  <div class="flex w-full min-w-0 flex-col gap-1" onblur={onBlur} onkeydown={onKeyDown}>
     <!-- svelte-ignore a11y_autofocus -->
     <input
       autofocus
@@ -64,10 +60,7 @@
 {:else}
   <!-- svelte-ignore a11y_click_events_have_key_events -->
   <!-- svelte-ignore a11y_no_static_element_interactions -->
-  <span
-    ondblclick={handleStartEditRoleLink}
-    class="truncate border border-transparent p-1"
-  >
+  <span ondblclick={handleStartEditRoleLink} class="truncate border border-transparent p-1">
     {job.role}
   </span>
   {#if job.link}

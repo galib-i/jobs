@@ -1,18 +1,13 @@
 <script>
-	import { cn } from "$lib/utils.js";
-	let {
-		ref = $bindable(null),
-		class: className,
-		children,
-		...restProps
-	} = $props();
+  import { cn } from "$lib/utils.js";
+  let { ref = $bindable(null), class: className, children, ...restProps } = $props();
 </script>
 
 <div
-	bind:this={ref}
-	data-slot="card-footer"
-	class={cn("rounded-none border-t p-(--card-spacing) flex items-center", className)}
-	{...restProps}
+  bind:this={ref}
+  data-slot="card-footer"
+  class={cn("flex items-center rounded-none border-t p-(--card-spacing)", className)}
+  {...restProps}
 >
-	{@render children?.()}
+  {@render children?.()}
 </div>

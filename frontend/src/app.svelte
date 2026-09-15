@@ -1,11 +1,9 @@
 <script>
   import { jobStore } from "./lib/jobs.svelte.js";
-  import DiagramsPage from "$lib/components/stats-summary.svelte";
   import SettingsPage from "$lib/components/settings-page.svelte";
 
   import SidebarLayout from "$lib/components/layout/sidebar-layout.svelte";
   import DashboardPage from "$lib/components/dashboard/dashboard-page.svelte";
-
 
   let page = $state("jobs");
   let theme = $state("dark");
@@ -34,14 +32,12 @@
       onAddStage={(stage) => jobStore.addStage(null, stage)}
       onDeleteStage={(stage) => {
         // Find index of stage to delete
-        const index = jobStore.availableStages.findIndex(s => s.name === stage);
+        const index = jobStore.availableStages.findIndex((s) => s.name === stage);
         if (index !== -1) jobStore.removeStage(null, index);
       }}
       onResetStages={() => jobStore.resetStages()}
       onWipeDatabase={() => jobStore.wipeDatabase()}
     />
-  {:else if page === "diagrams"}
-    <DiagramsPage {theme} />
   {:else}
     <DashboardPage />
   {/if}

@@ -33,10 +33,7 @@
 {#if isOpen}
   <!-- svelte-ignore a11y_click_events_have_key_events -->
   <!-- svelte-ignore a11y_no_static_element_interactions -->
-  <div
-    class="fixed inset-0 z-50 flex items-center justify-center bg-black/60"
-    onclick={onclose}
-  >
+  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60" onclick={onclose}>
     <!-- svelte-ignore a11y_click_events_have_key_events -->
     <!-- svelte-ignore a11y_no_static_element_interactions -->
     <div
@@ -44,7 +41,9 @@
       style="--wails-draggable: no-drag"
       onclick={stopPropagation}
     >
-      <div class="flex items-center justify-between border-b border-slate-300 bg-slate-100 px-4 py-3 text-sm font-bold tracking-wider text-slate-800 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300">
+      <div
+        class="flex items-center justify-between border-b border-slate-300 bg-slate-100 px-4 py-3 text-sm font-bold tracking-wider text-slate-800 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300"
+      >
         <span class="font-pixel">Settings</span>
         <button
           onclick={onclose}
@@ -56,7 +55,9 @@
       <div class="space-y-4 p-4">
         <div>
           <div class="mb-2 flex items-center justify-between">
-            <h3 class="font-pixel text-xs font-bold tracking-wider text-slate-500 uppercase dark:text-slate-400">
+            <h3
+              class="font-pixel text-xs font-bold tracking-wider text-slate-500 uppercase dark:text-slate-400"
+            >
               Manage Stages
             </h3>
             <button
@@ -68,8 +69,11 @@
           </div>
           <div class="custom-scrollbar max-h-48 space-y-1 overflow-y-auto pr-1">
             {#each availableStages || [] as stage}
-              {@const isUndeleteable = stage.name === "Rejected" || stage.name === "Withdrawn" || stage.name === "Offer"}
-              <div class="flex items-center justify-between rounded bg-slate-100 px-2 py-1.5 dark:bg-slate-700/50">
+              {@const isUndeleteable =
+                stage.name === "Rejected" || stage.name === "Withdrawn" || stage.name === "Offer"}
+              <div
+                class="flex items-center justify-between rounded bg-slate-100 px-2 py-1.5 dark:bg-slate-700/50"
+              >
                 <span class="flex-1 truncate text-sm font-bold text-slate-800 dark:text-slate-200">
                   {stage.name}
                 </span>
@@ -96,30 +100,22 @@
               newStageName = e.target.value.replace(/[()]/g, "");
             }}
           />
-          <Button theme="green" type="submit" size="sm">
-            ADD
-          </Button>
+          <Button theme="green" type="submit" size="sm">ADD</Button>
         </form>
         <div class="border-t border-slate-300 pt-4 dark:border-slate-700">
-          <h3 class="font-pixel mb-2 text-xs font-bold tracking-wider text-slate-500 uppercase dark:text-slate-400">
+          <h3
+            class="font-pixel mb-2 text-xs font-bold tracking-wider text-slate-500 uppercase dark:text-slate-400"
+          >
             Data
           </h3>
-          <Button
-            theme="blue"
-            class="mb-4 w-full text-center"
-            onclick={() => OpenDataFolder()}
-          >
+          <Button theme="blue" class="mb-4 w-full text-center" onclick={() => OpenDataFolder()}>
             OPEN DATA FOLDER
           </Button>
 
           <h3 class="font-pixel mb-2 text-xs font-bold tracking-wider text-red-400 uppercase">
             Reset
           </h3>
-          <Button
-            theme="red"
-            class="w-full text-center"
-            onclick={() => (isConfirmOpen = true)}
-          >
+          <Button theme="red" class="w-full text-center" onclick={() => (isConfirmOpen = true)}>
             DELETE ALL RECORDS
           </Button>
         </div>

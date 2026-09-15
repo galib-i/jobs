@@ -7,14 +7,7 @@
   import JobRoleEditor from "./job-role-editor.svelte";
   import JobStageSelector from "./job-stage-selector.svelte";
 
-  let {
-    job,
-    availableStages,
-    onUpdateJob,
-    onDeleteJob,
-    onAddStage,
-    onRemoveStage,
-  } = $props();
+  let { job, availableStages, onUpdateJob, onDeleteJob, onAddStage, onRemoveStage } = $props();
 
   let showDescription = $state(false);
   let isAddingDescription = $state(false);
@@ -26,7 +19,7 @@
       ? job.stageHistory[job.stageHistory.length - 1].count > 1
         ? `${job.lastStage} (${job.stageHistory[job.stageHistory.length - 1].count})`
         : job.lastStage
-      : "None"
+      : "None",
   );
 
   let bgColour = $derived(job.lastStageColour || "var(--color-yellow-500)");
@@ -36,7 +29,7 @@
   let innerBorder = $derived(
     isDeleteConfirmationOpen
       ? "border-l border-red-300 dark:border-red-800/50"
-      : "border-l border-slate-300 dark:border-slate-600/50"
+      : "border-l border-slate-300 dark:border-slate-600/50",
   );
 </script>
 
@@ -56,7 +49,12 @@
               title="Remove stage"
             >
               <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M6 18L18 6M6 6l12 12"
+                />
               </svg>
             </button>
           {/if}
@@ -72,7 +70,9 @@
 {/snippet}
 
 <div
-  class="col-span-full grid grid-cols-subgrid border-b-2 text-sm tracking-wide text-slate-800 transition-colors duration-200 last:rounded-b-[14px] last:border-b-0 dark:text-slate-200 {isDeleteConfirmationOpen ? 'border-red-300 bg-red-100 dark:border-red-800 dark:bg-red-900/60' : 'border-slate-300 bg-white hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:hover:bg-slate-700'}"
+  class="col-span-full grid grid-cols-subgrid border-b-2 text-sm tracking-wide text-slate-800 transition-colors duration-200 last:rounded-b-[14px] last:border-b-0 dark:text-slate-200 {isDeleteConfirmationOpen
+    ? 'border-red-300 bg-red-100 dark:border-red-800 dark:bg-red-900/60'
+    : 'border-slate-300 bg-white hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:hover:bg-slate-700'}"
 >
   <div class="flex items-center overflow-hidden px-4 py-2 pl-6">
     <EditableInput
@@ -101,7 +101,7 @@
     </div>
     <JobRoleEditor {job} {onUpdateJob} />
   </div>
-  
+
   <div class="flex items-center overflow-hidden px-4 py-2 {innerBorder}">
     <EditableInput
       initialValue={job.location}
@@ -109,7 +109,7 @@
       class="block w-full truncate"
     />
   </div>
-  
+
   <div class="relative flex min-w-0 items-center px-4 py-2 {innerBorder}">
     <Tooltip content={tooltipContent} class="min-w-0">
       <span
@@ -121,11 +121,11 @@
     </Tooltip>
     <JobStageSelector {job} {availableStages} {onAddStage} />
   </div>
-  
+
   <div class="flex items-center justify-center truncate px-4 py-2 {innerBorder}">
     {job.formattedDate}
   </div>
-  
+
   <!-- svelte-ignore a11y_no_static_element_interactions -->
   <div
     class="group/notes flex min-w-0 cursor-text items-center px-4 py-2 {innerBorder}"
@@ -139,7 +139,7 @@
       onEditingChange={(val) => (isEditingNotes = val)}
     />
   </div>
-  
+
   <div class="hidden items-center justify-end px-4 py-2 pr-6 lg:flex">
     <div class="mt-1.5">
       <Button theme="red" onclick={() => (isDeleteConfirmationOpen = true)} isIcon>
@@ -150,7 +150,9 @@
 </div>
 
 {#if showDescription && job.description}
-  <div class="col-span-full flex items-center gap-2 border-b-2 border-slate-300 bg-slate-50 px-6 py-3 text-sm font-normal text-slate-800 last:rounded-b-[14px] last:border-b-0 dark:border-slate-700 dark:bg-slate-800/80 dark:text-slate-200">
+  <div
+    class="col-span-full flex items-center gap-2 border-b-2 border-slate-300 bg-slate-50 px-6 py-3 text-sm font-normal text-slate-800 last:rounded-b-[14px] last:border-b-0 dark:border-slate-700 dark:bg-slate-800/80 dark:text-slate-200"
+  >
     <span
       class="font-pixel shrink-0 font-bold tracking-wider text-yellow-600 uppercase select-none dark:text-yellow-400"
       draggable="false"
@@ -167,7 +169,9 @@
 {/if}
 
 {#if isAddingDescription}
-  <div class="col-span-full flex items-center gap-2 border-b-2 border-slate-300 bg-slate-50 px-6 py-3 text-sm text-slate-800 last:rounded-b-[14px] last:border-b-0 dark:border-slate-700 dark:bg-slate-800/80 dark:text-slate-200">
+  <div
+    class="col-span-full flex items-center gap-2 border-b-2 border-slate-300 bg-slate-50 px-6 py-3 text-sm text-slate-800 last:rounded-b-[14px] last:border-b-0 dark:border-slate-700 dark:bg-slate-800/80 dark:text-slate-200"
+  >
     <span
       class="font-pixel shrink-0 font-bold tracking-wider text-slate-500 uppercase select-none dark:text-slate-400"
       draggable="false"

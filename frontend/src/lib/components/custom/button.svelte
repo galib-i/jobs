@@ -64,7 +64,7 @@
   let transformStyles = $derived(
     isActive
       ? `${s.shadow} border-b cursor-default ${colours.active}`
-      : "group-hover:-translate-y-0.5 group-active:translate-y-1"
+      : "group-hover:-translate-y-0.5 group-active:translate-y-1",
   );
 </script>
 

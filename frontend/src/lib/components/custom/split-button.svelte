@@ -1,14 +1,7 @@
 <script>
   import Button from "./button.svelte";
 
-  let {
-    left,
-    right,
-    activeValue,
-    onchange,
-    theme = "blue",
-    size = "md",
-  } = $props();
+  let { left, right, activeValue, onchange, theme = "blue", size = "md" } = $props();
 </script>
 
 <div class="flex items-center select-none">

@@ -1,10 +1,5 @@
 <script>
-  let {
-    onclick,
-    theme = "blue",
-    pointUp = false,
-    class: className = "",
-  } = $props();
+  let { onclick, theme = "blue", pointUp = false, class: className = "" } = $props();
 
   const textThemes = {
     blue: { top: "text-blue-500", bottom: "text-blue-800" },
